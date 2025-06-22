@@ -58,7 +58,6 @@ contract MyInvariantTest is Test {
         vm.stopPrank();
 
         targetContract(address(attackerContract)); //
-
         attackerInitialBalance = IERC20(BUSD).balanceOf(attacker);
     }
 
