@@ -49,6 +49,9 @@ contract CloberDex is BaseTestWithBalanceLog {
         rebalancer = address(patched);
         rebalancerContract = IRebalancer(rebalancer);
 
+        deal(weth, rebalancer, 1 ether);
+        deal(weth, morphoBlue, 10 ether);
+
         vm.label(weth, "WETH Token");
         vm.label(morphoBlue, "Morpho Blue");
         vm.label(rebalancer, "Patched Rebalancer Contract");
@@ -61,7 +64,7 @@ contract CloberDex is BaseTestWithBalanceLog {
         emit log_named_decimal_uint("The Real Attacker's ETH after the attack:", attacker.balance / 1e18, 0);
     }
 
-    function testPatchedRebalancerBlocksExploit() public {
+    function testExploitFailsAfterPatch() public {
         try this.testExploit() {
             fail(); // Fail if testExploit does NOT revert
         } catch Error(string memory reason) {
