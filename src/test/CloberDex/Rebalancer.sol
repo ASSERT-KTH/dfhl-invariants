@@ -20,9 +20,6 @@ import {ERC6909Supply} from "./libraries/ERC6909Supply.sol";
 
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-
-
-
 /* PATCH description
 * Token Whitelisting (isWhitelistedToken modifier)
 - Ensures that only approved tokens can be used within the contract.
@@ -35,9 +32,6 @@ to validate all involved tokens before processing.
 - Ensures that critical state changing functions cannot be entered multiple times simultaneously. 
 - Added to  external functions that perform external calls or transfer tokens (burn, mint, rebalance).
  */
-
-
-
 
 contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, ReentrancyGuard {
     using BookIdLibrary for IBookManager.BookKey;
@@ -62,30 +56,38 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, Reentr
 
     mapping(address => bool) public isWhitelistedToken;
 
-    modifier onlyWhitelisted(Currency token) {
+    modifier onlyWhitelisted(
+        Currency token
+    ) {
         if (!isWhitelistedToken[Currency.unwrap(token)]) revert NotWhitelisted();
         _;
     }
-
-
 
     constructor(IBookManager bookManager_, address initialOwner_) Ownable(initialOwner_) {
         bookManager = bookManager_;
     }
 
-    function decimals(uint256) external pure returns (uint8) {
+    function decimals(
+        uint256
+    ) external pure returns (uint8) {
         return 18;
     }
 
-    function getPool(bytes32 key) external view returns (Pool memory) {
+    function getPool(
+        bytes32 key
+    ) external view returns (Pool memory) {
         return _pools[key];
     }
 
-    function getBookPairs(bytes32 key) external view returns (BookId, BookId) {
+    function getBookPairs(
+        bytes32 key
+    ) external view returns (BookId, BookId) {
         return (_pools[key].bookIdA, _pools[key].bookIdB);
     }
 
-    function getLiquidity(bytes32 key) public view returns (Liquidity memory liquidityA, Liquidity memory liquidityB) {
+    function getLiquidity(
+        bytes32 key
+    ) public view returns (Liquidity memory liquidityA, Liquidity memory liquidityB) {
         Pool storage pool = _pools[key];
         liquidityA.reserve = pool.reserveA;
         liquidityB.reserve = pool.reserveB;
@@ -113,11 +115,11 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, Reentr
         }
     }
 
-    function _getLiquidity(FeePolicy makerPolicy, uint64 unitSize, OrderId orderId)
-        internal
-        view
-        returns (uint256 cancelable, uint256 claimable)
-    {
+    function _getLiquidity(
+        FeePolicy makerPolicy,
+        uint64 unitSize,
+        OrderId orderId
+    ) internal view returns (uint256 cancelable, uint256 claimable) {
         IBookManager.OrderInfo memory orderInfo = bookManager.getOrder(orderId);
         cancelable = uint256(orderInfo.open) * unitSize;
         claimable = orderId.getTick().quoteToBase(uint256(orderInfo.claimable) * unitSize, false);
@@ -144,16 +146,17 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, Reentr
         );
     }
 
-    function mint(bytes32 key, uint256 amountA, uint256 amountB, uint256 minLpAmount)
-        external
-        payable
-        nonReentrant
-        returns (uint256 mintAmount)
-    {
+    function mint(
+        bytes32 key,
+        uint256 amountA,
+        uint256 amountB,
+        uint256 minLpAmount
+    ) external payable nonReentrant returns (uint256 mintAmount) {
         Pool storage pool = _pools[key];
         IBookManager.BookKey memory bookKeyA = bookManager.getBookKey(pool.bookIdA);
 
-         if (!isWhitelistedToken[Currency.unwrap(bookKeyA.quote)] || !isWhitelistedToken[Currency.unwrap(bookKeyA.base)]) {
+        if (!isWhitelistedToken[Currency.unwrap(bookKeyA.quote)] || !isWhitelistedToken[Currency.unwrap(bookKeyA.base)])
+        {
             revert NotWhitelisted();
         }
 
@@ -231,10 +234,12 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, Reentr
         }
     }
 
-    function burn(bytes32 key, uint256 amount, uint256 minAmountA, uint256 minAmountB)
-        external nonReentrant
-        returns (uint256 withdrawalA, uint256 withdrawalB)
-    {
+    function burn(
+        bytes32 key,
+        uint256 amount,
+        uint256 minAmountA,
+        uint256 minAmountB
+    ) external nonReentrant returns (uint256 withdrawalA, uint256 withdrawalB) {
         (withdrawalA, withdrawalB) = abi.decode(
             bookManager.lock(address(this), abi.encodeWithSelector(this._burn.selector, key, msg.sender, amount)),
             (uint256, uint256)
@@ -242,7 +247,9 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, Reentr
         if (withdrawalA < minAmountA || withdrawalB < minAmountB) revert Slippage();
     }
 
-    function rebalance(bytes32 key) public nonReentrant {
+    function rebalance(
+        bytes32 key
+    ) public nonReentrant {
         bookManager.lock(address(this), abi.encodeWithSelector(this._rebalance.selector, key));
     }
 
@@ -259,8 +266,6 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, Reentr
             revert(add(returnData, 32), mload(returnData))
         }
     }
-
-
 
     function _open(
         IBookManager.BookKey calldata bookKeyA,
@@ -282,10 +287,8 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, Reentr
         address baseB = Currency.unwrap(bookKeyB.base);
 
         if (
-            !isWhitelistedToken[quoteA] ||
-            !isWhitelistedToken[baseA] ||
-            !isWhitelistedToken[quoteB] ||
-            !isWhitelistedToken[baseB]
+            !isWhitelistedToken[quoteA] || !isWhitelistedToken[baseA] || !isWhitelistedToken[quoteB]
+                || !isWhitelistedToken[baseB]
         ) revert NotWhitelisted();
 
         BookId bookIdA = bookKeyA.toId();
@@ -305,16 +308,16 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, Reentr
         emit Open(key, bookIdA, bookIdB, salt, strategy);
     }
 
-
-    function _burn(bytes32 key, address user, uint256 burnAmount)
-        public
-        selfOnly
-        returns (uint256 withdrawalA, uint256 withdrawalB)
-    {
+    function _burn(
+        bytes32 key,
+        address user,
+        uint256 burnAmount
+    ) public selfOnly returns (uint256 withdrawalA, uint256 withdrawalB) {
         Pool storage pool = _pools[key];
         uint256 supply = totalSupply[uint256(key)];
 
-         if (!isWhitelistedToken[Currency.unwrap(bookKeyA.quote)] || !isWhitelistedToken[Currency.unwrap(bookKeyA.base)]) {
+        if (!isWhitelistedToken[Currency.unwrap(bookKeyA.quote)] || !isWhitelistedToken[Currency.unwrap(bookKeyA.base)])
+        {
             revert NotWhitelisted();
         }
 
@@ -344,7 +347,9 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, Reentr
         }
     }
 
-    function _rebalance(bytes32 key) public selfOnly {
+    function _rebalance(
+        bytes32 key
+    ) public selfOnly {
         Pool storage pool = _pools[key];
         uint256 reserveA = pool.reserveA;
         uint256 reserveB = pool.reserveB;
@@ -371,7 +376,12 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, Reentr
         pool.reserveB = _settleCurrency(bookKeyA.base, reserveB);
     }
 
-    function _clearPool(bytes32 key, Pool storage pool, uint256 cancelNumerator, uint256 cancelDenominator)
+    function _clearPool(
+        bytes32 key,
+        Pool storage pool,
+        uint256 cancelNumerator,
+        uint256 cancelDenominator
+    )
         internal
         returns (uint256 canceledAmountA, uint256 canceledAmountB, uint256 claimedAmountA, uint256 claimedAmountB)
     {
@@ -381,10 +391,11 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, Reentr
         emit Cancel(key, canceledAmountA, canceledAmountB);
     }
 
-    function _clearOrders(OrderId[] storage orderIds, uint256 cancelNumerator, uint256 cancelDenominator)
-        internal
-        returns (uint256 canceledAmount, uint256 claimedAmount)
-    {
+    function _clearOrders(
+        OrderId[] storage orderIds,
+        uint256 cancelNumerator,
+        uint256 cancelDenominator
+    ) internal returns (uint256 canceledAmount, uint256 claimedAmount) {
         OrderId[] memory mOrderIds = orderIds;
         for (uint256 i = 0; i < mOrderIds.length; ++i) {
             OrderId orderId = mOrderIds[i];

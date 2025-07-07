@@ -4,14 +4,13 @@ pragma solidity >=0.7.0 <0.9.0;
 
 import "forge-std/Test.sol";
 
-
-
 // You might need to define or import these types if used in BookKey
 type Currency is address;
+
 type FeePolicy is uint24;
 
 interface IHooks {
-    // If you have functions or events for IHooks, add here
+// If you have functions or events for IHooks, add here
 }
 
 interface IBookManager {
@@ -28,7 +27,7 @@ interface IBookManager {
 }
 
 interface IRebalancer {
-    function bookManager() external view returns(address);
+    function bookManager() external view returns (address);
 
     function open(
         IBookManager.BookKey calldata bookKeyA,
@@ -51,7 +50,6 @@ interface IRebalancer {
         uint256 minAmountB
     ) external returns (uint256, uint256);
 }
-
 
 interface CheatCodes {
     // This allows us to getRecordedLogs()
@@ -4149,7 +4147,9 @@ interface IERC721Enumerable is IERC721 {
      * @dev Returns a token ID at a given `index` of all the tokens stored by the contract.
      * Use along with {totalSupply} to enumerate all tokens.
      */
-    function tokenByIndex(uint256 index) external view returns (uint256);
+    function tokenByIndex(
+        uint256 index
+    ) external view returns (uint256);
 }
 
 interface IRewardsHypervisor {
@@ -4267,7 +4267,7 @@ interface ILendingPool {
         address onBehalfOf
     ) external;
 
-    function repay(address asset, uint256 amount, uint256 RateMode,address onBehalfOf) external payable;
+    function repay(address asset, uint256 amount, uint256 RateMode, address onBehalfOf) external payable;
     function repay(address _reserve, uint256 _amount, address _onBehalfOf) external payable;
     /**
      * @dev Function to liquidate a non-healthy position collateral-wise, with Health Factor below 1
@@ -6030,11 +6030,7 @@ interface IPancakeV3Factory {
     /// @param tickSpacing The minimum number of ticks between initialized ticks
     /// @param pool The address of the created pool
     event PoolCreated(
-        address indexed token0,
-        address indexed token1,
-        uint24 indexed fee,
-        int24 tickSpacing,
-        address pool
+        address indexed token0, address indexed token1, uint24 indexed fee, int24 tickSpacing, address pool
     );
 
     /// @notice Emitted when a new fee amount is enabled for pool creation via the factory
@@ -6058,13 +6054,17 @@ interface IPancakeV3Factory {
     /// @dev A fee amount can never be removed, so this value should be hard coded or cached in the calling context
     /// @param fee The enabled fee, denominated in hundredths of a bip. Returns 0 in case of unenabled fee
     /// @return The tick spacing
-    function feeAmountTickSpacing(uint24 fee) external view returns (int24);
+    function feeAmountTickSpacing(
+        uint24 fee
+    ) external view returns (int24);
 
     /// @notice Returns the tick spacing extra info
     /// @dev A fee amount can never be removed, so this value should be hard coded or cached in the calling context
     /// @param fee The enabled fee, denominated in hundredths of a bip. Returns 0 in case of unenabled fee
     /// @return whitelistRequested The flag whether should be created by white list users only
-    function feeAmountTickSpacingExtraInfo(uint24 fee) external view returns (bool whitelistRequested, bool enabled);
+    function feeAmountTickSpacingExtraInfo(
+        uint24 fee
+    ) external view returns (bool whitelistRequested, bool enabled);
 
     /// @notice Returns the pool address for a given pair of tokens and a fee, or address 0 if it does not exist
     /// @dev tokenA and tokenB may be passed in either token0/token1 or token1/token0 order
@@ -6072,11 +6072,7 @@ interface IPancakeV3Factory {
     /// @param tokenB The contract address of the other token
     /// @param fee The fee collected upon every swap in the pool, denominated in hundredths of a bip
     /// @return pool The pool address
-    function getPool(
-        address tokenA,
-        address tokenB,
-        uint24 fee
-    ) external view returns (address pool);
+    function getPool(address tokenA, address tokenB, uint24 fee) external view returns (address pool);
 
     /// @notice Creates a pool for the given two tokens and fee
     /// @param tokenA One of the two tokens in the desired pool
@@ -6086,16 +6082,14 @@ interface IPancakeV3Factory {
     /// from the fee. The call will revert if the pool already exists, the fee is invalid, or the token arguments
     /// are invalid.
     /// @return pool The address of the newly created pool
-    function createPool(
-        address tokenA,
-        address tokenB,
-        uint24 fee
-    ) external returns (address pool);
+    function createPool(address tokenA, address tokenB, uint24 fee) external returns (address pool);
 
     /// @notice Updates the owner of the factory
     /// @dev Must be called by the current owner
     /// @param _owner The new owner of the factory
-    function setOwner(address _owner) external;
+    function setOwner(
+        address _owner
+    ) external;
 
     /// @notice Enables a fee amount with the given tickSpacing
     /// @dev Fee amounts may never be removed once enabled
@@ -6112,13 +6106,11 @@ interface IPancakeV3Factory {
     /// @dev Fee amounts can be updated by owner with extra info
     /// @param whitelistRequested The flag whether should be created by owner only
     /// @param enabled The flag is the fee is enabled or not
-    function setFeeAmountExtraInfo(
-        uint24 fee,
-        bool whitelistRequested,
-        bool enabled
-    ) external;
+    function setFeeAmountExtraInfo(uint24 fee, bool whitelistRequested, bool enabled) external;
 
-    function setLmPoolDeployer(address _lmPoolDeployer) external;
+    function setLmPoolDeployer(
+        address _lmPoolDeployer
+    ) external;
 
     function setFeeProtocol(address pool, uint32 feeProtocol0, uint32 feeProtocol1) external;
 
@@ -6143,7 +6135,6 @@ interface ILoanTokenLogicWeth {
     ) external view returns (uint256);
 }
 
-
 interface IMorphoBuleFlashLoan {
     function flashLoan(address token, uint256 assets, bytes calldata data) external;
 }
@@ -6152,12 +6143,6 @@ interface IUniswapV3Flash {
     function flash(address recipient, uint256 amount0, uint256 amount1, bytes calldata data) external;
 }
 
-
 interface IMakerDaoFlash {
-    function flashLoan(
-        address receiver,
-        address token,
-        uint256 amount,
-        bytes calldata data
-    ) external returns (bool);
+    function flashLoan(address receiver, address token, uint256 amount, bytes calldata data) external returns (bool);
 }
