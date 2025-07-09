@@ -1,24 +1,25 @@
-// SPDX-License-Identifier: GPL-2.0-or-later
+//SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.0;
 
-import {Ownable2Step, Ownable} from "@openzeppelin/contracts/access/Ownable2Step.sol";
-import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
-import {SafeCast} from "@openzeppelin/contracts/utils/math/SafeCast.sol";
-import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
-import {IBookManager} from "clober-dex/v2-core/interfaces/IBookManager.sol";
-import {ILocker} from "clober-dex/v2-core/interfaces/ILocker.sol";
-import {BookId, BookIdLibrary} from "clober-dex/v2-core/libraries/BookId.sol";
-import {Currency, CurrencyLibrary} from "clober-dex/v2-core/libraries/Currency.sol";
-import {OrderId, OrderIdLibrary} from "clober-dex/v2-core/libraries/OrderId.sol";
-import {Tick, TickLibrary} from "clober-dex/v2-core/libraries/Tick.sol";
-import {FeePolicy, FeePolicyLibrary} from "clober-dex/v2-core/libraries/FeePolicy.sol";
-import {FixedPointMathLib} from "solmate/utils/FixedPointMathLib.sol";
+import {Ownable2Step, Ownable} from "../lib/openzeppelin-contracts/contracts/access/Ownable2Step.sol";
+import {IERC20, SafeERC20} from "../lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
+import {SafeCast} from "../lib/openzeppelin-contracts/contracts/utils/math/SafeCast.sol";
+import {IERC20Metadata} from "../lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import {IBookManager} from "../lib/v2-core/src/interfaces/IBookManager.sol";
+import {ILocker} from "../lib/v2-core/src/interfaces/ILocker.sol";
+import {BookId, BookIdLibrary} from "../lib/v2-core/src/libraries/BookId.sol";
+import {Currency, CurrencyLibrary} from "../lib/v2-core/src/libraries/Currency.sol";
+import {OrderId, OrderIdLibrary} from "../lib/v2-core/src/libraries/OrderId.sol";
+import {Tick, TickLibrary} from "../lib/v2-core/src/libraries/Tick.sol";
+import {FeePolicy, FeePolicyLibrary} from "../lib/v2-core/src/libraries/FeePolicy.sol";
+import {FixedPointMathLib} from "../lib/solmate/src/utils/FixedPointMathLib.sol";
 
-import {IRebalancer} from "./interfaces/IRebalancer.sol";
-import {IStrategy} from "./interfaces/IStrategy.sol";
-import {ERC6909Supply} from "./libraries/ERC6909Supply.sol";
+import {IRebalancer} from "../interfaces/IRebalancer.sol";
+import {IStrategy} from "../interfaces/IStrategy.sol";
+import {ERC6909Supply} from "../lib/ERC6909Supply.sol";
 
-import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "../lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
+
 
 /* PATCH description
 * Token Whitelisting (isWhitelistedToken modifier)
@@ -41,6 +42,24 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, Reentr
     using OrderIdLibrary for OrderId;
     using TickLibrary for Tick;
     using FeePolicyLibrary for FeePolicy;
+
+
+
+    // Custom errors
+    error NotWhitelisted();
+    error NotSelf();
+    error InvalidAmount();
+    error InvalidStrategy();
+    error AlreadyOpened();
+    error InvalidBookPair();
+    error InvalidHook();
+    error InvalidLockAcquiredSender();
+    error InvalidLockCaller();
+    error InvalidValue();
+    error LockFailure();
+    error Slippage();
+
+
 
     uint256 public constant RATE_PRECISION = 1e6;
 
@@ -316,6 +335,7 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, Reentr
         Pool storage pool = _pools[key];
         uint256 supply = totalSupply[uint256(key)];
 
+        IBookManager.BookKey memory bookKeyA = bookManager.getBookKey(pool.bookIdA);
         if (!isWhitelistedToken[Currency.unwrap(bookKeyA.quote)] || !isWhitelistedToken[Currency.unwrap(bookKeyA.base)])
         {
             revert NotWhitelisted();
@@ -334,7 +354,7 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, Reentr
         pool.strategy.burnHook(msg.sender, key, burnAmount, supply);
         emit Burn(user, key, withdrawalA, withdrawalB, burnAmount);
 
-        IBookManager.BookKey memory bookKeyA = bookManager.getBookKey(pool.bookIdA);
+        //IBookManager.BookKey memory bookKeyA = bookManager.getBookKey(pool.bookIdA);
 
         pool.reserveA = _settleCurrency(bookKeyA.quote, reserveA) - withdrawalA;
         pool.reserveB = _settleCurrency(bookKeyA.base, reserveB) - withdrawalB;
