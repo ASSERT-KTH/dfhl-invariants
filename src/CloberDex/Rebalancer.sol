@@ -3,11 +3,28 @@
 pragma solidity ^0.8.0;
 
 
-import {Ownable2Step, Ownable} from "../../lib/openzeppelin-contracts/contracts/access/Ownable2Step.sol";
-import {IERC20, SafeERC20} from "../../lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
+// import {Ownable2Step, Ownable} from "../../lib/openzeppelin-contracts/contracts/access/Ownable2Step.sol";
+// import {IERC20, SafeERC20} from "../../lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
 
-import {SafeCast} from "../../lib/openzeppelin-contracts/contracts/utils/math/SafeCast.sol";
-import {IERC20Metadata} from "../../lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+// import {SafeCast} from "../../lib/openzeppelin-contracts/contracts/utils/math/SafeCast.sol";
+// import {IERC20Metadata} from "../../lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+// import {IBookManager} from "../../lib/v2-core/src/interfaces/IBookManager.sol";
+// import {ILocker} from "../../lib/v2-core/src/interfaces/ILocker.sol";
+// import {BookId, BookIdLibrary} from "../../lib/v2-core/src/libraries/BookId.sol";
+// import {Currency, CurrencyLibrary} from "../../lib/v2-core/src/libraries/Currency.sol";
+// import {OrderId, OrderIdLibrary} from "../../lib/v2-core/src/libraries/OrderId.sol";
+// import {Tick, TickLibrary} from "../../lib/v2-core/src/libraries/Tick.sol";
+// import {FeePolicy, FeePolicyLibrary} from "../../lib/v2-core/src/libraries/FeePolicy.sol";
+// import {FixedPointMathLib} from "../../lib/solmate/src/utils/FixedPointMathLib.sol";
+// import {IRebalancer} from "../../interfaces/IRebalancer.sol";
+// import {IStrategy} from "../../interfaces/IStrategy.sol";
+// import {ERC6909Supply} from "../../lib/ERC6909Supply.sol";
+
+
+import {Ownable2Step, Ownable} from "@openzeppelin/contracts/access/Ownable2Step.sol";
+import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {SafeCast} from "@openzeppelin/contracts/utils/math/SafeCast.sol";
+import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
 import {IBookManager} from "../../lib/v2-core/src/interfaces/IBookManager.sol";
 import {ILocker} from "../../lib/v2-core/src/interfaces/ILocker.sol";
 import {BookId, BookIdLibrary} from "../../lib/v2-core/src/libraries/BookId.sol";
@@ -15,12 +32,13 @@ import {Currency, CurrencyLibrary} from "../../lib/v2-core/src/libraries/Currenc
 import {OrderId, OrderIdLibrary} from "../../lib/v2-core/src/libraries/OrderId.sol";
 import {Tick, TickLibrary} from "../../lib/v2-core/src/libraries/Tick.sol";
 import {FeePolicy, FeePolicyLibrary} from "../../lib/v2-core/src/libraries/FeePolicy.sol";
-import {FixedPointMathLib} from "../../lib/solmate/src/utils/FixedPointMathLib.sol";
+
+import {FixedPointMathLib} from "solmate/src/utils/FixedPointMathLib.sol";
+
+
 import {IRebalancer} from "../../interfaces/IRebalancer.sol";
 import {IStrategy} from "../../interfaces/IStrategy.sol";
 import {ERC6909Supply} from "../../lib/ERC6909Supply.sol";
-
-
 contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply {
     using BookIdLibrary for IBookManager.BookKey;
     using SafeERC20 for IERC20;

@@ -2,7 +2,8 @@
 
 pragma solidity ^0.8.0;
 
-import {ERC6909} from "./solmate/src/tokens/ERC6909.sol";
+import {ERC6909} from "solmate/src/tokens/ERC6909.sol";
+
 
 abstract contract ERC6909Supply is ERC6909 {
     mapping(uint256 => uint256) public totalSupply;
