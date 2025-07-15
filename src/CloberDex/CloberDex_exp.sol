@@ -81,8 +81,8 @@ contract CloberDex is BaseTestWithBalanceLog {
         // evm_version Requires to be "cancun"
         vm.createSelectFork("base", blocknumToForkFrom);
         //vm.etch only replaces code, storage stays as it is on the fork block
-        //bytes memory code = vm.readFileBinary("src/test/CloberDex/Rebalancer_patch.hex");
-        //vm.etch(address(rebalancer), code);
+        bytes memory code = vm.readFileBinary("src/CloberDex/original.hex");
+        vm.etch(address(rebalancer), code);
 
         deal(address(this), 0);
         deal(msg.sender, 1e18);
