@@ -4,6 +4,9 @@ out = 'out'
 lib = ['lib']
 fs_permissions = [{ access = "read", path = "./"}]
 evm_version = 'cancun'
+via_ir = true
+optimizer = true
+
 
 [rpc_endpoints]
 mainnet = "https://eth.llamarpc.com"
