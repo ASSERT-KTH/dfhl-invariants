@@ -1,7 +1,7 @@
 [profile.default]
 src = 'src'
 out = 'out'
-libs = ['lib']
+lib = ['lib']
 fs_permissions = [{ access = "read", path = "./"}]
 evm_version = 'cancun'
 
