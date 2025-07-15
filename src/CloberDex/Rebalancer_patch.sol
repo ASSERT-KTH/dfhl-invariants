@@ -1,40 +1,35 @@
 //SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.0;
+import {Ownable2Step, Ownable} from "@openzeppelin/contracts/access/Ownable2Step.sol";
+import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+import {SafeCast} from "@openzeppelin/contracts/utils/math/SafeCast.sol";
+import {IERC20Metadata} from "@openzeppelin/contracts/token/ERC20/extensions/IERC20Metadata.sol";
+import {IBookManager} from "../../lib/v2-core/src/interfaces/IBookManager.sol";
+import {ILocker} from "../../lib/v2-core/src/interfaces/ILocker.sol";
+import {BookId, BookIdLibrary} from "../../lib/v2-core/src/libraries/BookId.sol";
+import {Currency, CurrencyLibrary} from "../../lib/v2-core/src/libraries/Currency.sol";
+import {OrderId, OrderIdLibrary} from "../../lib/v2-core/src/libraries/OrderId.sol";
+import {Tick, TickLibrary} from "../../lib/v2-core/src/libraries/Tick.sol";
+import {FeePolicy, FeePolicyLibrary} from "../../lib/v2-core/src/libraries/FeePolicy.sol";
 
-import {Ownable2Step, Ownable} from "../lib/openzeppelin-contracts/contracts/access/Ownable2Step.sol";
-import {IERC20, SafeERC20} from "../lib/openzeppelin-contracts/contracts/token/ERC20/utils/SafeERC20.sol";
-import {SafeCast} from "../lib/openzeppelin-contracts/contracts/utils/math/SafeCast.sol";
-import {IERC20Metadata} from "../lib/openzeppelin-contracts/contracts/token/ERC20/extensions/IERC20Metadata.sol";
-import {IBookManager} from "../lib/v2-core/src/interfaces/IBookManager.sol";
-import {ILocker} from "../lib/v2-core/src/interfaces/ILocker.sol";
-import {BookId, BookIdLibrary} from "../lib/v2-core/src/libraries/BookId.sol";
-import {Currency, CurrencyLibrary} from "../lib/v2-core/src/libraries/Currency.sol";
-import {OrderId, OrderIdLibrary} from "../lib/v2-core/src/libraries/OrderId.sol";
-import {Tick, TickLibrary} from "../lib/v2-core/src/libraries/Tick.sol";
-import {FeePolicy, FeePolicyLibrary} from "../lib/v2-core/src/libraries/FeePolicy.sol";
-import {FixedPointMathLib} from "../lib/solmate/src/utils/FixedPointMathLib.sol";
-
-import {IRebalancer} from "../interfaces/IRebalancer.sol";
-import {IStrategy} from "../interfaces/IStrategy.sol";
-import {ERC6909Supply} from "../lib/ERC6909Supply.sol";
-
-import "../lib/openzeppelin-contracts/contracts/utils/ReentrancyGuard.sol";
+import {FixedPointMathLib} from "solmate/src/utils/FixedPointMathLib.sol";
 
 
-/* PATCH description
-* Token Whitelisting (isWhitelistedToken modifier)
-- Ensures that only approved tokens can be used within the contract.
-- Prevents unauthorized tokens from interacting with citical contract functions
-- Applied to  functions involving token handling (_open, mint,_burn) 
-to validate all involved tokens before processing.
+import {IRebalancer} from "../../interfaces/IRebalancer.sol";
+import {IStrategy} from "../../interfaces/IStrategy.sol";
+import {ERC6909Supply} from "../../lib/ERC6909Supply.sol";
 
-* Reentrancy Guard (nonReentrant modifier)
+//import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
+
+
+/* 
+* Reentrancy Guard (nonReentrant modifier) __lock_modifier0
 - Protects functions from reentrancy attacks.
 - Ensures that critical state changing functions cannot be entered multiple times simultaneously. 
 - Added to  external functions that perform external calls or transfer tokens (burn, mint, rebalance).
  */
 
-contract Rebalancer_patch is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, ReentrancyGuard {
+contract Rebalancer_patch is IRebalancer, ILocker, Ownable2Step, ERC6909Supply{
     using BookIdLibrary for IBookManager.BookKey;
     using SafeERC20 for IERC20;
     using SafeCast for uint256;
@@ -45,19 +40,15 @@ contract Rebalancer_patch is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, 
 
 
 
-    // Custom errors
-    error NotWhitelisted();
-    error NotSelf();
-    error InvalidAmount();
-    error InvalidStrategy();
-    error AlreadyOpened();
-    error InvalidBookPair();
-    error InvalidHook();
-    error InvalidLockAcquiredSender();
-    error InvalidLockCaller();
-    error InvalidValue();
-    error LockFailure();
-    error Slippage();
+    bool private __lock_modifier0_lock;
+    modifier __lock_modifier0() 
+    {
+        require(!__lock_modifier0_lock);
+         __lock_modifier0_lock = true;
+         _;
+          __lock_modifier0_lock = false;
+     }
+
 
 
 
@@ -73,14 +64,7 @@ contract Rebalancer_patch is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, 
         _;
     }
 
-    mapping(address => bool) public isWhitelistedToken;
 
-    modifier onlyWhitelisted(
-        Currency token
-    ) {
-        if (!isWhitelistedToken[Currency.unwrap(token)]) revert NotWhitelisted();
-        _;
-    }
 
     constructor(IBookManager bookManager_, address initialOwner_) Ownable(initialOwner_) {
         bookManager = bookManager_;
@@ -170,14 +154,9 @@ contract Rebalancer_patch is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, 
         uint256 amountA,
         uint256 amountB,
         uint256 minLpAmount
-    ) external payable nonReentrant returns (uint256 mintAmount) {
+    ) external payable __lock_modifier0 returns (uint256 mintAmount) {
         Pool storage pool = _pools[key];
         IBookManager.BookKey memory bookKeyA = bookManager.getBookKey(pool.bookIdA);
-
-        if (!isWhitelistedToken[Currency.unwrap(bookKeyA.quote)] || !isWhitelistedToken[Currency.unwrap(bookKeyA.base)])
-        {
-            revert NotWhitelisted();
-        }
 
         uint256 supply = totalSupply[uint256(key)];
         if (supply == 0) {
@@ -258,7 +237,7 @@ contract Rebalancer_patch is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, 
         uint256 amount,
         uint256 minAmountA,
         uint256 minAmountB
-    ) external nonReentrant returns (uint256 withdrawalA, uint256 withdrawalB) {
+    ) external __lock_modifier0 returns (uint256 withdrawalA, uint256 withdrawalB) {
         (withdrawalA, withdrawalB) = abi.decode(
             bookManager.lock(address(this), abi.encodeWithSelector(this._burn.selector, key, msg.sender, amount)),
             (uint256, uint256)
@@ -268,7 +247,7 @@ contract Rebalancer_patch is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, 
 
     function rebalance(
         bytes32 key
-    ) public nonReentrant {
+    ) public __lock_modifier0 {
         bookManager.lock(address(this), abi.encodeWithSelector(this._rebalance.selector, key));
     }
 
@@ -299,17 +278,6 @@ contract Rebalancer_patch is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, 
         if (address(bookKeyA.hooks) != address(0) || address(bookKeyB.hooks) != address(0)) revert InvalidHook();
         if (strategy == address(0)) revert InvalidStrategy();
 
-        // Whitelist validation before state changes
-        address quoteA = Currency.unwrap(bookKeyA.quote);
-        address baseA = Currency.unwrap(bookKeyA.base);
-        address quoteB = Currency.unwrap(bookKeyB.quote);
-        address baseB = Currency.unwrap(bookKeyB.base);
-
-        if (
-            !isWhitelistedToken[quoteA] || !isWhitelistedToken[baseA] || !isWhitelistedToken[quoteB]
-                || !isWhitelistedToken[baseB]
-        ) revert NotWhitelisted();
-
         BookId bookIdA = bookKeyA.toId();
         BookId bookIdB = bookKeyB.toId();
         if (!bookManager.isOpened(bookIdA)) bookManager.open(bookKeyA, "");
@@ -336,11 +304,7 @@ contract Rebalancer_patch is IRebalancer, ILocker, Ownable2Step, ERC6909Supply, 
         uint256 supply = totalSupply[uint256(key)];
 
         IBookManager.BookKey memory bookKeyA = bookManager.getBookKey(pool.bookIdA);
-        if (!isWhitelistedToken[Currency.unwrap(bookKeyA.quote)] || !isWhitelistedToken[Currency.unwrap(bookKeyA.base)])
-        {
-            revert NotWhitelisted();
-        }
-
+  
         (uint256 canceledAmountA, uint256 canceledAmountB, uint256 claimedAmountA, uint256 claimedAmountB) =
             _clearPool(key, pool, burnAmount, supply);
 
