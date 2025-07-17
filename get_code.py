@@ -1,8 +1,10 @@
 import requests
 import os
 import json
+from dotenv import load_dotenv
+load_dotenv()
 
-API_KEY = ""
+API_KEY = os.getenv("ETHERSCAN_API_KEY")
 ADDRESS = "0xB91AE2c8365FD45030abA84a4666C4dB074E53E7"
 url = f"https://api.etherscan.io/api?module=contract&action=getsourcecode&address={ADDRESS}&apikey={API_KEY}"
 
