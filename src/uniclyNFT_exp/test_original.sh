@@ -8,7 +8,6 @@ echo "Storing memory layout of the original contract..."
 forge inspect src/uniclyNFT_exp/PointFarm.sol:PointFarm storageLayout > src/uniclyNFT_exp/memoryLayout.txt
 
 # 1. Compile and extract deployed bytecode for the original contract
-# (Assuming the contract is Uerii in Uerii.sol)
 echo "Extracting deployed bytecode from PointFarm..."
 forge inspect src/uniclyNFT_exp/PointFarm.sol:PointFarm deployedBytecode > src/uniclyNFT_exp/original.hex
 
