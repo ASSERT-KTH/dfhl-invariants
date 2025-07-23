@@ -1,0 +1,48 @@
+name: Run test scripts on PR
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  run-tests:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Ensure Foundry (forge) is installed
+        run: |
+          if ! command -v forge &> /dev/null; then
+            echo "Foundry not found. Installing..."
+            curl -L https://foundry.paradigm.xyz | bash
+            source ~/.bashrc || true
+            foundryup
+          else
+            echo "Foundry already installed."
+          fi
+
+          forge --version
+
+      - name: Make test scripts executable
+        run: |
+          chmod +x ./test_patch.sh || true
+          chmod +x ./test_original.sh || true
+
+      - name: Run test_patch.sh (if present)
+        run: |
+          if [ -f ./test_patch.sh ]; then
+            ./test_patch.sh
+          else
+            echo "test_patch.sh not found."
+          fi
+
+      - name: Run test_original.sh (if present)
+        run: |
+          if [ -f ./test_original.sh ]; then
+            ./test_original.sh
+          else
+            echo "test_original.sh not found."
+          fi
