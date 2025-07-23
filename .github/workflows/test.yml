@@ -18,8 +18,8 @@ jobs:
           if ! command -v forge &> /dev/null; then
             echo "Forge not found. Installing..."
             curl -L https://foundry.paradigm.xyz | bash
-            source ~/.bashrc
-            foundryup
+            source ~/.bashrc && foundryup
+            source ~/.bashrc && echo $PATH && foundryup
           else
             echo "Forge is already installed."
           fi
