@@ -19,7 +19,7 @@ jobs:
             echo "Forge not found. Installing..."
             curl -L https://foundry.paradigm.xyz | bash
             export PATH="$HOME/.foundry/bin:$PATH"
-            ~/.foundry/bin/foundryup
+            foundryup -y
             export PATH="$HOME/.foundry/bin:$PATH"
           else
             echo "Forge is already installed."
