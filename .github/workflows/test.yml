@@ -13,17 +13,11 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v3
 
-      - name: Ensure Foundry (forge) is installed
-        run: |
-          if ! command -v forge &> /dev/null; then
-            echo "Forge not found. Installing..."
-            curl -L https://foundry.paradigm.xyz | bash
-            export PATH="$HOME/.foundry/bin:$PATH"
-            foundryup -y
-            export PATH="$HOME/.foundry/bin:$PATH"
-          else
-            echo "Forge is already installed."
-          fi
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
 
       - name: Verify forge install
         run: forge --version
