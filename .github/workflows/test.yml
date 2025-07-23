@@ -15,18 +15,19 @@ jobs:
 
       - name: Ensure Foundry (forge) is installed
         run: |
-          if ! command -v forge &> /dev/null; then
-            echo "Foundry not found. Installing..."
-                curl -L https://foundry.paradigm.xyz | bash
-                export PATH="$HOME/.foundry/bin:$PATH"
-                ~/.foundry/bin/foundryup
-                ~/.foundry/bin/forge --version
-          else
-            echo "Foundry already installed."
-          fi
+            if ! command -v forge &> /dev/null; then
+            echo "Forge not found. Installing..."
+            mkdir -p ~/.foundry
+            curl -sL https://github.com/foundry-rs/foundry/releases/latest/download/foundry-linux.zip -o foundry.zip
+            unzip foundry.zip -d ~/.foundry
+            chmod +x ~/.foundry/forge
+            echo "$HOME/.foundry" >> $GITHUB_PATH
+            else
+            echo "Forge is already installed."
+            fi
 
-          forge --version
-
+      - name: Verify forge install
+        run: forge --version
 
       - name: Make test scripts executable
         run: |
