@@ -15,16 +15,16 @@ jobs:
 
       - name: Ensure Foundry (forge) is installed
         run: |
-            if ! command -v forge &> /dev/null; then
+          if ! command -v forge &> /dev/null; then
             echo "Forge not found. Installing..."
             mkdir -p ~/.foundry
-            curl -sL https://github.com/foundry-rs/foundry/releases/latest/download/foundry-linux.zip -o foundry.zip
+            curl -L https://foundry.paradigm.xyz/releases/latest/foundry-linux.zip -o foundry.zip
             unzip foundry.zip -d ~/.foundry
             chmod +x ~/.foundry/forge
             echo "$HOME/.foundry" >> $GITHUB_PATH
-            else
+          else
             echo "Forge is already installed."
-            fi
+          fi
 
       - name: Verify forge install
         run: forge --version
