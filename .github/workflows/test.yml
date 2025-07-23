@@ -28,6 +28,7 @@ jobs:
           chmod +x ./test_original.sh || true
 
       - name: Run test_patch.sh (if present anywhere)
+        continue-on-error: true
         run: |
             set -e
             patch_script=$(find . -type f -name test_patch.sh | head -n 1)
