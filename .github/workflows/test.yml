@@ -17,11 +17,9 @@ jobs:
         run: |
           if ! command -v forge &> /dev/null; then
             echo "Forge not found. Installing..."
-            mkdir -p ~/.foundry
-            curl -L https://foundry.paradigm.xyz/releases/latest/foundry-linux.zip -o foundry.zip
-            unzip foundry.zip -d ~/.foundry
-            chmod +x ~/.foundry/forge
-            echo "$HOME/.foundry" >> $GITHUB_PATH
+            curl -L https://foundry.paradigm.xyz | bash
+            source ~/.bashrc
+            foundryup
           else
             echo "Forge is already installed."
           fi
