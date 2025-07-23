@@ -29,6 +29,7 @@ jobs:
 
       - name: Run test_patch.sh (if present)
         run: |
+          set -e
           if [ -f ./test_patch.sh ]; then
             ./test_patch.sh
           else
@@ -37,6 +38,7 @@ jobs:
 
       - name: Run test_original.sh (if present)
         run: |
+          set -e
           if [ -f ./test_original.sh ]; then
             ./test_original.sh
           else
