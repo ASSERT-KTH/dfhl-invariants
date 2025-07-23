@@ -4,7 +4,7 @@ set -e
 
 # Store the memory layout of the patch contract
 echo "Storing memory layout of the patch contract..."
-forge inspect src/Uerii_exp/Uerii_patch.sol:Token storageLayout > src/Uerii_exp/memoryLayout_patch.txt
+forge inspect src/Uerii_exp/Uerii_patch.sol:Token_test storageLayout > src/Uerii_exp/memoryLayout_patch.txt
 
 # 1. Compile and extract deployed bytecode for the patch contract
 # (Assuming the patch contract is Uerii_patch in Uerii_patch.sol)
@@ -17,4 +17,4 @@ cat src/Uerii_exp/patch.hex | tr -d '\n' | sed 's/^0x//' | xxd -r -p > src/Uerii
 
 # 3. Run the test
 echo "Running forge test..."
-forge test --contracts src/Uerii_exp/Uerii_exp.sol -vvv 
+forge test --contracts src/Uerii_exp/Uerii_exp_test.sol -vvv 
