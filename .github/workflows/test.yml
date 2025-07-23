@@ -17,14 +17,16 @@ jobs:
         run: |
           if ! command -v forge &> /dev/null; then
             echo "Foundry not found. Installing..."
-            curl -L https://foundry.paradigm.xyz | bash
-            source ~/.bashrc || true
-            foundryup
+                curl -L https://foundry.paradigm.xyz | bash
+                export PATH="$HOME/.foundry/bin:$PATH"
+                ~/.foundry/bin/foundryup
+                ~/.foundry/bin/forge --version
           else
             echo "Foundry already installed."
           fi
 
           forge --version
+
 
       - name: Make test scripts executable
         run: |
