@@ -28,7 +28,7 @@ jobs:
           chmod +x ./test_original.sh || true
 
       - name: Run test_patch.sh (if present anywhere)
-        continue-on-error: true
+        # continue-on-error: true
         run: |
             set -e
             patch_script=$(find . -type f -name test_patch.sh | head -n 1)
@@ -41,7 +41,7 @@ jobs:
              fi
 
       - name: Run test_original.sh (if present anywhere)
-        continue-on-error: true
+        # continue-on-error: true
         run: |
             set -e
             original_script=$(find . -type f -name test_original.sh | head -n 1)
