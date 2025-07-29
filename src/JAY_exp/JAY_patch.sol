@@ -5,17 +5,22 @@
 
 // OpenZeppelin Contracts (last updated v4.6.0) (utils/math/SafeMath.sol)
 
-/**@dev
-patch:
-added __lock_modifier0_lock as reentrancy guard to sell() and burnJay() functions    
-bool private __lock_modifier0_lock;
-
-    modifier __lock_modifier0() {
+/** 
+ * @dev Patch Summary:
+ * The attacker was using a fake NFT to trick the contract into calling `sell()` 
+ * in the middle of a `buyJay()` call. This change the token price in their favor.
+ * To fix this,  a  reentrancy guard lock (`__lock_modifier0`) was added to both `buyJay()` and `sell()` 
+ * so they can’t run at the same time in one transaction.
+     modifier __lock_modifier0() {
         require(!__lock_modifier0_lock, "ReentrancyGuard: function is already executing");
         __lock_modifier0_lock = true;
         _;
         __lock_modifier0_lock = false;
-    } */
+    } 
+ */
+
+
+
 
 pragma solidity ^0.8.0;
 
