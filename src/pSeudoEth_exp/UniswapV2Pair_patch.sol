@@ -1,5 +1,27 @@
 // File: contracts/interfaces/IUniswapV2Pair.sol
 
+/**@dev
+* Vulnerability
+In the exploit, the attacker temporarily increases the balance using a flash loan.
+That makes it look like there’s extra money
+Then they call skim() to steal it.
+
+* Patch
+* added two require() checks to the `skim()` function 
+* to ensure that the current token balances are not
+* more than 10% greater than the internal reserves.
+````
+        uint balance0 = IERC20(_token0).balanceOf(address(this));
+        uint balance1 = IERC20(_token1).balanceOf(address(this));
+        require(balance0 - reserve0 <= reserve0 / 10, "UniswapV2: EXCESSIVE_IMBALANCE_TOKEN0");
+        require(balance1 - reserve1 <= reserve1 / 10, "UniswapV2: EXCESSIVE_IMBALANCE_TOKEN1");
+```
+* These checks prevent skim() from being called during
+* large temporary imbalances (ie those caused by flash loans), 
+* which were the root cause of the exploit.
+' By allowing only a small imbalance (10%), we block large manipulations like this.
+ */
+
 pragma solidity >=0.5.0;
 
 interface IUniswapV2Pair {
