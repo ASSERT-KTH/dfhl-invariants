@@ -3,6 +3,25 @@
 */
 
 // SPDX-License-Identifier: MIT
+
+/** @dev
+ * Vulnerability:
+ * -The unstake(uint256 stakeIndex) function did not check if the stake was already unstaked
+ * which allowed attackers to call unstake() multiple times on the same stake
+ * which led to repeated withdrawals
+
+ * - The line stakes[msg.sender][stakeIndex].unstaked = true;
+ * was placed after the transfer logic started
+ * so, an attacker could call unstake(0), get tokens,
+ * and call it again before anything blocked them.
+ *
+ * Patch:
+ * - Added a require() check at the start of unstake()
+ * require(!currentStake.unstaked, "Stake has already been unstaked!");
+ * which reverts if someone tries to unstake twice.
+ */
+
+
 pragma solidity ^0.8.17;
 
 /// @title Jok In The Box Staking
