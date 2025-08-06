@@ -1,3 +1,17 @@
+     /** @dev
+     ** Vulnerability: price manuipulation
+     In Yearn v1 vaults, the `earn()` function could be called by anyone.
+     This allowed an attacker to: manipulate the Curve 3pool to create an unfavorable exchange rate.
+     call `earn()` to push vault funds into the strategy (Curve) at that bad rate, and
+     rebalance the pool and withdraw funds at a profit.
+     Since the vault blindly deposited funds without checking price conditions,
+     this resulted in value loss for the vault
+     * 
+     **Patch:
+     Restrict `earn()` access to only the `governance` address to prevent public abuse.
+    require(msg.sender == governance, "only governance can call earn()");
+    */
+
 pragma solidity ^0.5.16;
 
 interface IERC20 {
