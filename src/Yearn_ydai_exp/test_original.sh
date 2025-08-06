@@ -8,7 +8,7 @@ echo "Storing memory layout of the originale contract..."
 forge inspect src/Yearn_ydai_exp/yVault.sol:yVault storageLayout > src/Yearn_ydai_exp/memoryLayout_original.txt
 
 # 1. Compile and extract deployed bytecode for the original contract
-echo "Extracting deployed bytecode from GROK..."
+echo "Extracting deployed bytecode from yVault..."
 forge inspect src/Yearn_ydai_exp/yVault.sol:yVault deployedBytecode > src/Yearn_ydai_exp/original.hex
 
 # 2. Convert hex to raw binary
