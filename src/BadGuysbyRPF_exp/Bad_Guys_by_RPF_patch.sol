@@ -1,5 +1,28 @@
 // SPDX-License-Identifier: MIT
 
+
+/** @dev
+  Vulnerability: Bad Guys by RPF is a Business Logic Flaw Exploit 
+
+  The WhiteListMint function had a missing check for "chosenAmount".
+  This allowed attackers to pass in large number as the chosenAmount 
+  during their first mint transaction. 
+
+  the only validation was `_numberMinted(msg.sender) < 1`, 
+  the attacker could bypass the intended 1 NFT per address restriction 
+  by minting multiple NFTs in one go.
+
+  
+  Patch:
+  - Added a require condition:
+    `require(_numberMinted(msg.sender) + chosenAmount <= 1, "Mint limit exceeded");`
+
+  This makes sure that the total NFTs minted by an address (past + current) 
+  never exceeds 1
+ */
+
+
+
 pragma solidity 0.8.7;
 
 
@@ -1185,7 +1208,7 @@ contract Bad_Guys_by_RPF_patch is ERC721A, Ownable {
 
     function WhiteListMint(bytes32[] calldata _merkleProof, uint256 chosenAmount)
         public
-    {
+    {   // this doesn't check how many they were trying to mint in the first try
         //require(_numberMinted(msg.sender)<1, "Already Claimed");
         require(isPaused == false, "turn on minting");
         require(
