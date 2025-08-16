@@ -4,11 +4,11 @@ set -e
 
 
 # Store the memory layout of the original contract
-echo "Storing memory layout of the originaled contract..."
+echo "Storing memory layout of the original contract..."
 forge inspect src/BadGuysbyRPF_exp/Bad_Guys_by_RPF.sol:Bad_Guys_by_RPF storageLayout > src/BadGuysbyRPF_exp/memoryLayout_original.txt
 
 # 1. Compile and extract deployed bytecode for the original contract
-echo "Extracting deployed bytecode from GROK..."
+echo "Extracting deployed bytecode from Bad_Guys_by_RPF..."
 forge inspect src/BadGuysbyRPF_exp/Bad_Guys_by_RPF.sol:Bad_Guys_by_RPF deployedBytecode > src/BadGuysbyRPF_exp/original.hex
 
 # 2. Convert hex to raw binary

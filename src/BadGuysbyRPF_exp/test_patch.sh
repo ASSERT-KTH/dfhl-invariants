@@ -8,7 +8,7 @@ echo "Storing memory layout of the patched contract..."
 forge inspect src/BadGuysbyRPF_exp/Bad_Guys_by_RPF_patch.sol:Bad_Guys_by_RPF_patch storageLayout > src/BadGuysbyRPF_exp/memoryLayout_patch.txt
 
 # 1. Compile and extract deployed bytecode for the patch contract
-echo "Extracting deployed bytecode from GROK..."
+echo "Extracting deployed bytecode from Bad_Guys_by_RPF_patch..."
 forge inspect src/BadGuysbyRPF_exp/Bad_Guys_by_RPF_patch.sol:Bad_Guys_by_RPF_patch deployedBytecode > src/BadGuysbyRPF_exp/patch.hex
 
 # 2. Convert hex to raw binary
