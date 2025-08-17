@@ -7,6 +7,22 @@
 
 // OpenZeppelin Contracts (last updated v4.6.0) (utils/math/SafeMath.sol)
 
+/**@dev
+*Vulnerability:
+Double claimEarned, Each time the claimEarned function is called,
+the code iterates through all the stakes and accumulates the calculated _earned amount.
+However, after calculating the rewards, the already calculated rewards are not marked as claimed. 
+As a result, the next time claimEarned is called,
+it will recalculate those already claimed rewards, allowing users to claim rewards multiple times.
+
+*Patch:
+Adds a require statement to ensure rewards for a stake
+ can only be claimed once per staking period.
+ _staking.stakeAt is updated after claiming to mark that
+ rewards have been claimed. 
+`require(block.timestamp > _staking.stakeAt, "Rewards already claimed");`
+ */
+
 pragma solidity ^0.8.0;
 
 // CAUTION
