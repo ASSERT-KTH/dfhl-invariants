@@ -6,6 +6,13 @@
 
 // File: @openzeppelin/contracts/token/ERC20/IERC20.sol
 
+/**@dev
+* Vulnerability: The root cause of this incident is the ERC777 token 
+reentrancy which allows attacker to use old totalSushi and updated totalShares for mint.
+
+*Patch:
+Added reentrancy guard to the enter function to prevent ERC777 reentrancy attacks.
+*/
 
 
 pragma solidity ^0.6.0;
