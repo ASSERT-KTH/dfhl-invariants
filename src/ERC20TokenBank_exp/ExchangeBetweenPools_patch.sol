@@ -185,7 +185,7 @@ contract PriceInterface{
 }
 
 
-contract ExchangeBetweenPools_original is Ownable{
+contract ExchangeBetweenPools is Ownable{
 
   using SafeERC20 for IERC20;
   string public note;
@@ -238,17 +238,17 @@ contract ExchangeBetweenPools_original is Ownable{
     curve.exchange_underlying(1, 2, camount, 0);
 
     uint256 namount = usdt.balanceOf(address(this));
+    require(namount >= (camount * 995) / 1000, "slippage too high");
     usdt.safeTransfer(to_bank, namount);
 
     return true;
   }
 
 }
-
 contract ExchangeBetweenPoolsFactory {
   event NewExchangeBetweenPools(address addr);
   function createExchangeBetweenPools(address from_bank, address to_bank, uint256 minimum_amount) public returns(address){
-    ExchangeBetweenPools_original addr = new ExchangeBetweenPools_original(from_bank, to_bank, minimum_amount);
+    ExchangeBetweenPools addr = new ExchangeBetweenPools(from_bank, to_bank, minimum_amount);
 
     emit NewExchangeBetweenPools(address(addr));
     addr.transferOwnership(msg.sender);

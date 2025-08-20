@@ -5,11 +5,11 @@ set -e
 
 # Store the memory layout of the original contract
 echo "Storing memory layout of the original contract..."
-forge inspect --use 0.5.17 src/ERC20TokenBank_exp/ExchangeBetweenPools.sol:ExchangeBetweenPools storageLayout > src/ERC20TokenBank_exp/memoryLayout_original.txt
+forge inspect --use 0.5.17 src/ERC20TokenBank_exp/ExchangeBetweenPools.sol:ExchangeBetweenPools_original storageLayout > src/ERC20TokenBank_exp/memoryLayout_original.txt
 
 # 1. Compile and extract deployed bytecode for the original contract
 echo "Extracting deployed bytecode from ExchangeBetweenPools..."
-forge inspect --use 0.5.17 src/ERC20TokenBank_exp/ExchangeBetweenPools.sol:ExchangeBetweenPools deployedBytecode > src/ERC20TokenBank_exp/original.hex
+forge inspect --use 0.5.17 src/ERC20TokenBank_exp/ExchangeBetweenPools.sol:ExchangeBetweenPools_original deployedBytecode > src/ERC20TokenBank_exp/original.hex
 
 # 2. Convert hex to raw binary
 echo "Converting original.hex to original.bin..."
