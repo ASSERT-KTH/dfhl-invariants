@@ -120,7 +120,7 @@ contract YVCrv3CryptoFeed_patch is IFeed {
     
         uint256 crvLPTokenPrice = (crvPoolBtcVal + crvPoolWethVal + crvPoolUsdtVal) * 1e18 / crv3CryptoLPToken.totalSupply();
     
-        uint256 vpUsd = (CRV3CRYPTO.get_virtual_price() * uint256(USDTFeed.latestAnswer())) / 1e8; // 1e18 USD/LP
+        uint256 vpUsd = (CRV3CRYPTO.get_virtual_price() * uint256(USDTFeed.latestAnswer())) / 1e8;
         uint256 upper = (vpUsd * 110) / 100;
         uint256 lower = (vpUsd * 90) / 100;
         require(crvLPTokenPrice >= lower && crvLPTokenPrice <= upper, "LP price deviates from Curve VP");
