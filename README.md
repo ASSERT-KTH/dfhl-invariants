@@ -70,17 +70,17 @@ cd dfhl-invariants
 **Run tests for the original contract:** 
 ```bash
 # Make the test script executable
-chmod +x src/<ExploitName>/test_original.sh
+chmod +x src/<ExploitName_exp>/test_original.sh
 
 # Run the test
-./src/<ExploitName>/test_original.sh
+./src/<ExploitName_exp>/test_original.sh
 ```
 
 **Run tests for the patched contract:**
 ```bash
 # Make the test script executable
-chmod +x src/<ExploitName>/test_patch.sh
+chmod +x src/<ExploitName_exp>/test_patch.sh
 
 # Run the test
-./src/<ExploitName>/test_patch.sh
+./src/<ExploitName_exp>/test_patch.sh
 ```
