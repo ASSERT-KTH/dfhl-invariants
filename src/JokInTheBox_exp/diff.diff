@@ -1,0 +1,49 @@
+diff --git a/src/JokInTheBox_exp/JokInTheBoxStaking.sol b/src/JokInTheBox_exp/JokInTheBoxStaking_patch.sol
+index 51e5637..0a28b1f 100644
+--- a/src/JokInTheBox_exp/JokInTheBoxStaking.sol
++++ b/src/JokInTheBox_exp/JokInTheBoxStaking_patch.sol
+@@ -3,6 +3,25 @@
+ */
+ 
+ // SPDX-License-Identifier: MIT
++
++/** @dev
++ * Vulnerability:
++ * -The unstake(uint256 stakeIndex) function did not check if the stake was already unstaked
++ * which allowed attackers to call unstake() multiple times on the same stake
++ * which led to repeated withdrawals
++
++ * - The line stakes[msg.sender][stakeIndex].unstaked = true;
++ * was placed after the transfer logic started
++ * so, an attacker could call unstake(0), get tokens,
++ * and call it again before anything blocked them.
++ *
++ * Patch:
++ * - Added a require() check at the start of unstake()
++ * require(!currentStake.unstaked, "Stake has already been unstaked!");
++ * which reverts if someone tries to unstake twice.
++ */
++
++
+ pragma solidity ^0.8.17;
+ 
+ /// @title Jok In The Box Staking
+@@ -219,7 +238,7 @@ interface IERC20 {
+  * @title JokInTheBoxStaking
+  * @dev A smart contract for staking JOK tokens with additional features such as lock periods, affiliate commissions, and withdrawals in ETH.
+  */
+-contract JokInTheBoxStaking_original is Ownable {
++contract JokInTheBoxStaking is Ownable {
+ 
+     // Struct to store deposit information
+     struct DepositInfo {
+@@ -418,6 +437,9 @@ contract JokInTheBoxStaking_original is Ownable {
+         require(stakeIndex < stakes[msg.sender].length, "Invalid stake index!");
+         Stake memory currentStake = stakes[msg.sender][stakeIndex];
+ 
++
++        require(!currentStake.unstaked, "Stake has already been unstaked!");
++
+         uint256 currentDay = getCurrentDay();
+ 
+         require(currentDay > currentStake.stakedDay + currentStake.lockPeriod, "Lock period has not finalized!");
