@@ -1,0 +1,44 @@
+diff --git a/src/SmartMesh_exp/SMT.sol b/src/SmartMesh_exp/SMT_patch.sol
+index d5b167a..35016f4 100644
+--- a/src/SmartMesh_exp/SMT.sol
++++ b/src/SmartMesh_exp/SMT_patch.sol
+@@ -4,6 +4,18 @@
+ 
+ // Abstract contract for the full ERC 20 Token standard
+ // https://github.com/ethereum/EIPs/issues/20
++
++/** Patch
++Added
++uint256 total = _feeSmt + _value;
++require(total >= _feeSmt && total >= _value);
++in the tranferProxy function
++Prevents integer overflow when adding _feeSmt and _value,
++which could let attackers bypass the balance check
++ */
++
++
++
+ pragma solidity ^0.4.15;
+ 
+ contract Token {
+@@ -173,7 +185,7 @@ contract StandardToken is Token,Controlled {
+     mapping (address => mapping (address => uint256)) allowed;
+ }
+ 
+-contract SMT is StandardToken {
++contract SMT_patch is StandardToken {
+ 
+     function () public {
+         revert();
+@@ -207,7 +219,10 @@ contract SMT is StandardToken {
+     function transferProxy(address _from, address _to, uint256 _value, uint256 _feeSmt,
+         uint8 _v,bytes32 _r, bytes32 _s) public transferAllowed(_from) returns (bool){
+ 
+-        if(balances[_from] < _feeSmt + _value) revert();
++        //if(balances[_from] < _feeSmt + _value) revert();
++        uint256 total = _feeSmt + _value;
++        require(total >= _feeSmt && total >= _value, "Overflow: fee + value exceeds uint256");
++
+ 
+         uint256 nonce = nonces[_from];
+         bytes32 h = keccak256(_from,_to,_value,_feeSmt,nonce);
