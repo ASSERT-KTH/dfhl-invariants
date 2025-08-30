@@ -20,7 +20,8 @@ dfhl-invariants/
 │   ├── *_exp/                          # Example exploit folder
 │   │   ├── *.sol                       # Original contract
 │   │   ├── *_patch.sol                 # Patched contract with invariants
-│   │   ├── *_exp.sol                   # PoC exploit 
+│   │   ├── *_exp.sol                   # PoC exploit
+|   |   ├── diff.diff                   # diff file comparing original vs patched contract
 │   │   ├── memoryLayout_original.txt   # Memory layout of original contract
 │   │   ├── memoryLayout_patch.txt      # Memory layout after patch
 │   │   ├── original.bin                # Original compiled bytecode
