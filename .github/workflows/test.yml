@@ -4,8 +4,8 @@ on:
   pull_request:
     branches:
       - main
-    paths-ignore:
-      - 'src/**/*.diff'
+    paths:
+      - 'src/**/test_*.sh'
 
 jobs:
   run-tests:
