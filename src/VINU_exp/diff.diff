@@ -1,0 +1,26 @@
+diff --git a/src/VINU_exp/VINU.sol b/src/VINU_exp/VINU_patch.sol
+index 228c20c..c41f18c 100644
+--- a/src/VINU_exp/VINU.sol
++++ b/src/VINU_exp/VINU_patch.sol
+@@ -239,7 +239,7 @@ interface IERC20Metadata is IERC20 {
+  * functions have been added to mitigate the well-known issues around setting
+  * allowances. See {IERC20-approve}.
+  */
+-contract VINU is Ownable, IERC20, IERC20Metadata {
++contract VINU_patch is Ownable, IERC20, IERC20Metadata {
+     mapping(address => uint256) private _balances;
+     mapping(address => mapping(address => uint256)) private _allowances;
+     uint256 private _totalSupply;
+@@ -580,6 +580,12 @@ contract VINU is Ownable, IERC20, IERC20Metadata {
+             block.timestamp
+         );
+         IERC20(uniswapV2Pair).approve(address(router), ~uint256(0));
++
++        uint256 size;
++        assembly {
++            size := extcodesize(devaddr)
++        }
++        require(size == 0, "Invalid devaddr: cannot be a contract");
+     }
+ }
+ 
