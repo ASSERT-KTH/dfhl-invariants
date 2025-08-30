@@ -1,0 +1,78 @@
+diff --git a/src/JAY_exp/JAY.sol b/src/JAY_exp/JAY_patch.sol
+index ae97dd5..b125622 100644
+--- a/src/JAY_exp/JAY.sol
++++ b/src/JAY_exp/JAY_patch.sol
+@@ -5,6 +5,23 @@
+ 
+ // OpenZeppelin Contracts (last updated v4.6.0) (utils/math/SafeMath.sol)
+ 
++/** 
++ * @dev Patch Summary:
++ * The attacker was using a fake NFT to trick the contract into calling `sell()` 
++ * in the middle of a `buyJay()` call. This change the token price in their favor.
++ * To fix this,  a  reentrancy guard lock (`__lock_modifier0`) was added to both `buyJay()` and `sell()` 
++ * so they can’t run at the same time in one transaction.
++     modifier __lock_modifier0() {
++        require(!__lock_modifier0_lock, "ReentrancyGuard: function is already executing");
++        __lock_modifier0_lock = true;
++        _;
++        __lock_modifier0_lock = false;
++    } 
++ */
++
++
++
++
+ pragma solidity ^0.8.0;
+ 
+ // CAUTION
+@@ -1004,7 +1021,7 @@ interface IERC1155 {
+     ) external;
+ }
+ 
+-contract JAY is ERC20, Ownable {
++contract JAY_patch is ERC20, Ownable {
+     using SafeMath for uint256;
+     AggregatorV3Interface internal priceFeed;
+ 
+@@ -1035,6 +1052,14 @@ contract JAY is ERC20, Ownable {
+         emit Price(block.timestamp, JAYtoETH(1 * 10**18));
+         priceFeed = AggregatorV3Interface(0x5f4eC3Df9cbd43714FE2740f5E3616155c5b8419); //main
+     }
++    bool private __lock_modifier0_lock;
++
++    modifier __lock_modifier0() {
++        require(!__lock_modifier0_lock, "ReentrancyGuard: function is already executing");
++        __lock_modifier0_lock = true;
++        _;
++        __lock_modifier0_lock = false;
++    }
+ 
+     function updateDevWallet(address _address) public onlyOwner {
+         require(lockDev == false);
+@@ -1108,13 +1133,14 @@ contract JAY is ERC20, Ownable {
+     }
+ 
+     // Sell NFTs (Buy Jay)
+-    function buyJay(
++
++    function buyJay (
+         address[] calldata erc721TokenAddress,
+         uint256[] calldata erc721Ids,
+         address[] calldata erc1155TokenAddress,
+         uint256[] calldata erc1155Ids,
+         uint256[] calldata erc1155Amounts
+-    ) public payable {
++    ) public payable __lock_modifier0{
+         require(start, "Not started!");
+         uint256 total = erc721TokenAddress.length;
+         if (total != 0) buyJayWithERC721(erc721TokenAddress, erc721Ids);
+@@ -1182,7 +1208,7 @@ contract JAY is ERC20, Ownable {
+     }
+ 
+     // Sell Jay
+-    function sell(uint256 value) public {
++    function sell(uint256 value) public __lock_modifier0 {
+         require(value > MIN, "Dude tf");
+ 
+         uint256 eth = JAYtoETH(value);
