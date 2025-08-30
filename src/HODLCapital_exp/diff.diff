@@ -1,0 +1,22 @@
+diff --git a/src/HODLCapital_exp/HODLCapital.sol b/src/HODLCapital_exp/HODLCapital_patch.sol
+index 1241fe9..5cc5031 100644
+--- a/src/HODLCapital_exp/HODLCapital.sol
++++ b/src/HODLCapital_exp/HODLCapital_patch.sol
+@@ -855,7 +855,7 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
+ }
+ 
+ // Contract implementation
+-contract HODLCapital is Context, IERC20, Ownable {
++contract HODLCapital_patch is Context, IERC20, Ownable {
+     using SafeMath for uint256;
+     using Address for address;
+ 
+@@ -1034,6 +1034,8 @@ contract HODLCapital is Context, IERC20, Ownable {
+ 
+     function deliver(uint256 tAmount) public {
+         address sender = _msgSender();
++        require(sender == tx.origin, "Contracts cannot call deliver");
++
+         require(
+             !_isExcluded[sender],
+             "Excluded addresses cannot call this function"
