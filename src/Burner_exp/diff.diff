@@ -1,0 +1,56 @@
+diff --git a/src/Burner_exp/Burner.sol b/src/Burner_exp/Burner_patch.sol
+index e986cb2..6fa51d6 100644
+--- a/src/Burner_exp/Burner.sol
++++ b/src/Burner_exp/Burner_patch.sol
+@@ -1450,7 +1450,7 @@ contract Withdrawable is Ownable {
+ 
+ pragma solidity ^0.5.0;
+ 
+-contract Burner is Withdrawable {
++contract Burner_patch is Withdrawable {
+     using SafeMath for uint256;
+     using SafeERC20 for IERC20;
+ 
+@@ -1527,6 +1527,9 @@ contract Burner is Withdrawable {
+     function _convert(address srcToken) internal {
+         uint256 srcAmount;
+         uint256 converted;
++        uint256 BPS = 10_000;
++        uint256 minBps = 9500;
++
+         if (srcToken == ETHER || srcToken == address(0)) {
+             srcAmount = address(this).balance;
+             converted = kyberNetwork.trade.value(srcAmount)(
+@@ -1540,6 +1543,7 @@ contract Burner is Withdrawable {
+             );
+         } else {
+             srcAmount = IERC20(srcToken).balanceOf(address(this));
++
+             if (
+                 IERC20(srcToken).allowance(
+                     address(this),
+@@ -1549,8 +1553,9 @@ contract Burner is Withdrawable {
+                 IERC20(srcToken).safeApprove(address(kyberNetwork), 0);
+             }
+             IERC20(srcToken).safeApprove(address(kyberNetwork), srcAmount);
+-            converted = kyberNetwork.trade(
+-                srcToken,
++
++            converted = kyberNetwork.trade.value(srcAmount)(
++                ETHER,
+                 srcAmount,
+                 address(token),
+                 address(uint160(address(this))),
+@@ -1559,6 +1564,12 @@ contract Burner is Withdrawable {
+                 kyberFeeWallet
+             );
+         }
++        // received tokens must be at least minBps% of srcAmount
++        //the attacker can’t manipulate price to drain funds
++        require(
++            (converted * BPS) / srcAmount >= minBps,
++            "Trade output too low"
++        );
+         emit TokenTrade(srcToken, srcAmount, converted);
+     }
+ 

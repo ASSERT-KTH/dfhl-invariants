@@ -1,0 +1,57 @@
+diff --git a/src/pSeudoEth_exp/UniswapV2Pair.sol b/src/pSeudoEth_exp/UniswapV2Pair_patch.sol
+index 37386bf..10258aa 100644
+--- a/src/pSeudoEth_exp/UniswapV2Pair.sol
++++ b/src/pSeudoEth_exp/UniswapV2Pair_patch.sol
+@@ -1,5 +1,27 @@
+ // File: contracts/interfaces/IUniswapV2Pair.sol
+ 
++/**@dev
++* Vulnerability
++In the exploit, the attacker temporarily increases the balance using a flash loan.
++That makes it look like there’s extra money
++Then they call skim() to steal it.
++
++* Patch
++* added two require() checks to the `skim()` function 
++* to ensure that the current token balances are not
++* more than 10% greater than the internal reserves.
++````
++        uint balance0 = IERC20(_token0).balanceOf(address(this));
++        uint balance1 = IERC20(_token1).balanceOf(address(this));
++        require(balance0 - reserve0 <= reserve0 / 10, "UniswapV2: EXCESSIVE_IMBALANCE_TOKEN0");
++        require(balance1 - reserve1 <= reserve1 / 10, "UniswapV2: EXCESSIVE_IMBALANCE_TOKEN1");
++```
++* These checks prevent skim() from being called during
++* large temporary imbalances (ie those caused by flash loans), 
++* which were the root cause of the exploit.
++' By allowing only a small imbalance (10%), we block large manipulations like this.
++ */
++
+ pragma solidity >=0.5.0;
+ 
+ interface IUniswapV2Pair {
+@@ -303,7 +325,7 @@ pragma solidity =0.5.16;
+ 
+ 
+ 
+-contract UniswapV2Pair_original is IUniswapV2Pair, UniswapV2ERC20 {
++contract UniswapV2Pair_patch is IUniswapV2Pair, UniswapV2ERC20 {
+     using SafeMath  for uint;
+     using UQ112x112 for uint224;
+ 
+@@ -485,6 +507,15 @@ contract UniswapV2Pair_original is IUniswapV2Pair, UniswapV2ERC20 {
+     function skim(address to) external lock {
+         address _token0 = token0; // gas savings
+         address _token1 = token1; // gas savings
++        
++        uint balance0 = IERC20(_token0).balanceOf(address(this));
++        uint balance1 = IERC20(_token1).balanceOf(address(this));
++        // require(balance0 >= reserve0, "UniswapV2: BALANCE0_LESS_THAN_RESERVE");
++        // require(balance1 >= reserve1, "UniswapV2: BALANCE1_LESS_THAN_RESERVE");
++        require(balance0 - reserve0 <= reserve0 / 10, "UniswapV2: EXCESSIVE_IMBALANCE_TOKEN0");
++        require(balance1 - reserve1 <= reserve1 / 10, "UniswapV2: EXCESSIVE_IMBALANCE_TOKEN1");
++
++
+         _safeTransfer(_token0, to, IERC20(_token0).balanceOf(address(this)).sub(reserve0));
+         _safeTransfer(_token1, to, IERC20(_token1).balanceOf(address(this)).sub(reserve1));
+     }

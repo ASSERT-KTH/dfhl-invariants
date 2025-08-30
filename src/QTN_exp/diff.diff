@@ -1,0 +1,62 @@
+diff --git a/src/QTN_exp/QUATERNION.sol b/src/QTN_exp/QUATERNION_patch.sol
+index d127c60..1b2081b 100644
+--- a/src/QTN_exp/QUATERNION.sol
++++ b/src/QTN_exp/QUATERNION_patch.sol
+@@ -1,5 +1,31 @@
+ // SPDX-License-Identifier: Unlicensed
+ 
++/** @dev 
++** Vulnerability 
++In function: _transfer()
++The code checks: if (from == uniswapV2Pair) to decide if a Uniswap sell happened.
++But Uniswap's 'skim()' function can also send tokens from the pair even when no real trade happened.
++Attackers use this to trigger fake sells and call rebasePlus(), which increases token supply unfairly.
++
++Steps of the attack:
++1. Attacker sends X QTN to uniswapV2Pair
++2. Calls uniswapV2Pair.skim() to move QTN to their contract
++3. Token thinks it's a valid sale --> calls rebasePlus()
++4. Attacker ends up with more than X tokens (inflation)
++
++
++** Patch Summary 
++Added require to make sure the call comes from Uniswap Router
++in _transfer() function, inside the 'else' block where 'from == uniswapV2Pair'
++only real swaps can trigger a rebase:
++require(msg.sender == address(uniswapV2Router), "rebase denied, unauthorized caller (possible skim)");
++
++stops fake rebase triggers caused by skim(),
++and ensure only legit swaps trigger inflation.
++*/
++
++
++
+ pragma solidity ^0.6.0;
+ 
+ abstract contract Context {
+@@ -170,7 +196,7 @@ interface IUniswapV2Router02 {
+     ) external payable returns (uint amountToken, uint amountETH, uint liquidity);
+ }
+ 
+-contract QUATERNION_original is Context, IERC20, Ownable {
++contract QUATERNION is Context, IERC20, Ownable {
+     using SafeMath for uint256;
+     using Address for address;
+     
+@@ -283,13 +309,15 @@ contract QUATERNION_original is Context, IERC20, Ownable {
+             if(from != uniswapV2Pair) {
+                 require(!blacklist[from] && !blacklist[to], 'ERC20: the transaction was blocked.');
+                 require(_buyInfo[from] == 0 || _buyInfo[from].add(_timeLimitFromLastBuy) < now, "ERC20: Tx not allowed yet.");
+-                
+                 if(to != address(uniswapV2Router) && to != uniswapV2Pair)
+                     _tokenTransfer(from, to, amount, 0);
+                 else
+                     _tokenTransfer(from, to, amount, 0);
+             }
+             else {
++                // inv
++                require(msg.sender == address(uniswapV2Router), "rebase denied, unauthorized caller (possible skim)");
++
+                 if(!_live)
+                     blacklist[to] = true;
+                 

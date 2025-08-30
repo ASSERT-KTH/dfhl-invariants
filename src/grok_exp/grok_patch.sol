@@ -289,28 +289,7 @@ contract GROK_patch is Context, IERC20, Ownable {
         );
     }
 
-    // function swapTokensForEth(uint256 tokenAmount) private lockTheSwap {
-    //     address[] memory path = new address[](2);
-    //     path[0] = address(this);
-    //     path[1] = uniswapV2Router.WETH();
-
-    //     _approve(address(this), address(uniswapV2Router), tokenAmount);
-
-    //     uint256 initialETHBalance = address(this).balance;
-
-    //     uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(
-    //         tokenAmount,
-    //         1, //  Accept at least 1 wei, prevents complete draining
-    //         path,
-    //         address(this),
-    //         block.timestamp
-    //     );
-
-    //     uint256 receivedETH = address(this).balance - initialETHBalance;
-    //     require(receivedETH > 0, "Swap failed: no ETH received");
-    // }
-
-
+  
 
     
 

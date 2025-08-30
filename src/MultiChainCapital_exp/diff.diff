@@ -1,0 +1,34 @@
+diff --git a/src/MultiChainCapital_exp/MultiChainCapital.sol b/src/MultiChainCapital_exp/MultiChainCapital_patch.sol
+index 9971df7..1594b0d 100644
+--- a/src/MultiChainCapital_exp/MultiChainCapital.sol
++++ b/src/MultiChainCapital_exp/MultiChainCapital_patch.sol
+@@ -821,7 +821,7 @@ interface IUniswapV2Router02 is IUniswapV2Router01 {
+ }
+ 
+ // Contract implementation
+-contract MultiChainCapital is Context, IERC20, Ownable {
++contract MultiChainCapital_patch is Context, IERC20, Ownable {
+     using SafeMath for uint256;
+     using Address for address;
+ 
+@@ -1000,12 +1000,18 @@ contract MultiChainCapital is Context, IERC20, Ownable {
+ 
+     function deliver(uint256 tAmount) public {
+         address sender = _msgSender();
++        //require(!_isExcluded[sender], "Excluded addresses cannot call this function");
++        /**
++         * _isExcluded[sender] prevents any excluded addresses from calling deliver.
++         *         sender != uniswapV2Pair prevents the Uniswap pair from calling deliver
++         */
+         require(
+-            !_isExcluded[sender],
+-            "Excluded addresses cannot call this function"
++            !_isExcluded[sender] && sender != uniswapV2Pair,
++            "Excluded addresses and pairs cannot call this function"
+         );
+         (uint256 rAmount, , , , , ) = _getValues(tAmount);
+         _rOwned[sender] = _rOwned[sender].sub(rAmount);
++
+         _rTotal = _rTotal.sub(rAmount);
+         _tFeeTotal = _tFeeTotal.add(tAmount);
+     }

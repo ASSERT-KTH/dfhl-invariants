@@ -1,0 +1,72 @@
+diff --git a/src/BadGuysbyRPF_exp/Bad_Guys_by_RPF.sol b/src/BadGuysbyRPF_exp/Bad_Guys_by_RPF_patch.sol
+index 5616965..5b52e6c 100644
+--- a/src/BadGuysbyRPF_exp/Bad_Guys_by_RPF.sol
++++ b/src/BadGuysbyRPF_exp/Bad_Guys_by_RPF_patch.sol
+@@ -1,5 +1,28 @@
+ // SPDX-License-Identifier: MIT
+ 
++
++/** @dev
++  Vulnerability: Bad Guys by RPF is a Business Logic Flaw Exploit 
++
++  The WhiteListMint function had a missing check for "chosenAmount".
++  This allowed attackers to pass in large number as the chosenAmount 
++  during their first mint transaction. 
++
++  the only validation was `_numberMinted(msg.sender) < 1`, 
++  the attacker could bypass the intended 1 NFT per address restriction 
++  by minting multiple NFTs in one go.
++
++  
++  Patch:
++  - Added a require condition:
++    `require(_numberMinted(msg.sender) + chosenAmount <= 1, "Mint limit exceeded");`
++
++  This makes sure that the total NFTs minted by an address (past + current) 
++  never exceeds 1
++ */
++
++
++
+ pragma solidity 0.8.7;
+ 
+ 
+@@ -1120,7 +1143,7 @@ library MerkleProof {
+     }
+ }
+ 
+-contract Bad_Guys_by_RPF is ERC721A, Ownable {
++contract Bad_Guys_by_RPF_patch is ERC721A, Ownable {
+     // variables
+     using Strings for uint256;
+ 
+@@ -1185,13 +1208,16 @@ contract Bad_Guys_by_RPF is ERC721A, Ownable {
+ 
+     function WhiteListMint(bytes32[] calldata _merkleProof, uint256 chosenAmount)
+         public
+-    {
+-        require(_numberMinted(msg.sender)<1, "Already Claimed");
++    {   // this doesn't check how many they were trying to mint in the first try
++        //require(_numberMinted(msg.sender)<1, "Already Claimed");
+         require(isPaused == false, "turn on minting");
+         require(
+             chosenAmount > 0,
+             "Number Of Tokens Can Not Be Less Than Or Equal To 0"
+         );
++
++        require(_numberMinted(msg.sender) + chosenAmount <= 1, "Mint limit exceeded");
++
+         require(
+             totalSupply() + chosenAmount <= maxsupply - reserve,
+             "all tokens have been minted"
+@@ -1204,6 +1230,10 @@ contract Bad_Guys_by_RPF is ERC721A, Ownable {
+         _safeMint(msg.sender, chosenAmount);
+     }
+ 
++
++
++
++
+     // setting up the reaveal functionality
+ 
+     function tokenURI(uint256 tokenId)

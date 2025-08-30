@@ -1,0 +1,29 @@
+diff --git a/src/InverseFinance_exp/YVCrv3CryptoFeed.sol b/src/InverseFinance_exp/YVCrv3CryptoFeed_patch.sol
+index 9f8855f..6070e61 100644
+--- a/src/InverseFinance_exp/YVCrv3CryptoFeed.sol
++++ b/src/InverseFinance_exp/YVCrv3CryptoFeed_patch.sol
+@@ -106,7 +106,7 @@ interface IYearnVault {
+     function pricePerShare() external view returns (uint256 price);
+ }
+ 
+-contract YVCrv3CryptoFeed is IFeed {
++contract YVCrv3CryptoFeed_patch is IFeed {
+     ICurvePool public constant CRV3CRYPTO =
+         ICurvePool(0xD51a44d3FaE010294C616388b506AcdA1bfAAE46);
+     IYearnVault public constant vault =
+@@ -138,6 +138,15 @@ contract YVCrv3CryptoFeed is IFeed {
+             crvPoolWethVal +
+             crvPoolUsdtVal) * 1e18) / crv3CryptoLPToken.totalSupply();
+ 
++        uint256 vpUsd = (CRV3CRYPTO.get_virtual_price() *
++            uint256(USDTFeed.latestAnswer())) / 1e8;
++        uint256 upper = (vpUsd * 110) / 100;
++        uint256 lower = (vpUsd * 90) / 100;
++        require(
++            crvLPTokenPrice >= lower && crvLPTokenPrice <= upper,
++            "LP price deviates from Curve VP"
++        );
++
+         return (crvLPTokenPrice * vault.pricePerShare()) / 1e18;
+     }
+ 

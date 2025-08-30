@@ -1,0 +1,57 @@
+diff --git a/src/OMPxContract_exp/OMPxContract.sol b/src/OMPxContract_exp/OMPxContract_patch.sol
+index b20847e..b3612cb 100644
+--- a/src/OMPxContract_exp/OMPxContract.sol
++++ b/src/OMPxContract_exp/OMPxContract_patch.sol
+@@ -2,6 +2,15 @@
+  *Submitted for verification at Etherscan.io on 2018-04-10
+ */
+ 
++
++/**
++ * @dev Patch Summary:
++ * Added a `enforceCooldown` modifier to add a 30 second cooldown per user 
++ * in the `purchase` and `buyBack` functions. This prevents repeated calls in a 
++ * single transaction, mitigating flash loan attacks based on rapid price manipulation.
++ */
++
++
+ pragma solidity ^0.4.13;
+ 
+ library SafeMath {
+@@ -293,7 +302,7 @@ contract ERC20 is ERC20Basic {
+   event Approval(address indexed owner, address indexed spender, uint256 value);
+ }
+ 
+-contract OMPxContract is BasicToken, Haltable, Discountable, TransferStatistics {
++contract OMPxContract_patch is BasicToken, Haltable, Discountable, TransferStatistics {
+     using SafeMath for uint256;
+     using SafeERC20 for ERC20Basic;
+     using SafeERC20 for OMPxToken;
+@@ -373,9 +382,17 @@ contract OMPxContract is BasicToken, Haltable, Discountable, TransferStatistics
+     }
+ 
+ 
++    mapping(address => uint256) public lastInteractionTimestamp;
++    modifier enforceCooldown() {
++        require(block.timestamp >= lastInteractionTimestamp[msg.sender] + 30 seconds, "Cooldown active: please wait before performing another action.");
++        _;
++        lastInteractionTimestamp[msg.sender] = block.timestamp;
++    }
++
++
+     // Purchase tokens to user.
+     // Money back should happens if current price is lower, then expected
+-    function purchase(uint256 tokensToPurchase, uint256 maxPrice) public payable returns(uint256 tokensBought_) {
++    function purchase(uint256 tokensToPurchase, uint256 maxPrice) public payable enforceCooldown returns(uint256 tokensBought_) {
+         require(tokensToPurchase > 0);
+         require(msg.value > 0);
+         return purchaseSafe(tokensToPurchase, maxPrice);
+@@ -423,7 +440,7 @@ contract OMPxContract is BasicToken, Haltable, Discountable, TransferStatistics
+     }
+ 
+     // buyback tokens from user
+-    function buyBack(uint256 tokensToBuyBack, uint256 minPrice) public {
++    function buyBack(uint256 tokensToBuyBack, uint256 minPrice) public  enforceCooldown {
+         uint currentPrice = getBuyBackPrice(0);
+         require(currentPrice >= minPrice);
+         uint256 totalPrice = tokensToBuyBack.mul(currentPrice).div(1e18);
