@@ -1,0 +1,22 @@
+diff --git a/src/Anyswap_exp/AnyswapV4Router.sol b/src/Anyswap_exp/AnyswapV4Router_patch.sol
+index c58665d..452cc75 100644
+--- a/src/Anyswap_exp/AnyswapV4Router.sol
++++ b/src/Anyswap_exp/AnyswapV4Router_patch.sol
+@@ -307,7 +307,7 @@ interface IERC20 {
+     );
+ }
+ 
+-contract AnyswapV4Router_original {
++contract AnyswapV4Router_patch {
+     using SafeMathSushiswap for uint256;
+ 
+     address public immutable factory;
+@@ -463,6 +463,8 @@ contract AnyswapV4Router_original {
+         bytes32 s,
+         uint256 toChainID
+     ) external {
++        require(v == 27 || v == 28, "Router: bad v");
++
+         address _underlying = AnyswapV1ERC20(token).underlying();
+         IERC20(_underlying).permit(
+             from,
