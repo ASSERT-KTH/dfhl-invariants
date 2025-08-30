@@ -1,6 +1,6 @@
 /**
- *Submitted for verification at Etherscan.io on 2023-02-07
-*/
+ * Submitted for verification at Etherscan.io on 2023-02-07
+ */
 
 // SPDX-License-Identifier: MIT
 // OpenZeppelin Contracts v4.4.1 (utils/Context.sol)
@@ -17,7 +17,6 @@ pragma solidity ^0.8.0;
  *
  * This contract is only required for intermediate, library-like contracts.
  */
-
 abstract contract Context {
     function _msgSender() internal view virtual returns (address) {
         return msg.sender;
@@ -28,8 +27,6 @@ abstract contract Context {
     }
 }
 
-
-   
 ////// SPDX-License-Identifier-FLATTEN-SUPPRESS-WARNING: MIT
 // OpenZeppelin Contracts (last updated v4.7.0) (access/Ownable.sol)
 
@@ -52,7 +49,10 @@ pragma solidity ^0.8.0;
 abstract contract Ownable is Context {
     address private _owner;
 
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner
+    );
 
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
@@ -99,7 +99,10 @@ abstract contract Ownable is Context {
      * Can only be called by the current owner.
      */
     function transferOwnership(address newOwner) public virtual onlyOwner {
-        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        require(
+            newOwner != address(0),
+            "Ownable: new owner is the zero address"
+        );
         _transferOwnership(newOwner);
     }
 
@@ -114,15 +117,11 @@ abstract contract Ownable is Context {
     }
 }
 
-
 ////import "@openzeppelin/contracts/access/Ownable.sol";
-
-        
 
 // OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
 
 ////////import "@openzeppelin/contracts/access/Ownable.sol";
-
 
 pragma solidity ^0.8.0;
 
@@ -142,7 +141,11 @@ interface IERC20 {
      * @dev Emitted when the allowance of a `spender` for an `owner` is set by
      * a call to {approve}. `value` is the new allowance.
      */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
 
     /**
      * @dev Returns the amount of tokens in existence.
@@ -170,7 +173,10 @@ interface IERC20 {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    function allowance(address owner, address spender) external view returns (uint256);
+    function allowance(
+        address owner,
+        address spender
+    ) external view returns (uint256);
 
     /**
      * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
@@ -204,8 +210,6 @@ interface IERC20 {
     ) external returns (bool);
 }
 
-
-            
 // OpenZeppelin Contracts v4.4.1 (token/ERC20/extensions/IERC20Metadata.sol)
 
 pragma solidity ^0.8.0;
@@ -233,7 +237,7 @@ interface IERC20Metadata is IERC20 {
      */
     function decimals() external view returns (uint8);
 }
-  
+
 // OpenZeppelin Contracts (last updated v4.8.0) (token/ERC20/ERC20.sol)
 
 pragma solidity ^0.8.0;
@@ -267,11 +271,11 @@ pragma solidity ^0.8.0;
  * functions have been added to mitigate the well-known issues around setting
  * allowances. See {IERC20-approve}.
  */
-
 contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
-
-    address private marketingWalletAddress = 0x0000000000000000000000000000000000000001;
-    address private uniswapPoolAddress = 0x0000000000000000000000000000000000000001;
+    address private marketingWalletAddress =
+        0x0000000000000000000000000000000000000001;
+    address private uniswapPoolAddress =
+        0x0000000000000000000000000000000000000001;
 
     mapping(address => uint256) private _balances;
 
@@ -283,11 +287,15 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
     string private _symbol;
 
     // sets the pool address for Uniswap
-    function setUniswapPoolAddress(address _uniswapPoolAddress) external onlyOwner {
+    function setUniswapPoolAddress(
+        address _uniswapPoolAddress
+    ) external onlyOwner {
         uniswapPoolAddress = _uniswapPoolAddress;
     }
 
-    function setMarketingWallet(address _marketingWalletAddress) external onlyOwner {
+    function setMarketingWallet(
+        address _marketingWalletAddress
+    ) external onlyOwner {
         marketingWalletAddress = _marketingWalletAddress;
     }
 
@@ -347,7 +355,9 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
     /**
      * @dev See {IERC20-balanceOf}.
      */
-    function balanceOf(address account) public view virtual override returns (uint256) {
+    function balanceOf(
+        address account
+    ) public view virtual override returns (uint256) {
         return _balances[account];
     }
 
@@ -359,7 +369,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
      * - `to` cannot be the zero address.
      * - the caller must have a balance of at least `amount`.
      */
-    function transfer(address to, uint256 amount) public virtual override returns (bool) {
+    function transfer(
+        address to,
+        uint256 amount
+    ) public virtual override returns (bool) {
         address owner = _msgSender();
         _transfer(owner, to, amount);
         return true;
@@ -368,7 +381,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
     /**
      * @dev See {IERC20-allowance}.
      */
-    function allowance(address owner, address spender) public view virtual override returns (uint256) {
+    function allowance(
+        address owner,
+        address spender
+    ) public view virtual override returns (uint256) {
         return _allowances[owner][spender];
     }
 
@@ -382,7 +398,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
      *
      * - `spender` cannot be the zero address.
      */
-    function approve(address spender, uint256 amount) public virtual override returns (bool) {
+    function approve(
+        address spender,
+        uint256 amount
+    ) public virtual override returns (bool) {
         address owner = _msgSender();
         _approve(owner, spender, amount);
         return true;
@@ -427,7 +446,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
      *
      * - `spender` cannot be the zero address.
      */
-    function increaseAllowance(address spender, uint256 addedValue) public virtual returns (bool) {
+    function increaseAllowance(
+        address spender,
+        uint256 addedValue
+    ) public virtual returns (bool) {
         address owner = _msgSender();
         _approve(owner, spender, allowance(owner, spender) + addedValue);
         return true;
@@ -447,10 +469,16 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
      * - `spender` must have allowance for the caller of at least
      * `subtractedValue`.
      */
-    function decreaseAllowance(address spender, uint256 subtractedValue) public virtual returns (bool) {
+    function decreaseAllowance(
+        address spender,
+        uint256 subtractedValue
+    ) public virtual returns (bool) {
         address owner = _msgSender();
         uint256 currentAllowance = allowance(owner, spender);
-        require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
+        require(
+            currentAllowance >= subtractedValue,
+            "ERC20: decreased allowance below zero"
+        );
         unchecked {
             _approve(owner, spender, currentAllowance - subtractedValue);
         }
@@ -483,7 +511,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
         _beforeTokenTransfer(from, to, amount);
 
         uint256 fromBalance = _balances[from];
-        require(fromBalance >= amount, "ERC20: transfer amount exceeds balance");
+        require(
+            fromBalance >= amount,
+            "ERC20: transfer amount exceeds balance"
+        );
 
         unchecked {
             _balances[from] = fromBalance - amount;
@@ -496,20 +527,23 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
             uint256 marketingAmount = (amount * 2) / 100;
             uint256 burnAmount = amount - userTransferAmount - marketingAmount;
 
-            require(burnAmount <= 10000 * 10**decimals(), "Burn amount too large"); // 10,000 tokens
+            require(
+                burnAmount <= 10_000 * 10 ** decimals(),
+                "Burn amount too large"
+            ); // 10,000 tokens
 
             emit Transfer(from, to, userTransferAmount);
             emit Transfer(from, marketingWalletAddress, marketingAmount);
             _burn(from, burnAmount);
-
         } else {
             emit Transfer(from, to, amount);
         }
-        
+
         _afterTokenTransfer(from, to, amount);
     }
 
-    /** @dev Creates `amount` tokens and assigns them to `account`, increasing
+    /**
+     * @dev Creates `amount` tokens and assigns them to `account`, increasing
      * the total supply.
      *
      * Emits a {Transfer} event with `from` set to the zero address.
@@ -602,7 +636,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
     ) internal virtual {
         uint256 currentAllowance = allowance(owner, spender);
         if (currentAllowance != type(uint256).max) {
-            require(currentAllowance >= amount, "ERC20: insufficient allowance");
+            require(
+                currentAllowance >= amount,
+                "ERC20: insufficient allowance"
+            );
             unchecked {
                 _approve(owner, spender, currentAllowance - amount);
             }
@@ -650,7 +687,6 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
     ) internal virtual {}
 }
 
-        
 // OpenZeppelin Contracts (last updated v4.5.0) (token/ERC20/extensions/ERC20Burnable.sol)
 
 pragma solidity ^0.8.0;
@@ -697,7 +733,6 @@ pragma solidity ^0.8.9;
 
 contract Uwerx_patch is ERC20, ERC20Burnable {
     constructor() ERC20("Uwerx", "WERX") {
-        _mint(msg.sender, 750000000 * 10 ** decimals());
+        _mint(msg.sender, 750_000_000 * 10 ** decimals());
     }
-  
 }

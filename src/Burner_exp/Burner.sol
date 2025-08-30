@@ -1,10 +1,10 @@
 /**
- *Submitted for verification at Etherscan.io on 2020-06-18
-*/
+ * Submitted for verification at Etherscan.io on 2020-06-18
+ */
 
 /**
- *Submitted for verification at Etherscan.io on 2020-06-16
-*/
+ * Submitted for verification at Etherscan.io on 2020-06-16
+ */
 
 // File: openzeppelin-solidity/contracts/math/SafeMath.sol
 
@@ -142,7 +142,10 @@ interface IERC20 {
      *
      * Emits a `Transfer` event.
      */
-    function transfer(address recipient, uint256 amount) external returns (bool);
+    function transfer(
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
 
     /**
      * @dev Returns the remaining number of tokens that `spender` will be
@@ -151,7 +154,10 @@ interface IERC20 {
      *
      * This value changes when `approve` or `transferFrom` are called.
      */
-    function allowance(address owner, address spender) external view returns (uint256);
+    function allowance(
+        address owner,
+        address spender
+    ) external view returns (uint256);
 
     /**
      * @dev Sets `amount` as the allowance of `spender` over the caller's tokens.
@@ -178,7 +184,11 @@ interface IERC20 {
      *
      * Emits a `Transfer` event.
      */
-    function transferFrom(address sender, address recipient, uint256 amount) external returns (bool);
+    function transferFrom(
+        address sender,
+        address recipient,
+        uint256 amount
+    ) external returns (bool);
 
     /**
      * @dev Emitted when `value` tokens are moved from one account (`from`) to
@@ -192,7 +202,11 @@ interface IERC20 {
      * @dev Emitted when the allowance of a `spender` for an `owner` is set by
      * a call to `approve`. `value` is the new allowance.
      */
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
 }
 
 // File: openzeppelin-solidity/contracts/utils/Address.sol
@@ -220,7 +234,9 @@ library Address {
 
         uint256 size;
         // solhint-disable-next-line no-inline-assembly
-        assembly { size := extcodesize(account) }
+        assembly {
+            size := extcodesize(account)
+        }
         return size > 0;
     }
 }
@@ -228,9 +244,6 @@ library Address {
 // File: openzeppelin-solidity/contracts/token/ERC20/SafeERC20.sol
 
 pragma solidity ^0.5.0;
-
-
-
 
 /**
  * @title SafeERC20
@@ -246,32 +259,77 @@ library SafeERC20 {
     using Address for address;
 
     function safeTransfer(IERC20 token, address to, uint256 value) internal {
-        callOptionalReturn(token, abi.encodeWithSelector(token.transfer.selector, to, value));
+        callOptionalReturn(
+            token,
+            abi.encodeWithSelector(token.transfer.selector, to, value)
+        );
     }
 
-    function safeTransferFrom(IERC20 token, address from, address to, uint256 value) internal {
-        callOptionalReturn(token, abi.encodeWithSelector(token.transferFrom.selector, from, to, value));
+    function safeTransferFrom(
+        IERC20 token,
+        address from,
+        address to,
+        uint256 value
+    ) internal {
+        callOptionalReturn(
+            token,
+            abi.encodeWithSelector(token.transferFrom.selector, from, to, value)
+        );
     }
 
-    function safeApprove(IERC20 token, address spender, uint256 value) internal {
+    function safeApprove(
+        IERC20 token,
+        address spender,
+        uint256 value
+    ) internal {
         // safeApprove should only be called when setting an initial allowance,
         // or when resetting it to zero. To increase and decrease it, use
         // 'safeIncreaseAllowance' and 'safeDecreaseAllowance'
         // solhint-disable-next-line max-line-length
-        require((value == 0) || (token.allowance(address(this), spender) == 0),
+        require(
+            (value == 0) || (token.allowance(address(this), spender) == 0),
             "SafeERC20: approve from non-zero to non-zero allowance"
         );
-        callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, value));
+        callOptionalReturn(
+            token,
+            abi.encodeWithSelector(token.approve.selector, spender, value)
+        );
     }
 
-    function safeIncreaseAllowance(IERC20 token, address spender, uint256 value) internal {
-        uint256 newAllowance = token.allowance(address(this), spender).add(value);
-        callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, newAllowance));
+    function safeIncreaseAllowance(
+        IERC20 token,
+        address spender,
+        uint256 value
+    ) internal {
+        uint256 newAllowance = token.allowance(address(this), spender).add(
+            value
+        );
+        callOptionalReturn(
+            token,
+            abi.encodeWithSelector(
+                token.approve.selector,
+                spender,
+                newAllowance
+            )
+        );
     }
 
-    function safeDecreaseAllowance(IERC20 token, address spender, uint256 value) internal {
-        uint256 newAllowance = token.allowance(address(this), spender).sub(value);
-        callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, newAllowance));
+    function safeDecreaseAllowance(
+        IERC20 token,
+        address spender,
+        uint256 value
+    ) internal {
+        uint256 newAllowance = token.allowance(address(this), spender).sub(
+            value
+        );
+        callOptionalReturn(
+            token,
+            abi.encodeWithSelector(
+                token.approve.selector,
+                spender,
+                newAllowance
+            )
+        );
     }
 
     /**
@@ -295,9 +353,13 @@ library SafeERC20 {
         (bool success, bytes memory returndata) = address(token).call(data);
         require(success, "SafeERC20: low-level call failed");
 
-        if (returndata.length > 0) { // Return data is optional
+        if (returndata.length > 0) {
+            // Return data is optional
             // solhint-disable-next-line max-line-length
-            require(abi.decode(returndata, (bool)), "SafeERC20: ERC20 operation did not succeed");
+            require(
+                abi.decode(returndata, (bool)),
+                "SafeERC20: ERC20 operation did not succeed"
+            );
         }
     }
 }
@@ -362,7 +424,11 @@ interface IERC777 {
      * - if `recipient` is a contract, it must implement the `tokensReceived`
      * interface.
      */
-    function send(address recipient, uint256 amount, bytes calldata data) external;
+    function send(
+        address recipient,
+        uint256 amount,
+        bytes calldata data
+    ) external;
 
     /**
      * @dev Destroys `amount` tokens from the caller's account, reducing the
@@ -386,7 +452,10 @@ interface IERC777 {
      *
      * See `operatorSend` and `operatorBurn`.
      */
-    function isOperatorFor(address operator, address tokenHolder) external view returns (bool);
+    function isOperatorFor(
+        address operator,
+        address tokenHolder
+    ) external view returns (bool);
 
     /**
      * @dev Make an account an operator of the caller.
@@ -482,13 +551,31 @@ interface IERC777 {
         bytes operatorData
     );
 
-    event Minted(address indexed operator, address indexed to, uint256 amount, bytes data, bytes operatorData);
+    event Minted(
+        address indexed operator,
+        address indexed to,
+        uint256 amount,
+        bytes data,
+        bytes operatorData
+    );
 
-    event Burned(address indexed operator, address indexed from, uint256 amount, bytes data, bytes operatorData);
+    event Burned(
+        address indexed operator,
+        address indexed from,
+        uint256 amount,
+        bytes data,
+        bytes operatorData
+    );
 
-    event AuthorizedOperator(address indexed operator, address indexed tokenHolder);
+    event AuthorizedOperator(
+        address indexed operator,
+        address indexed tokenHolder
+    );
 
-    event RevokedOperator(address indexed operator, address indexed tokenHolder);
+    event RevokedOperator(
+        address indexed operator,
+        address indexed tokenHolder
+    );
 }
 
 // File: openzeppelin-solidity/contracts/token/ERC777/IERC777Recipient.sol
@@ -520,7 +607,7 @@ interface IERC777Recipient {
         address operator,
         address from,
         address to,
-        uint amount,
+        uint256 amount,
         bytes calldata userData,
         bytes calldata operatorData
     ) external;
@@ -555,7 +642,7 @@ interface IERC777Sender {
         address operator,
         address from,
         address to,
-        uint amount,
+        uint256 amount,
         bytes calldata userData,
         bytes calldata operatorData
     ) external;
@@ -622,7 +709,11 @@ interface IERC1820Registry {
      * queried for support, unless `implementer` is the caller. See
      * `IERC1820Implementer.canImplementInterfaceForAddress`.
      */
-    function setInterfaceImplementer(address account, bytes32 interfaceHash, address implementer) external;
+    function setInterfaceImplementer(
+        address account,
+        bytes32 interfaceHash,
+        address implementer
+    ) external;
 
     /**
      * @dev Returns the implementer of `interfaceHash` for `account`. If no such
@@ -633,14 +724,19 @@ interface IERC1820Registry {
      *
      * `account` being the zero address is an alias for the caller's address.
      */
-    function getInterfaceImplementer(address account, bytes32 interfaceHash) external view returns (address);
+    function getInterfaceImplementer(
+        address account,
+        bytes32 interfaceHash
+    ) external view returns (address);
 
     /**
      * @dev Returns the interface hash for an `interfaceName`, as defined in the
      * corresponding
      * [section of the EIP](https://eips.ethereum.org/EIPS/eip-1820#interface-name).
      */
-    function interfaceHash(string calldata interfaceName) external pure returns (bytes32);
+    function interfaceHash(
+        string calldata interfaceName
+    ) external pure returns (bytes32);
 
     /**
      *  @notice Updates the cache with whether the contract implements an ERC165 interface or not.
@@ -658,7 +754,10 @@ interface IERC1820Registry {
      *  @param interfaceId ERC165 interface to check.
      *  @return True if `account.address()` implements `interfaceId`, false otherwise.
      */
-    function implementsERC165Interface(address account, bytes4 interfaceId) external view returns (bool);
+    function implementsERC165Interface(
+        address account,
+        bytes4 interfaceId
+    ) external view returns (bool);
 
     /**
      *  @notice Checks whether a contract implements an ERC165 interface or not without using nor updating the cache.
@@ -666,9 +765,16 @@ interface IERC1820Registry {
      *  @param interfaceId ERC165 interface to check.
      *  @return True if `account.address()` implements `interfaceId`, false otherwise.
      */
-    function implementsERC165InterfaceNoCache(address account, bytes4 interfaceId) external view returns (bool);
+    function implementsERC165InterfaceNoCache(
+        address account,
+        bytes4 interfaceId
+    ) external view returns (bool);
 
-    event InterfaceImplementerSet(address indexed account, bytes32 indexed interfaceHash, address indexed implementer);
+    event InterfaceImplementerSet(
+        address indexed account,
+        bytes32 indexed interfaceHash,
+        address indexed implementer
+    );
 
     event ManagerChanged(address indexed account, address indexed newManager);
 }
@@ -676,13 +782,6 @@ interface IERC1820Registry {
 // File: openzeppelin-solidity/contracts/token/ERC777/ERC777.sol
 
 pragma solidity ^0.5.0;
-
-
-
-
-
-
-
 
 /**
  * @dev Implementation of the `IERC777` interface.
@@ -703,7 +802,8 @@ contract ERC777 is IERC777, IERC20 {
     using SafeMath for uint256;
     using Address for address;
 
-    IERC1820Registry private _erc1820 = IERC1820Registry(0x1820a4B7618BdE71Dce8cdc73aAB6C95905faD24);
+    IERC1820Registry private _erc1820 =
+        IERC1820Registry(0x1820a4B7618BdE71Dce8cdc73aAB6C95905faD24);
 
     mapping(address => uint256) private _balances;
 
@@ -716,11 +816,11 @@ contract ERC777 is IERC777, IERC20 {
     // See https://github.com/ethereum/solidity/issues/4024.
 
     // keccak256("ERC777TokensSender")
-    bytes32 constant private TOKENS_SENDER_INTERFACE_HASH =
+    bytes32 private constant TOKENS_SENDER_INTERFACE_HASH =
         0x29ddb589b1fb5fc7cf394961c1adf5f8c6454761adf795e67fe149f658abe895;
 
     // keccak256("ERC777TokensRecipient")
-    bytes32 constant private TOKENS_RECIPIENT_INTERFACE_HASH =
+    bytes32 private constant TOKENS_RECIPIENT_INTERFACE_HASH =
         0xb281fc8c12954d22544db45de3159a39272895b169a852b314f9cc762e44c53b;
 
     // This isn't ever read from - it's only used to respond to the defaultOperators query.
@@ -731,10 +831,11 @@ contract ERC777 is IERC777, IERC20 {
 
     // For each account, a mapping of its operators and revoked default operators.
     mapping(address => mapping(address => bool)) private _operators;
-    mapping(address => mapping(address => bool)) private _revokedDefaultOperators;
+    mapping(address => mapping(address => bool))
+        private _revokedDefaultOperators;
 
     // ERC20-allowances
-    mapping (address => mapping (address => uint256)) private _allowances;
+    mapping(address => mapping(address => uint256)) private _allowances;
 
     /**
      * @dev `defaultOperators` may be an empty array.
@@ -753,8 +854,16 @@ contract ERC777 is IERC777, IERC20 {
         }
 
         // register interfaces
-        _erc1820.setInterfaceImplementer(address(this), keccak256("ERC777Token"), address(this));
-        _erc1820.setInterfaceImplementer(address(this), keccak256("ERC20Token"), address(this));
+        _erc1820.setInterfaceImplementer(
+            address(this),
+            keccak256("ERC777Token"),
+            address(this)
+        );
+        _erc1820.setInterfaceImplementer(
+            address(this),
+            keccak256("ERC20Token"),
+            address(this)
+        );
     }
 
     /**
@@ -809,7 +918,11 @@ contract ERC777 is IERC777, IERC20 {
      *
      * Also emits a `Transfer` event for ERC20 compatibility.
      */
-    function send(address recipient, uint256 amount, bytes calldata data) external {
+    function send(
+        address recipient,
+        uint256 amount,
+        bytes calldata data
+    ) external {
         _send(msg.sender, msg.sender, recipient, amount, data, "", true);
     }
 
@@ -821,8 +934,14 @@ contract ERC777 is IERC777, IERC20 {
      *
      * Also emits a `Sent` event.
      */
-    function transfer(address recipient, uint256 amount) external returns (bool) {
-        require(recipient != address(0), "ERC777: transfer to the zero address");
+    function transfer(
+        address recipient,
+        uint256 amount
+    ) external returns (bool) {
+        require(
+            recipient != address(0),
+            "ERC777: transfer to the zero address"
+        );
 
         address from = msg.sender;
 
@@ -851,8 +970,10 @@ contract ERC777 is IERC777, IERC20 {
         address operator,
         address tokenHolder
     ) public view returns (bool) {
-        return operator == tokenHolder ||
-            (_defaultOperators[operator] && !_revokedDefaultOperators[tokenHolder][operator]) ||
+        return
+            operator == tokenHolder ||
+            (_defaultOperators[operator] &&
+                !_revokedDefaultOperators[tokenHolder][operator]) ||
             _operators[tokenHolder][operator];
     }
 
@@ -904,10 +1025,11 @@ contract ERC777 is IERC777, IERC20 {
         uint256 amount,
         bytes calldata data,
         bytes calldata operatorData
-    )
-    external
-    {
-        require(isOperatorFor(msg.sender, sender), "ERC777: caller is not an operator for holder");
+    ) external {
+        require(
+            isOperatorFor(msg.sender, sender),
+            "ERC777: caller is not an operator for holder"
+        );
         _send(msg.sender, sender, recipient, amount, data, operatorData, true);
     }
 
@@ -916,8 +1038,16 @@ contract ERC777 is IERC777, IERC20 {
      *
      * Emits `Sent` and `Transfer` events.
      */
-    function operatorBurn(address account, uint256 amount, bytes calldata data, bytes calldata operatorData) external {
-        require(isOperatorFor(msg.sender, account), "ERC777: caller is not an operator for holder");
+    function operatorBurn(
+        address account,
+        uint256 amount,
+        bytes calldata data,
+        bytes calldata operatorData
+    ) external {
+        require(
+            isOperatorFor(msg.sender, account),
+            "ERC777: caller is not an operator for holder"
+        );
         _burn(msg.sender, account, amount, data, operatorData);
     }
 
@@ -928,7 +1058,10 @@ contract ERC777 is IERC777, IERC20 {
      * not have allowance, and accounts with allowance may not be operators
      * themselves.
      */
-    function allowance(address holder, address spender) public view returns (uint256) {
+    function allowance(
+        address holder,
+        address spender
+    ) public view returns (uint256) {
         return _allowances[holder][spender];
     }
 
@@ -943,17 +1076,24 @@ contract ERC777 is IERC777, IERC20 {
         return true;
     }
 
-   /**
-    * @dev See `IERC20.transferFrom`.
-    *
-    * Note that operator and allowance concepts are orthogonal: operators cannot
-    * call `transferFrom` (unless they have allowance), and accounts with
-    * allowance cannot call `operatorSend` (unless they are operators).
-    *
-    * Emits `Sent` and `Transfer` events.
-    */
-    function transferFrom(address holder, address recipient, uint256 amount) external returns (bool) {
-        require(recipient != address(0), "ERC777: transfer to the zero address");
+    /**
+     * @dev See `IERC20.transferFrom`.
+     *
+     * Note that operator and allowance concepts are orthogonal: operators cannot
+     * call `transferFrom` (unless they have allowance), and accounts with
+     * allowance cannot call `operatorSend` (unless they are operators).
+     *
+     * Emits `Sent` and `Transfer` events.
+     */
+    function transferFrom(
+        address holder,
+        address recipient,
+        uint256 amount
+    ) external returns (bool) {
+        require(
+            recipient != address(0),
+            "ERC777: transfer to the zero address"
+        );
         require(holder != address(0), "ERC777: transfer from the zero address");
 
         address spender = msg.sender;
@@ -991,16 +1131,22 @@ contract ERC777 is IERC777, IERC20 {
         uint256 amount,
         bytes memory userData,
         bytes memory operatorData
-    )
-    internal
-    {
+    ) internal {
         require(account != address(0), "ERC777: mint to the zero address");
 
         // Update state variables
         _totalSupply = _totalSupply.add(amount);
         _balances[account] = _balances[account].add(amount);
 
-        _callTokensReceived(operator, address(0), account, amount, userData, operatorData, true);
+        _callTokensReceived(
+            operator,
+            address(0),
+            account,
+            amount,
+            userData,
+            operatorData,
+            true
+        );
 
         emit Minted(operator, account, amount, userData, operatorData);
         emit Transfer(address(0), account, amount);
@@ -1024,9 +1170,7 @@ contract ERC777 is IERC777, IERC20 {
         bytes memory userData,
         bytes memory operatorData,
         bool requireReceptionAck
-    )
-        private
-    {
+    ) private {
         require(from != address(0), "ERC777: send from the zero address");
         require(to != address(0), "ERC777: send to the zero address");
 
@@ -1034,7 +1178,15 @@ contract ERC777 is IERC777, IERC20 {
 
         _move(operator, from, to, amount, userData, operatorData);
 
-        _callTokensReceived(operator, from, to, amount, userData, operatorData, requireReceptionAck);
+        _callTokensReceived(
+            operator,
+            from,
+            to,
+            amount,
+            userData,
+            operatorData,
+            requireReceptionAck
+        );
     }
 
     /**
@@ -1051,12 +1203,17 @@ contract ERC777 is IERC777, IERC20 {
         uint256 amount,
         bytes memory data,
         bytes memory operatorData
-    )
-        private
-    {
+    ) private {
         require(from != address(0), "ERC777: burn from the zero address");
 
-        _callTokensToSend(operator, from, address(0), amount, data, operatorData);
+        _callTokensToSend(
+            operator,
+            from,
+            address(0),
+            amount,
+            data,
+            operatorData
+        );
 
         // Update state variables
         _totalSupply = _totalSupply.sub(amount);
@@ -1073,9 +1230,7 @@ contract ERC777 is IERC777, IERC20 {
         uint256 amount,
         bytes memory userData,
         bytes memory operatorData
-    )
-        private
-    {
+    ) private {
         _balances[from] = _balances[from].sub(amount);
         _balances[to] = _balances[to].add(amount);
 
@@ -1109,12 +1264,20 @@ contract ERC777 is IERC777, IERC20 {
         uint256 amount,
         bytes memory userData,
         bytes memory operatorData
-    )
-        private
-    {
-        address implementer = _erc1820.getInterfaceImplementer(from, TOKENS_SENDER_INTERFACE_HASH);
+    ) private {
+        address implementer = _erc1820.getInterfaceImplementer(
+            from,
+            TOKENS_SENDER_INTERFACE_HASH
+        );
         if (implementer != address(0)) {
-            IERC777Sender(implementer).tokensToSend(operator, from, to, amount, userData, operatorData);
+            IERC777Sender(implementer).tokensToSend(
+                operator,
+                from,
+                to,
+                amount,
+                userData,
+                operatorData
+            );
         }
     }
 
@@ -1137,14 +1300,25 @@ contract ERC777 is IERC777, IERC20 {
         bytes memory userData,
         bytes memory operatorData,
         bool requireReceptionAck
-    )
-        private
-    {
-        address implementer = _erc1820.getInterfaceImplementer(to, TOKENS_RECIPIENT_INTERFACE_HASH);
+    ) private {
+        address implementer = _erc1820.getInterfaceImplementer(
+            to,
+            TOKENS_RECIPIENT_INTERFACE_HASH
+        );
         if (implementer != address(0)) {
-            IERC777Recipient(implementer).tokensReceived(operator, from, to, amount, userData, operatorData);
+            IERC777Recipient(implementer).tokensReceived(
+                operator,
+                from,
+                to,
+                amount,
+                userData,
+                operatorData
+            );
         } else if (requireReceptionAck) {
-            require(!to.isContract(), "ERC777: token recipient contract has no implementer for ERC777TokensRecipient");
+            require(
+                !to.isContract(),
+                "ERC777: token recipient contract has no implementer for ERC777TokensRecipient"
+            );
         }
     }
 }
@@ -1154,19 +1328,21 @@ contract ERC777 is IERC777, IERC20 {
 pragma solidity >=0.4.21 <0.6.0;
 
 interface IKyberNetwork {
-
-    function getExpectedRate(address src, address dest, uint srcQty) external view
-        returns (uint expectedRate, uint slippageRate);
+    function getExpectedRate(
+        address src,
+        address dest,
+        uint256 srcQty
+    ) external view returns (uint256 expectedRate, uint256 slippageRate);
 
     function trade(
         address src,
-        uint srcAmount,
+        uint256 srcAmount,
         address dest,
         address payable destAddress,
-        uint maxDestAmount,
-        uint minConversionRate,
+        uint256 maxDestAmount,
+        uint256 minConversionRate,
         address walletId
-    ) external payable returns(uint256);
+    ) external payable returns (uint256);
 }
 
 // File: openzeppelin-solidity/contracts/ownership/Ownable.sol
@@ -1185,12 +1361,15 @@ pragma solidity ^0.5.0;
 contract Ownable {
     address private _owner;
 
-    event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
+    event OwnershipTransferred(
+        address indexed previousOwner,
+        address indexed newOwner
+    );
 
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
      */
-    constructor () internal {
+    constructor() internal {
         _owner = msg.sender;
         emit OwnershipTransferred(address(0), _owner);
     }
@@ -1241,7 +1420,10 @@ contract Ownable {
      * @dev Transfers ownership of the contract to a new account (`newOwner`).
      */
     function _transferOwnership(address newOwner) internal {
-        require(newOwner != address(0), "Ownable: new owner is the zero address");
+        require(
+            newOwner != address(0),
+            "Ownable: new owner is the zero address"
+        );
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
     }
@@ -1251,13 +1433,10 @@ contract Ownable {
 
 pragma solidity ^0.5.0;
 
-
-
-
 contract Withdrawable is Ownable {
     using SafeERC20 for IERC20;
 
-    function withdraw(address asset) onlyOwner public {
+    function withdraw(address asset) public onlyOwner {
         if (asset == address(0)) {
             msg.sender.transfer(address(this).balance);
         } else {
@@ -1271,16 +1450,11 @@ contract Withdrawable is Ownable {
 
 pragma solidity ^0.5.0;
 
-
-
-
-
-
-
 contract Burner is Withdrawable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
-    uint constant BIG_LIMIT = 1e36;
+
+    uint256 constant BIG_LIMIT = 1e36;
     address constant ETHER = 0xEeeeeEeeeEeEeeEeEeEeeEEEeeeeEeeeeeeeEEeE;
 
     ERC777 token;
@@ -1291,10 +1465,20 @@ contract Burner is Withdrawable {
     uint256 public percentageToBurn;
     bool public paused;
 
-    event Burn(uint burnedAmount, uint savedAmount);
-    event TokenTrade(address srcToken, uint srcAmount, uint burnTokenAmount);
+    event Burn(uint256 burnedAmount, uint256 savedAmount);
+    event TokenTrade(
+        address srcToken,
+        uint256 srcAmount,
+        uint256 burnTokenAmount
+    );
 
-    constructor(address tokenAddress, address unburnedDestination_, uint percentageToBurn_, address kyberNetAddress, address kyberFeeWallet_) public {
+    constructor(
+        address tokenAddress,
+        address unburnedDestination_,
+        uint256 percentageToBurn_,
+        address kyberNetAddress,
+        address kyberFeeWallet_
+    ) public {
         paused = false;
         token = ERC777(tokenAddress);
         percentageToBurn = percentageToBurn_;
@@ -1303,15 +1487,15 @@ contract Burner is Withdrawable {
         kyberFeeWallet = kyberFeeWallet_;
     }
 
-    function setPercentageToBurn (uint value) onlyOwner external {
+    function setPercentageToBurn(uint256 value) external onlyOwner {
         percentageToBurn = value;
     }
 
-    function setUnburnedDestination (address value) onlyOwner external {
+    function setUnburnedDestination(address value) external onlyOwner {
         unburnedDestination = value;
     }
 
-    function setPaused (bool value) onlyOwner external {
+    function setPaused(bool value) external onlyOwner {
         paused = value;
     }
 
@@ -1320,41 +1504,63 @@ contract Burner is Withdrawable {
     }
 
     function burn() public {
-        require(!paused, 'cannot burn when paused');
+        require(!paused, "cannot burn when paused");
 
-        uint total = token.balanceOf(address(this));
-        uint toBurn = total.mul(percentageToBurn).div(100);
-        token.burn(toBurn, '');
-        uint notBurned = token.balanceOf(address(this));
-        require(token.transfer(unburnedDestination, notBurned), 'cannot transfer unburned tokens');
+        uint256 total = token.balanceOf(address(this));
+        uint256 toBurn = total.mul(percentageToBurn).div(100);
+        token.burn(toBurn, "");
+        uint256 notBurned = token.balanceOf(address(this));
+        require(
+            token.transfer(unburnedDestination, notBurned),
+            "cannot transfer unburned tokens"
+        );
         emit Burn(toBurn, notBurned);
     }
 
-    function convertAndBurn(address [] calldata tokens) external {
-        for (uint i = 0; i < tokens.length; i++) {
+    function convertAndBurn(address[] calldata tokens) external {
+        for (uint256 i = 0; i < tokens.length; i++) {
             _convert(tokens[i]);
         }
         burn();
     }
 
     function _convert(address srcToken) internal {
-        uint srcAmount;
-        uint converted;
+        uint256 srcAmount;
+        uint256 converted;
         if (srcToken == ETHER || srcToken == address(0)) {
             srcAmount = address(this).balance;
-            converted = kyberNetwork.trade
-                .value(srcAmount)(ETHER, srcAmount, address(token), address(uint160(address(this))), BIG_LIMIT, 1, kyberFeeWallet);
+            converted = kyberNetwork.trade.value(srcAmount)(
+                ETHER,
+                srcAmount,
+                address(token),
+                address(uint160(address(this))),
+                BIG_LIMIT,
+                1,
+                kyberFeeWallet
+            );
         } else {
             srcAmount = IERC20(srcToken).balanceOf(address(this));
-            if (IERC20(srcToken).allowance(address(this), address(kyberNetwork)) > 0) {
+            if (
+                IERC20(srcToken).allowance(
+                    address(this),
+                    address(kyberNetwork)
+                ) > 0
+            ) {
                 IERC20(srcToken).safeApprove(address(kyberNetwork), 0);
             }
             IERC20(srcToken).safeApprove(address(kyberNetwork), srcAmount);
-            converted = kyberNetwork.trade(srcToken, srcAmount, address(token), address(uint160(address(this))), BIG_LIMIT, 1, kyberFeeWallet);
+            converted = kyberNetwork.trade(
+                srcToken,
+                srcAmount,
+                address(token),
+                address(uint160(address(this))),
+                BIG_LIMIT,
+                1,
+                kyberFeeWallet
+            );
         }
         emit TokenTrade(srcToken, srcAmount, converted);
     }
 
-    function () external payable {}
-
+    function() external payable {}
 }

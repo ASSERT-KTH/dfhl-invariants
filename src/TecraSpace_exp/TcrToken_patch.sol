@@ -1,6 +1,6 @@
 /**
- *Submitted for verification at Etherscan.io on 2021-04-13
-*/
+ * Submitted for verification at Etherscan.io on 2021-04-13
+ */
 
 // SPDX-License-Identifier: Unlicense
 pragma solidity 0.8.2;
@@ -11,11 +11,10 @@ abstract contract IERC20 {
 
     function transfer(address to, uint256 amount) public virtual;
 
-    function allowance(address owner, address spender)
-        public
-        view
-        virtual
-        returns (uint256);
+    function allowance(
+        address owner,
+        address spender
+    ) public view virtual returns (uint256);
 
     function totalSupply() public view virtual returns (uint256);
 }
@@ -54,7 +53,7 @@ contract TcrToken_patch {
     string public constant name = "TecraCoin";
     string public constant symbol = "TCR";
     uint256 private _totalSupply;
-    uint256 public constant maxSupply = 21000000000000000;
+    uint256 public constant maxSupply = 21_000_000_000_000_000;
 
     string public constant version = "1";
     uint256 public immutable getChainId;
@@ -222,7 +221,7 @@ contract TcrToken_patch {
         isBlacklistAdmin[user] = false;
     }
 
-    modifier onlyBlacklister {
+    modifier onlyBlacklister() {
         require(isBlacklistAdmin[msg.sender], "Not a Blacklister");
         _;
     }
@@ -251,10 +250,10 @@ contract TcrToken_patch {
     // "bulk transfer"
     //
     // transfer to list of address-amount
-    function bulkTransfer(address[] calldata to, uint256[] calldata amount)
-        external
-        returns (bool)
-    {
+    function bulkTransfer(
+        address[] calldata to,
+        uint256[] calldata amount
+    ) external returns (bool) {
         require(to.length == amount.length, ERROR_DAS);
         for (uint256 i = 0; i < to.length; i++) {
             require(_balances[msg.sender] >= amount[i], ERROR_BTL);
@@ -277,10 +276,10 @@ contract TcrToken_patch {
     }
 
     // send same amount to multiple addresses
-    function bulkTransfer(address[] calldata to, uint256 amount)
-        external
-        returns (bool)
-    {
+    function bulkTransfer(
+        address[] calldata to,
+        uint256 amount
+    ) external returns (bool) {
         require(_balances[msg.sender] >= amount * to.length, ERROR_BTL);
         for (uint256 i = 0; i < to.length; i++) {
             _transfer(msg.sender, to[i], amount);
@@ -304,7 +303,7 @@ contract TcrToken_patch {
     //
     // "mint"
     //
-    modifier onlyMinter {
+    modifier onlyMinter() {
         require(isMinter[msg.sender], "Not a Minter");
         _;
     }
@@ -327,7 +326,7 @@ contract TcrToken_patch {
     //
     // "ownable"
     //
-    modifier onlyOwner {
+    modifier onlyOwner() {
         require(msg.sender == owner, ERROR_OO);
         _;
     }
@@ -353,12 +352,12 @@ contract TcrToken_patch {
         isPauser[user] = false;
     }
 
-    modifier onlyPauser {
+    modifier onlyPauser() {
         require(isPauser[msg.sender], "Not a Pauser");
         _;
     }
 
-    modifier notPaused {
+    modifier notPaused() {
         require(!paused, "Contract is paused");
         _;
     }
@@ -388,23 +387,22 @@ contract TcrToken_patch {
         bytes32 s
     ) external {
         require(deadline >= block.timestamp, "permit: EXPIRED");
-        bytes32 digest =
-            keccak256(
-                abi.encodePacked(
-                    "\x19\x01",
-                    DOMAIN_SEPARATOR,
-                    keccak256(
-                        abi.encode(
-                            PERMIT_TYPEHASH,
-                            user,
-                            spender,
-                            value,
-                            nonces[user]++,
-                            deadline
-                        )
+        bytes32 digest = keccak256(
+            abi.encodePacked(
+                "\x19\x01",
+                DOMAIN_SEPARATOR,
+                keccak256(
+                    abi.encode(
+                        PERMIT_TYPEHASH,
+                        user,
+                        spender,
+                        value,
+                        nonces[user]++,
+                        deadline
                     )
                 )
-            );
+            )
+        );
         address recoveredAddress = ecrecover(digest, v, r, s);
         require(
             recoveredAddress != address(0) && recoveredAddress == user,
@@ -431,11 +429,10 @@ contract TcrToken_patch {
         return _balances[account];
     }
 
-    function allowance(address account, address spender)
-        external
-        view
-        returns (uint256)
-    {
+    function allowance(
+        address account,
+        address spender
+    ) external view returns (uint256) {
         if (deprecated) {
             return IERC20(upgradedAddress).allowance(account, spender);
         }

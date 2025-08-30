@@ -16,10 +16,10 @@ import {FeePolicy, FeePolicyLibrary} from "../../lib/v2-core/src/libraries/FeePo
 
 import {FixedPointMathLib} from "solmate/src/utils/FixedPointMathLib.sol";
 
-
 import {IRebalancer} from "../../interfaces/IRebalancer.sol";
 import {IStrategy} from "../../interfaces/IStrategy.sol";
 import {ERC6909Supply} from "../../lib/ERC6909Supply.sol";
+
 contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply {
     using BookIdLibrary for IBookManager.BookKey;
     using SafeERC20 for IERC20;
@@ -45,19 +45,27 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply {
         bookManager = bookManager_;
     }
 
-    function decimals(uint256) external pure returns (uint8) {
+    function decimals(
+        uint256
+    ) external pure returns (uint8) {
         return 18;
     }
 
-    function getPool(bytes32 key) external view returns (Pool memory) {
+    function getPool(
+        bytes32 key
+    ) external view returns (Pool memory) {
         return _pools[key];
     }
 
-    function getBookPairs(bytes32 key) external view returns (BookId, BookId) {
+    function getBookPairs(
+        bytes32 key
+    ) external view returns (BookId, BookId) {
         return (_pools[key].bookIdA, _pools[key].bookIdB);
     }
 
-    function getLiquidity(bytes32 key) public view returns (Liquidity memory liquidityA, Liquidity memory liquidityB) {
+    function getLiquidity(
+        bytes32 key
+    ) public view returns (Liquidity memory liquidityA, Liquidity memory liquidityB) {
         Pool storage pool = _pools[key];
         liquidityA.reserve = pool.reserveA;
         liquidityB.reserve = pool.reserveB;
@@ -85,11 +93,11 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply {
         }
     }
 
-    function _getLiquidity(FeePolicy makerPolicy, uint64 unitSize, OrderId orderId)
-        internal
-        view
-        returns (uint256 cancelable, uint256 claimable)
-    {
+    function _getLiquidity(
+        FeePolicy makerPolicy,
+        uint64 unitSize,
+        OrderId orderId
+    ) internal view returns (uint256 cancelable, uint256 claimable) {
         IBookManager.OrderInfo memory orderInfo = bookManager.getOrder(orderId);
         cancelable = uint256(orderInfo.open) * unitSize;
         claimable = orderId.getTick().quoteToBase(uint256(orderInfo.claimable) * unitSize, false);
@@ -116,11 +124,12 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply {
         );
     }
 
-    function mint(bytes32 key, uint256 amountA, uint256 amountB, uint256 minLpAmount)
-        external
-        payable
-        returns (uint256 mintAmount)
-    {
+    function mint(
+        bytes32 key,
+        uint256 amountA,
+        uint256 amountB,
+        uint256 minLpAmount
+    ) external payable returns (uint256 mintAmount) {
         Pool storage pool = _pools[key];
         IBookManager.BookKey memory bookKeyA = bookManager.getBookKey(pool.bookIdA);
 
@@ -198,10 +207,12 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply {
         }
     }
 
-    function burn(bytes32 key, uint256 amount, uint256 minAmountA, uint256 minAmountB)
-        external
-        returns (uint256 withdrawalA, uint256 withdrawalB)
-    {
+    function burn(
+        bytes32 key,
+        uint256 amount,
+        uint256 minAmountA,
+        uint256 minAmountB
+    ) external returns (uint256 withdrawalA, uint256 withdrawalB) {
         (withdrawalA, withdrawalB) = abi.decode(
             bookManager.lock(address(this), abi.encodeWithSelector(this._burn.selector, key, msg.sender, amount)),
             (uint256, uint256)
@@ -209,7 +220,9 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply {
         if (withdrawalA < minAmountA || withdrawalB < minAmountB) revert Slippage();
     }
 
-    function rebalance(bytes32 key) public {
+    function rebalance(
+        bytes32 key
+    ) public {
         bookManager.lock(address(this), abi.encodeWithSelector(this._rebalance.selector, key));
     }
 
@@ -257,11 +270,11 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply {
         emit Open(key, bookIdA, bookIdB, salt, strategy);
     }
 
-    function _burn(bytes32 key, address user, uint256 burnAmount)
-        public
-        selfOnly
-        returns (uint256 withdrawalA, uint256 withdrawalB)
-    {
+    function _burn(
+        bytes32 key,
+        address user,
+        uint256 burnAmount
+    ) public selfOnly returns (uint256 withdrawalA, uint256 withdrawalB) {
         Pool storage pool = _pools[key];
         uint256 supply = totalSupply[uint256(key)];
 
@@ -291,7 +304,9 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply {
         }
     }
 
-    function _rebalance(bytes32 key) public selfOnly {
+    function _rebalance(
+        bytes32 key
+    ) public selfOnly {
         Pool storage pool = _pools[key];
         uint256 reserveA = pool.reserveA;
         uint256 reserveB = pool.reserveB;
@@ -318,7 +333,12 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply {
         pool.reserveB = _settleCurrency(bookKeyA.base, reserveB);
     }
 
-    function _clearPool(bytes32 key, Pool storage pool, uint256 cancelNumerator, uint256 cancelDenominator)
+    function _clearPool(
+        bytes32 key,
+        Pool storage pool,
+        uint256 cancelNumerator,
+        uint256 cancelDenominator
+    )
         internal
         returns (uint256 canceledAmountA, uint256 canceledAmountB, uint256 claimedAmountA, uint256 claimedAmountB)
     {
@@ -328,10 +348,11 @@ contract Rebalancer is IRebalancer, ILocker, Ownable2Step, ERC6909Supply {
         emit Cancel(key, canceledAmountA, canceledAmountB);
     }
 
-    function _clearOrders(OrderId[] storage orderIds, uint256 cancelNumerator, uint256 cancelDenominator)
-        internal
-        returns (uint256 canceledAmount, uint256 claimedAmount)
-    {
+    function _clearOrders(
+        OrderId[] storage orderIds,
+        uint256 cancelNumerator,
+        uint256 cancelDenominator
+    ) internal returns (uint256 canceledAmount, uint256 claimedAmount) {
         OrderId[] memory mOrderIds = orderIds;
         for (uint256 i = 0; i < mOrderIds.length; ++i) {
             OrderId orderId = mOrderIds[i];

