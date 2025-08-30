@@ -1,0 +1,50 @@
+diff --git a/src/N00d_exp/SushiBar.sol b/src/N00d_exp/SushiBar_patch.sol
+index 37a404a..8e37032 100644
+--- a/src/N00d_exp/SushiBar.sol
++++ b/src/N00d_exp/SushiBar_patch.sol
+@@ -6,6 +6,14 @@
+ 
+ // File: @openzeppelin/contracts/token/ERC20/IERC20.sol
+ 
++/**
++ * @dev
++ * Vulnerability: The root cause of this incident is the ERC777 token
++ * reentrancy which allows attacker to use old totalSushi and updated totalShares for mint.
++ *
++ * Patch:
++ * Added reentrancy guard to the enter function to prevent ERC777 reentrancy attacks.
++ */
+ pragma solidity ^0.6.0;
+ 
+ /**
+@@ -838,7 +846,7 @@ contract ERC20 is Context, IERC20 {
+ 
+ pragma solidity 0.6.12;
+ 
+-contract SushiBar is ERC20("n00d with X", "Xn00d") {
++contract SushiBar_patch is ERC20("n00d with X", "Xn00d") {
+     using SafeMath for uint256;
+ 
+     IERC20 public sushi;
+@@ -847,8 +855,20 @@ contract SushiBar is ERC20("n00d with X", "Xn00d") {
+         sushi = _sushi;
+     }
+ 
++    bool private __lock_modifier0_lock;
++
++    modifier __lock_modifier0() {
++        require(
++            !__lock_modifier0_lock,
++            "ReentrancyGuard: function is already executing"
++        );
++        __lock_modifier0_lock = true;
++        _;
++        __lock_modifier0_lock = false;
++    }
+     // Enter the bar. Pay some SUSHIs. Earn some shares.
+-    function enter(uint256 _amount) public {
++
++    function enter(uint256 _amount) public __lock_modifier0 {
+         uint256 totalSushi = sushi.balanceOf(address(this));
+         uint256 totalShares = totalSupply();
+         if (totalShares == 0 || totalSushi == 0) {
