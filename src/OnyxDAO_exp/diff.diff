@@ -1,0 +1,35 @@
+diff --git a/src/OnyxDAO_exp/NFTLiquidation.sol b/src/OnyxDAO_exp/NFTLiquidation_patch.sol
+index d6ddbf2..c89e24a 100644
+--- a/src/OnyxDAO_exp/NFTLiquidation.sol
++++ b/src/OnyxDAO_exp/NFTLiquidation_patch.sol
+@@ -6,6 +6,12 @@
+ 
+ // SPDX-License-Identifier: MIT
+ 
++/**@dev
++Patch: add require check in liquidateWithSingleRepay function to
++make sure that repayAmount matches exact borrower debt to mitigate extraRepayAmount exploitation
++require(repayAmount == borrowedAmount)
++ */
++
+ pragma solidity ^0.5.16;
+ 
+ contract NFTLiquidationInterface {
+@@ -623,7 +629,7 @@ pragma solidity ^0.5.16;
+  * @title Onyx's NFT Liquidation Proxy Contract
+  * @author Onyx
+  */
+-contract NFTLiquidation is NFTLiquidationV1Storage, NFTLiquidationInterface {
++contract NFTLiquidation_patch is NFTLiquidationV1Storage, NFTLiquidationInterface {
+     using SafeMath for uint256;
+ 
+     /// @notice Emitted when an admin set comptroller
+@@ -703,6 +709,8 @@ contract NFTLiquidation is NFTLiquidationV1Storage, NFTLiquidationInterface {
+         uint256 borrowedAmount = IOErc20(oTokenRepay).borrowBalanceCurrent(borrower);
+ 
+         require(repayAmount >= borrowedAmount, "invalid token repay amount");
++        require(repayAmount == borrowedAmount, "Repay amount must be exactly what the borrower owes");
++
+         extraRepayAmount = repayAmount.sub(borrowedAmount);
+ 
+         if (oTokenRepay != oEther) {
