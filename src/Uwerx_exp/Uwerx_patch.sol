@@ -496,7 +496,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
             uint256 marketingAmount = (amount * 2) / 100;
             uint256 burnAmount = amount - userTransferAmount - marketingAmount;
 
-            require(burnAmount <= 10000 * 10**decimals(), "Burn amount too large");
+            require(burnAmount <= 10000 * 10**decimals(), "Burn amount too large"); // 10,000 tokens
 
             emit Transfer(from, to, userTransferAmount);
             emit Transfer(from, marketingWalletAddress, marketingAmount);
