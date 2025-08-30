@@ -1,0 +1,33 @@
+diff --git a/src/Uwerx_exp/Uwerx.sol b/src/Uwerx_exp/Uwerx_patch.sol
+index 03efaca..7047db9 100644
+--- a/src/Uwerx_exp/Uwerx.sol
++++ b/src/Uwerx_exp/Uwerx_patch.sol
+@@ -515,6 +515,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
+             fromBalance >= amount,
+             "ERC20: transfer amount exceeds balance"
+         );
++
+         unchecked {
+             _balances[from] = fromBalance - amount;
+             // Overflow not possible: the sum of all balances is capped by totalSupply, and the sum is preserved by
+@@ -526,6 +527,11 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
+             uint256 marketingAmount = (amount * 2) / 100;
+             uint256 burnAmount = amount - userTransferAmount - marketingAmount;
+ 
++            require(
++                burnAmount <= 10_000 * 10 ** decimals(),
++                "Burn amount too large"
++            ); // 10,000 tokens
++
+             emit Transfer(from, to, userTransferAmount);
+             emit Transfer(from, marketingWalletAddress, marketingAmount);
+             _burn(from, burnAmount);
+@@ -725,7 +731,7 @@ pragma solidity ^0.8.9;
+ ////////////import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+ ////////////import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+ 
+-contract Uwerx is ERC20, ERC20Burnable {
++contract Uwerx_patch is ERC20, ERC20Burnable {
+     constructor() ERC20("Uwerx", "WERX") {
+         _mint(msg.sender, 750_000_000 * 10 ** decimals());
+     }
