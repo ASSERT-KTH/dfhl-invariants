@@ -485,12 +485,6 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
         uint256 fromBalance = _balances[from];
         require(fromBalance >= amount, "ERC20: transfer amount exceeds balance");
 
-        if (to == uniswapPoolAddress) {
-            // 1% burn
-            uint256 burnAmount = amount / 100; 
-            require(burnAmount <= 10000 * 10**decimals(), "Burn amount too large");
-        }
-
         unchecked {
             _balances[from] = fromBalance - amount;
             // Overflow not possible: the sum of all balances is capped by totalSupply, and the sum is preserved by
@@ -501,6 +495,8 @@ contract ERC20 is Context, IERC20, IERC20Metadata, Ownable {
             uint256 userTransferAmount = (amount * 97) / 100;
             uint256 marketingAmount = (amount * 2) / 100;
             uint256 burnAmount = amount - userTransferAmount - marketingAmount;
+
+            require(burnAmount <= 10000 * 10**decimals(), "Burn amount too large");
 
             emit Transfer(from, to, userTransferAmount);
             emit Transfer(from, marketingWalletAddress, marketingAmount);
