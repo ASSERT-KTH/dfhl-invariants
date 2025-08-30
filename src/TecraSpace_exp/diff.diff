@@ -1,0 +1,22 @@
+diff --git a/src/TecraSpace_exp/TcrToken.sol b/src/TecraSpace_exp/TcrToken_patch.sol
+index 23167aa..d940305 100644
+--- a/src/TecraSpace_exp/TcrToken.sol
++++ b/src/TecraSpace_exp/TcrToken_patch.sol
+@@ -45,7 +45,7 @@ abstract contract IUpgradedToken {
+ //
+ // The ultimate ERC20 token contract for TecraCoin project
+ //
+-contract TcrToken {
++contract TcrToken_patch {
+     //
+     // ERC20 basic information
+     //
+@@ -155,7 +155,7 @@ contract TcrToken {
+     }
+ 
+     function burnFrom(address from, uint256 amount) external {
+-        require(_allowances[msg.sender][from] >= amount, ERROR_ATL);
++        require(_allowances[from][msg.sender] >= amount, ERROR_ATL);
+         require(_balances[from] >= amount, ERROR_BTL);
+         _approve(msg.sender, from, _allowances[msg.sender][from] - amount);
+         _burn(from, amount);

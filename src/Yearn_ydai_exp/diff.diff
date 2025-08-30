@@ -1,0 +1,55 @@
+diff --git a/src/Yearn_ydai_exp/yVault.sol b/src/Yearn_ydai_exp/yVault_patch.sol
+index 24e6297..6da1307 100644
+--- a/src/Yearn_ydai_exp/yVault.sol
++++ b/src/Yearn_ydai_exp/yVault_patch.sol
+@@ -1,3 +1,17 @@
++     /** @dev
++     ** Vulnerability: price manuipulation
++     In Yearn v1 vaults, the `earn()` function could be called by anyone.
++     This allowed an attacker to: manipulate the Curve 3pool to create an unfavorable exchange rate.
++     call `earn()` to push vault funds into the strategy (Curve) at that bad rate, and
++     rebalance the pool and withdraw funds at a profit.
++     Since the vault blindly deposited funds without checking price conditions,
++     this resulted in value loss for the vault
++     * 
++     **Patch:
++     Restrict `earn()` access to only the `governance` address to prevent public abuse.
++    require(msg.sender == governance, "only governance can call earn()");
++    */
++
+ pragma solidity ^0.5.16;
+ 
+ interface IERC20 {
+@@ -264,7 +278,7 @@ interface Controller {
+     function earn(address, uint) external;
+ }
+ 
+-contract yVault is ERC20, ERC20Detailed {
++contract yVault_patch is ERC20, ERC20Detailed {
+     using SafeERC20 for IERC20;
+     using Address for address;
+     using SafeMath for uint256;
+@@ -314,6 +328,8 @@ contract yVault is ERC20, ERC20Detailed {
+     }
+     
+     function earn() public {
++        require(msg.sender == governance, "only governance can call earn()");
++
+         uint _bal = available();
+         token.safeTransfer(controller, _bal);
+         Controller(controller).earn(address(token), _bal);
+@@ -324,12 +340,14 @@ contract yVault is ERC20, ERC20Detailed {
+     }
+     
+     function deposit(uint _amount) public {
++
+         uint _pool = balance();
+         uint _before = token.balanceOf(address(this));
+         token.safeTransferFrom(msg.sender, address(this), _amount);
+         uint _after = token.balanceOf(address(this));
+         _amount = _after.sub(_before); // Additional check for deflationary tokens
+         uint shares = 0;
++
+         if (totalSupply() == 0) {
+             shares = _amount;
+         } else {
