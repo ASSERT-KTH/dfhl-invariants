@@ -1,5 +1,6 @@
 //SPDX-License-Identifier: GPL-2.0-or-later
 pragma solidity ^0.8.0;
+
 import {Ownable2Step, Ownable} from "@openzeppelin/contracts/access/Ownable2Step.sol";
 import {IERC20, SafeERC20} from "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import {SafeCast} from "@openzeppelin/contracts/utils/math/SafeCast.sol";
@@ -14,13 +15,11 @@ import {FeePolicy, FeePolicyLibrary} from "../../lib/v2-core/src/libraries/FeePo
 
 import {FixedPointMathLib} from "solmate/src/utils/FixedPointMathLib.sol";
 
-
 import {IRebalancer} from "../../interfaces/IRebalancer.sol";
 import {IStrategy} from "../../interfaces/IStrategy.sol";
 import {ERC6909Supply} from "../../lib/ERC6909Supply.sol";
 
 //import "@openzeppelin/contracts/utils/ReentrancyGuard.sol";
-
 
 /* 
 * Reentrancy Guard (nonReentrant modifier) __lock_modifier0
@@ -29,7 +28,7 @@ import {ERC6909Supply} from "../../lib/ERC6909Supply.sol";
 - Added to  external functions that perform external calls or transfer tokens (burn, mint, rebalance).
  */
 
-contract Rebalancer_patch is IRebalancer, ILocker, Ownable2Step, ERC6909Supply{
+contract Rebalancer_patch is IRebalancer, ILocker, Ownable2Step, ERC6909Supply {
     using BookIdLibrary for IBookManager.BookKey;
     using SafeERC20 for IERC20;
     using SafeCast for uint256;
@@ -38,19 +37,14 @@ contract Rebalancer_patch is IRebalancer, ILocker, Ownable2Step, ERC6909Supply{
     using TickLibrary for Tick;
     using FeePolicyLibrary for FeePolicy;
 
-
-
     bool private __lock_modifier0_lock;
-    modifier __lock_modifier0() 
-    {
+
+    modifier __lock_modifier0() {
         require(!__lock_modifier0_lock);
-         __lock_modifier0_lock = true;
-         _;
-          __lock_modifier0_lock = false;
-     }
-
-
-
+        __lock_modifier0_lock = true;
+        _;
+        __lock_modifier0_lock = false;
+    }
 
     uint256 public constant RATE_PRECISION = 1e6;
 
@@ -63,8 +57,6 @@ contract Rebalancer_patch is IRebalancer, ILocker, Ownable2Step, ERC6909Supply{
         if (msg.sender != address(this)) revert NotSelf();
         _;
     }
-
-
 
     constructor(IBookManager bookManager_, address initialOwner_) Ownable(initialOwner_) {
         bookManager = bookManager_;
@@ -304,7 +296,7 @@ contract Rebalancer_patch is IRebalancer, ILocker, Ownable2Step, ERC6909Supply{
         uint256 supply = totalSupply[uint256(key)];
 
         IBookManager.BookKey memory bookKeyA = bookManager.getBookKey(pool.bookIdA);
-  
+
         (uint256 canceledAmountA, uint256 canceledAmountB, uint256 claimedAmountA, uint256 claimedAmountB) =
             _clearPool(key, pool, burnAmount, supply);
 

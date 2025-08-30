@@ -1,4 +1,4 @@
-// SPDX 
+// SPDX
 pragma solidity ^0.8.10;
 
 contract Counter {

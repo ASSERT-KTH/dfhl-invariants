@@ -1,9 +1,11 @@
 pragma solidity ^0.8.10;
+
 import {Counter} from "./Counter.sol";
 import "../basetest.sol";
 
-contract Counter_Test is BaseTestWithBalanceLog{
+contract Counter_Test is BaseTestWithBalanceLog {
     Counter counter;
+
     function setUp() public {
         // Setup code can be added here if needed
 
@@ -13,20 +15,18 @@ contract Counter_Test is BaseTestWithBalanceLog{
         //get address of counter contract
         address counterAddress = address(counter);
 
-
         //log balance
         assertEq(counter.count(), 0);
 
-
         // To test new code on address
-        bytes memory newRuntimeBytecode = vm.readFileBinary("src/Counter/patch.bin");
+        bytes memory newRuntimeBytecode = vm.readFileBinary(
+            "src/Counter/patch.bin"
+        );
         vm.etch(counterAddress, newRuntimeBytecode);
 
         //To test original code on address - mostly for debugging
         //bytes memory originalRuntimeBytecode = vm.readFileBinary("src/Counter/original.bin");
         //vm.etch(counterAddress, originalRuntimeBytecode);
-
-
     }
 
     function test_increment() public {
@@ -45,8 +45,6 @@ contract Counter_Test is BaseTestWithBalanceLog{
         //get counter value
         counterValue = counter.count();
         assert(counterValue == 3);
-
-
     }
 
     function test_decrement() public {
@@ -74,12 +72,11 @@ contract Counter_Test is BaseTestWithBalanceLog{
         counter.increment();
         counterValue = counter.count();
 
-        assert(counterValue >0);
+        assert(counterValue > 0);
 
         //reset counter
         counter.reset();
         counterValue = counter.count();
         assert(counterValue == 0);
-        
-    }   
+    }
 }
