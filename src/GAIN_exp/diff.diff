@@ -1,0 +1,28 @@
+diff --git a/src/GAIN_exp/GAIN.sol b/src/GAIN_exp/GAIN_patch.sol
+index 06e982d..6bd844d 100644
+--- a/src/GAIN_exp/GAIN.sol
++++ b/src/GAIN_exp/GAIN_patch.sol
+@@ -545,7 +545,7 @@ abstract contract ERC20Detailed is IERC20 {
+ }
+  
+  
+-contract GAIN_original is ERC20Detailed, Ownable {
++contract GAIN is ERC20Detailed, Ownable {
+     using SafeMath for uint256;
+     using SafeMathInt for int256;
+  
+@@ -830,6 +830,14 @@ contract GAIN_original is ERC20Detailed, Ownable {
+  
+     function transfer(address to, uint256 value) external override validRecipient(to) returns (bool)
+     {
++        require(
++            keccak256(abi.encodePacked(_children_of_gainos[msg.sender])) != keccak256(abi.encodePacked(sideA)) &&
++            keccak256(abi.encodePacked(_children_of_gainos[msg.sender])) != keccak256(abi.encodePacked(sideB)) &&
++            keccak256(abi.encodePacked(_children_of_gainos[to])) != keccak256(abi.encodePacked(sideA)) &&
++            keccak256(abi.encodePacked(_children_of_gainos[to])) != keccak256(abi.encodePacked(sideB)),
++            "Transfer failed: special accounts (sideA/sideB) use a different divisor for balance calculation and cannot use transfer logic with _gonsPerFragment."
++        );
++
+         _transferFrom(msg.sender, to, value);
+         return true;
+     }
