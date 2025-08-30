@@ -1,0 +1,56 @@
+diff --git a/src/HoppyFrogERC_exp/Hoppy.sol b/src/HoppyFrogERC_exp/Hoppy_patch.sol
+index 3af04e8..6921675 100644
+--- a/src/HoppyFrogERC_exp/Hoppy.sol
++++ b/src/HoppyFrogERC_exp/Hoppy_patch.sol
+@@ -10,6 +10,30 @@ https://twitter.com/Hoppyfrogerc
+ 
+ */
+ 
++
++/**
++ * @dev  Patch
++ *
++ * Vulnerability:
++ * Inside `_transfer`, when a user sells tokens to the Uniswap pair (`to == uniswapV2Pair`)
++ * the contract checks its own token balance and, if conditions are met it automatically calls
++ * `swapTokensForEth()`. The problem was that this swap could be much larger than the users sell amount.
++ * So the attacker could use a small sell to trigger a large token swap, buy tokens at the lower price and profit from the difference using flashloans.
++ *
++ * Patch:
++ * Add a `require` statement before the `swapTokensForEth()` inside the block that checks `to == uniswapV2Pair && !inSwap && swapEnabled ...`
++ * call that make sure that 
++ * the amount the contract swaps must be no more than 50% of the user’s sell amount.
++ * This stops large swaps from being triggered by tiny sells, which prevents attackers from
++ * manipulating price with very little cost.
++ *
++uint256 swapAmount = min(amount, min(contractTokenBalance, _maxTaxSwap));
++console.log("Swap attempt with amount: %s, allowed max: %s", swapAmount, amount / 2);
++require(swapAmount <= amount / 2, "Swap too large for sell amount"); */
++
++import "forge-std/console.sol";
++
++
+ pragma solidity 0.8.23;
+ 
+ abstract contract Context {
+@@ -117,7 +141,7 @@ interface IUniswapV2Router02 {
+     ) external payable returns (uint amountToken, uint amountETH, uint liquidity);
+ }
+ 
+-contract Hoppy_original is Context, IERC20, Ownable {
++contract Hoppy is Context, IERC20, Ownable {
+     using SafeMath for uint256;
+     mapping (address => uint256) private _balances;
+     mapping (address => mapping (address => uint256)) private _allowances;
+@@ -248,6 +272,11 @@ contract Hoppy_original is Context, IERC20, Ownable {
+                     sellCount = 0;
+                 }
+                 require(sellCount < 3, "Only 3 sells per block!");
++                //if the attacker sells 1 token, the contract can only swap up to 0.5 tokens. So, the attacker cannot force a large swap using a samll sell.
++                uint256 swapAmount = min(amount, min(contractTokenBalance, _maxTaxSwap));
++                console.log("Swap attempt with amount: %s, allowed max: %s", swapAmount, amount / 2);
++                require(swapAmount <= amount / 2, "Swap too large for sell amount");
++
+                 swapTokensForEth(min(amount, min(contractTokenBalance, _maxTaxSwap)));
+                 uint256 contractETHBalance = address(this).balance;
+                 if (contractETHBalance > 0) {
