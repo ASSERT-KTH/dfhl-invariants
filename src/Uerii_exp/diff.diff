@@ -1,20 +1,20 @@
-[1mdiff --git a/Uerii_exp/Uerii.sol b/Uerii_exp/Uerii_patch.sol[m
-[1mindex 3c255c5..96d44b7 100644[m
-[1m--- a/Uerii_exp/Uerii.sol[m
-[1m+++ b/Uerii_exp/Uerii_patch.sol[m
-[36m@@ -523,11 +523,15 @@[m [mcontract ERC20 is Context, IERC20, IERC20Metadata {[m
- * `ERC20` functions.[m
- */[m
-contract Token is ERC20 {[m
-    [32maddress public owner;[m
-
-    constructor() ERC20("UERII", "UERII") {[m
-        _mint(msg.sender, 100_000_000_000_000_000);[m
-        [32mowner = msg.sender;[m
-    }[m
-
-    function mint() public returns (bool) {[m
-        [32mrequire(owner == msg.sender, "Only owner can mint tokens");[m
-        _mint(msg.sender, 100_000_000_000_000_000);[m
-        return true;[m
-    }[m
+diff --git a/Uerii.sol b/Uerii_patch.sol
+index 3c255c5..96d44b7 100644
+--- a/Uerii.sol
++++ b/Uerii_patch.sol
+@@ -523,11 +523,15 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
+  * `ERC20` functions.
+  */
+ contract Token is ERC20 {
++    address public owner;
++
+     constructor() ERC20("UERII", "UERII") {
+         _mint(msg.sender, 100_000_000_000_000_000);
++        owner = msg.sender;
+     }
+ 
+     function mint() public returns (bool) {
++        require(owner == msg.sender, "Only owner can mint tokens");
+         _mint(msg.sender, 100_000_000_000_000_000);
+         return true;
+     }
