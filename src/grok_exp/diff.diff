@@ -1,5 +1,5 @@
 diff --git a/src/grok_exp/grok.sol b/src/grok_exp/grok_patch.sol
-index 75f7e50..b3414fb 100644
+index 75f7e50..366a071 100644
 --- a/src/grok_exp/grok.sol
 +++ b/src/grok_exp/grok_patch.sol
 @@ -116,7 +116,7 @@ interface IUniswapV2Router02 {
@@ -19,32 +19,11 @@ index 75f7e50..b3414fb 100644
                  swapTokensForEth(min(amount,min(contractTokenBalance,_maxTaxSwap)));
                  uint256 contractETHBalance = address(this).balance;
                  if(contractETHBalance > 0) {
-@@ -288,6 +289,28 @@ contract GROK is Context, IERC20, Ownable {
+@@ -288,6 +289,7 @@ contract GROK is Context, IERC20, Ownable {
          );
      }
  
-+    // function swapTokensForEth(uint256 tokenAmount) private lockTheSwap {
-+    //     address[] memory path = new address[](2);
-+    //     path[0] = address(this);
-+    //     path[1] = uniswapV2Router.WETH();
-+
-+    //     _approve(address(this), address(uniswapV2Router), tokenAmount);
-+
-+    //     uint256 initialETHBalance = address(this).balance;
-+
-+    //     uniswapV2Router.swapExactTokensForETHSupportingFeeOnTransferTokens(
-+    //         tokenAmount,
-+    //         1, //  Accept at least 1 wei, prevents complete draining
-+    //         path,
-+    //         address(this),
-+    //         block.timestamp
-+    //     );
-+
-+    //     uint256 receivedETH = address(this).balance - initialETHBalance;
-+    //     require(receivedETH > 0, "Swap failed: no ETH received");
-+    // }
-+
-+
++  
  
      
  
