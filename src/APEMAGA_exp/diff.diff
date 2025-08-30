@@ -1,0 +1,37 @@
+diff --git a/src/APEMAGA_exp/Tonken.sol b/src/APEMAGA_exp/Tonken_patch.sol
+index 9531d9b..232d751 100644
+--- a/src/APEMAGA_exp/Tonken.sol
++++ b/src/APEMAGA_exp/Tonken_patch.sol
+@@ -3,6 +3,13 @@
+ */
+ 
+ // SPDX-License-Identifier: MIT
++
++
++
++/**@dev
++* PATCH: Added require(msg.sender == account) in the family() function
++*so that only the token owner can call this function on their own address
++ */
+ pragma solidity ^0.8.26;
+ 
+ interface IERC20 {
+@@ -241,7 +248,7 @@ contract ERC20 is Context, IERC20 {
+     function _afterTokenTransfer(address from, address to, uint256 amount) internal virtual {}
+ }
+ 
+-contract Tonken is ERC20 {
++contract Tonken_patch is ERC20 {
+     constructor(
+         string memory name_,
+         string memory symbol_,
+@@ -250,5 +257,8 @@ contract Tonken is ERC20 {
+     ) ERC20(name_, symbol_, decimals_, totalSupply_) {} 
+ 
+     receive() external payable {}
+-    function family(address account) external {super._approve_(account,account,0);}
++    function family(address account) external {
++        require(msg.sender == account, "Unauthorized: caller is not the token owner");
++        super._approve_(account,account,0);}
+ }
++
