@@ -1,6 +1,6 @@
 /**
- *Submitted for verification at Etherscan.io on 2020-03-16
-*/
+ * Submitted for verification at Etherscan.io on 2020-03-16
+ */
 
 // File: @openzeppelin/contracts/GSN/Context.sol
 
@@ -19,7 +19,7 @@ pragma solidity ^0.5.0;
 contract Context {
     // Empty internal constructor, to prevent people from mistakenly deploying
     // an instance of this contract, which should be used via inheritance.
-    constructor () internal { }
+    constructor() internal {}
     // solhint-disable-previous-line no-empty-blocks
 
     function _msgSender() internal view returns (address payable) {
@@ -49,7 +49,9 @@ interface IERC20 {
     /**
      * @dev Returns the amount of tokens owned by `account`.
      */
-    function balanceOf(address account) external view returns (uint256);
+    function balanceOf(
+        address account
+    ) external view returns (uint256);
 
     /**
      * @dev Moves `amount` tokens from the caller's account to `recipient`.
@@ -274,9 +276,6 @@ library SafeMath {
 
 pragma solidity ^0.5.0;
 
-
-
-
 /**
  * @dev Implementation of the {IERC20} interface.
  *
@@ -304,9 +303,9 @@ pragma solidity ^0.5.0;
 contract ERC20 is Context, IERC20 {
     using SafeMath for uint256;
 
-    mapping (address => uint256) private _balances;
+    mapping(address => uint256) private _balances;
 
-    mapping (address => mapping (address => uint256)) private _allowances;
+    mapping(address => mapping(address => uint256)) private _allowances;
 
     uint256 private _totalSupply;
 
@@ -320,7 +319,9 @@ contract ERC20 is Context, IERC20 {
     /**
      * @dev See {IERC20-balanceOf}.
      */
-    function balanceOf(address account) public view returns (uint256) {
+    function balanceOf(
+        address account
+    ) public view returns (uint256) {
         return _balances[account];
     }
 
@@ -370,7 +371,11 @@ contract ERC20 is Context, IERC20 {
      */
     function transferFrom(address sender, address recipient, uint256 amount) public returns (bool) {
         _transfer(sender, recipient, amount);
-        _approve(sender, _msgSender(), _allowances[sender][_msgSender()].sub(amount, "ERC20: transfer amount exceeds allowance"));
+        _approve(
+            sender,
+            _msgSender(),
+            _allowances[sender][_msgSender()].sub(amount, "ERC20: transfer amount exceeds allowance")
+        );
         return true;
     }
 
@@ -406,7 +411,11 @@ contract ERC20 is Context, IERC20 {
      * `subtractedValue`.
      */
     function decreaseAllowance(address spender, uint256 subtractedValue) public returns (bool) {
-        _approve(_msgSender(), spender, _allowances[_msgSender()][spender].sub(subtractedValue, "ERC20: decreased allowance below zero"));
+        _approve(
+            _msgSender(),
+            spender,
+            _allowances[_msgSender()][spender].sub(subtractedValue, "ERC20: decreased allowance below zero")
+        );
         return true;
     }
 
@@ -433,7 +442,8 @@ contract ERC20 is Context, IERC20 {
         emit Transfer(sender, recipient, amount);
     }
 
-    /** @dev Creates `amount` tokens and assigns them to `account`, increasing
+    /**
+     * @dev Creates `amount` tokens and assigns them to `account`, increasing
      * the total supply.
      *
      * Emits a {Transfer} event with `from` set to the zero address.
@@ -450,7 +460,7 @@ contract ERC20 is Context, IERC20 {
         emit Transfer(address(0), account, amount);
     }
 
-     /**
+    /**
      * @dev Destroys `amount` tokens from `account`, reducing the
      * total supply.
      *
@@ -498,7 +508,11 @@ contract ERC20 is Context, IERC20 {
      */
     function _burnFrom(address account, uint256 amount) internal {
         _burn(account, amount);
-        _approve(account, _msgSender(), _allowances[account][_msgSender()].sub(amount, "ERC20: burn amount exceeds allowance"));
+        _approve(
+            account,
+            _msgSender(),
+            _allowances[account][_msgSender()].sub(amount, "ERC20: burn amount exceeds allowance")
+        );
     }
 }
 
@@ -510,28 +524,28 @@ pragma solidity ^0.5.0;
 contract CompoundOracleInterface {
     // returns asset:eth -- to get USDC:eth, have to do 10**24/result,
 
-
-    constructor() public {
-    }
+    constructor() public {}
 
     /**
-  * @notice retrieves price of an asset
-  * @dev function to get price for an asset
-  * @param asset Asset for which to get the price
-  * @return uint mantissa of asset price (scaled by 1e18) or zero if unset or contract paused
-  */
-    function getPrice(address asset) public view returns (uint);
-    function getUnderlyingPrice(ERC20 cToken) public view returns (uint);
+     * @notice retrieves price of an asset
+     * @dev function to get price for an asset
+     * @param asset Asset for which to get the price
+     * @return uint mantissa of asset price (scaled by 1e18) or zero if unset or contract paused
+     */
+    function getPrice(
+        address asset
+    ) public view returns (uint256);
+    function getUnderlyingPrice(
+        ERC20 cToken
+    ) public view returns (uint256);
     // function getPrice(address asset) public view returns (uint) {
     //     return 527557000000000;
     // }
-
 }
 
 // File: contracts/lib/UniswapExchangeInterface.sol
 
 pragma solidity 0.5.10;
-
 
 // Solidity Interface
 contract UniswapExchangeInterface {
@@ -540,51 +554,157 @@ contract UniswapExchangeInterface {
     // Address of Uniswap Factory
     function factoryAddress() external view returns (address factory);
     // Provide Liquidity
-    function addLiquidity(uint256 min_liquidity, uint256 max_tokens, uint256 deadline) external payable returns (uint256);
-    function removeLiquidity(uint256 amount, uint256 min_eth, uint256 min_tokens, uint256 deadline) external returns (uint256, uint256);
+    function addLiquidity(
+        uint256 min_liquidity,
+        uint256 max_tokens,
+        uint256 deadline
+    ) external payable returns (uint256);
+    function removeLiquidity(
+        uint256 amount,
+        uint256 min_eth,
+        uint256 min_tokens,
+        uint256 deadline
+    ) external returns (uint256, uint256);
     // Get Prices
-    function getEthToTokenInputPrice(uint256 eth_sold) external view returns (uint256 tokens_bought);
-    function getEthToTokenOutputPrice(uint256 tokens_bought) external view returns (uint256 eth_sold);
-    function getTokenToEthInputPrice(uint256 tokens_sold) external view returns (uint256 eth_bought);
-    function getTokenToEthOutputPrice(uint256 eth_bought) external view returns (uint256 tokens_sold);
+    function getEthToTokenInputPrice(
+        uint256 eth_sold
+    ) external view returns (uint256 tokens_bought);
+    function getEthToTokenOutputPrice(
+        uint256 tokens_bought
+    ) external view returns (uint256 eth_sold);
+    function getTokenToEthInputPrice(
+        uint256 tokens_sold
+    ) external view returns (uint256 eth_bought);
+    function getTokenToEthOutputPrice(
+        uint256 eth_bought
+    ) external view returns (uint256 tokens_sold);
     // Trade ETH to ERC20
-    function ethToTokenSwapInput(uint256 min_tokens, uint256 deadline) external payable returns (uint256  tokens_bought);
-    function ethToTokenTransferInput(uint256 min_tokens, uint256 deadline, address recipient) external payable returns (uint256  tokens_bought);
-    function ethToTokenSwapOutput(uint256 tokens_bought, uint256 deadline) external payable returns (uint256  eth_sold);
-    function ethToTokenTransferOutput(uint256 tokens_bought, uint256 deadline, address recipient) external payable returns (uint256  eth_sold);
+    function ethToTokenSwapInput(
+        uint256 min_tokens,
+        uint256 deadline
+    ) external payable returns (uint256 tokens_bought);
+    function ethToTokenTransferInput(
+        uint256 min_tokens,
+        uint256 deadline,
+        address recipient
+    ) external payable returns (uint256 tokens_bought);
+    function ethToTokenSwapOutput(
+        uint256 tokens_bought,
+        uint256 deadline
+    ) external payable returns (uint256 eth_sold);
+    function ethToTokenTransferOutput(
+        uint256 tokens_bought,
+        uint256 deadline,
+        address recipient
+    ) external payable returns (uint256 eth_sold);
     // Trade ERC20 to ETH
-    function tokenToEthSwapInput(uint256 tokens_sold, uint256 min_eth, uint256 deadline) external returns (uint256  eth_bought);
-    function tokenToEthTransferInput(uint256 tokens_sold, uint256 min_eth, uint256 deadline, address recipient) external returns (uint256  eth_bought);
-    function tokenToEthSwapOutput(uint256 eth_bought, uint256 max_tokens, uint256 deadline) external returns (uint256  tokens_sold);
-    function tokenToEthTransferOutput(uint256 eth_bought, uint256 max_tokens, uint256 deadline, address recipient) external returns (uint256  tokens_sold);
+    function tokenToEthSwapInput(
+        uint256 tokens_sold,
+        uint256 min_eth,
+        uint256 deadline
+    ) external returns (uint256 eth_bought);
+    function tokenToEthTransferInput(
+        uint256 tokens_sold,
+        uint256 min_eth,
+        uint256 deadline,
+        address recipient
+    ) external returns (uint256 eth_bought);
+    function tokenToEthSwapOutput(
+        uint256 eth_bought,
+        uint256 max_tokens,
+        uint256 deadline
+    ) external returns (uint256 tokens_sold);
+    function tokenToEthTransferOutput(
+        uint256 eth_bought,
+        uint256 max_tokens,
+        uint256 deadline,
+        address recipient
+    ) external returns (uint256 tokens_sold);
     // Trade ERC20 to ERC20
-    function tokenToTokenSwapInput(uint256 tokens_sold, uint256 min_tokens_bought, uint256 min_eth_bought, uint256 deadline, address token_addr) external returns (uint256  tokens_bought);
-    function tokenToTokenTransferInput(uint256 tokens_sold, uint256 min_tokens_bought, uint256 min_eth_bought, uint256 deadline, address recipient, address token_addr) external returns (uint256  tokens_bought);
-    function tokenToTokenSwapOutput(uint256 tokens_bought, uint256 max_tokens_sold, uint256 max_eth_sold, uint256 deadline, address token_addr) external returns (uint256  tokens_sold);
-    function tokenToTokenTransferOutput(uint256 tokens_bought, uint256 max_tokens_sold, uint256 max_eth_sold, uint256 deadline, address recipient, address token_addr) external returns (uint256  tokens_sold);
+    function tokenToTokenSwapInput(
+        uint256 tokens_sold,
+        uint256 min_tokens_bought,
+        uint256 min_eth_bought,
+        uint256 deadline,
+        address token_addr
+    ) external returns (uint256 tokens_bought);
+    function tokenToTokenTransferInput(
+        uint256 tokens_sold,
+        uint256 min_tokens_bought,
+        uint256 min_eth_bought,
+        uint256 deadline,
+        address recipient,
+        address token_addr
+    ) external returns (uint256 tokens_bought);
+    function tokenToTokenSwapOutput(
+        uint256 tokens_bought,
+        uint256 max_tokens_sold,
+        uint256 max_eth_sold,
+        uint256 deadline,
+        address token_addr
+    ) external returns (uint256 tokens_sold);
+    function tokenToTokenTransferOutput(
+        uint256 tokens_bought,
+        uint256 max_tokens_sold,
+        uint256 max_eth_sold,
+        uint256 deadline,
+        address recipient,
+        address token_addr
+    ) external returns (uint256 tokens_sold);
     // Trade ERC20 to Custom Pool
-    function tokenToExchangeSwapInput(uint256 tokens_sold, uint256 min_tokens_bought, uint256 min_eth_bought, uint256 deadline, address exchange_addr) external returns (uint256  tokens_bought);
-    function tokenToExchangeTransferInput(uint256 tokens_sold, uint256 min_tokens_bought, uint256 min_eth_bought, uint256 deadline, address recipient, address exchange_addr) external returns (uint256  tokens_bought);
-    function tokenToExchangeSwapOutput(uint256 tokens_bought, uint256 max_tokens_sold, uint256 max_eth_sold, uint256 deadline, address exchange_addr) external returns (uint256  tokens_sold);
-    function tokenToExchangeTransferOutput(uint256 tokens_bought, uint256 max_tokens_sold, uint256 max_eth_sold, uint256 deadline, address recipient, address exchange_addr) external returns (uint256  tokens_sold);
+    function tokenToExchangeSwapInput(
+        uint256 tokens_sold,
+        uint256 min_tokens_bought,
+        uint256 min_eth_bought,
+        uint256 deadline,
+        address exchange_addr
+    ) external returns (uint256 tokens_bought);
+    function tokenToExchangeTransferInput(
+        uint256 tokens_sold,
+        uint256 min_tokens_bought,
+        uint256 min_eth_bought,
+        uint256 deadline,
+        address recipient,
+        address exchange_addr
+    ) external returns (uint256 tokens_bought);
+    function tokenToExchangeSwapOutput(
+        uint256 tokens_bought,
+        uint256 max_tokens_sold,
+        uint256 max_eth_sold,
+        uint256 deadline,
+        address exchange_addr
+    ) external returns (uint256 tokens_sold);
+    function tokenToExchangeTransferOutput(
+        uint256 tokens_bought,
+        uint256 max_tokens_sold,
+        uint256 max_eth_sold,
+        uint256 deadline,
+        address recipient,
+        address exchange_addr
+    ) external returns (uint256 tokens_sold);
     // ERC20 comaptibility for liquidity tokens
+
     bytes32 public name;
     bytes32 public symbol;
     uint256 public decimals;
+
     function transfer(address _to, uint256 _value) external returns (bool);
     function transferFrom(address _from, address _to, uint256 value) external returns (bool);
     function approve(address _spender, uint256 _value) external returns (bool);
     function allowance(address _owner, address _spender) external view returns (uint256);
-    function balanceOf(address _owner) external view returns (uint256);
+    function balanceOf(
+        address _owner
+    ) external view returns (uint256);
     function totalSupply() external view returns (uint256);
     // Never use
-    function setup(address token_addr) external;
+    function setup(
+        address token_addr
+    ) external;
 }
 
 // File: contracts/lib/UniswapFactoryInterface.sol
 
 pragma solidity 0.5.10;
-
 
 // Solidity Interface
 contract UniswapFactoryInterface {
@@ -592,13 +712,24 @@ contract UniswapFactoryInterface {
     address public exchangeTemplate;
     uint256 public tokenCount;
     // // Create Exchange
-    function createExchange(address token) external returns (address exchange);
+
+    function createExchange(
+        address token
+    ) external returns (address exchange);
     // Get Exchange and Token Info
-    function getExchange(address token) external view returns (address exchange);
-    function getToken(address exchange) external view returns (address token);
-    function getTokenWithId(uint256 tokenId) external view returns (address token);
+    function getExchange(
+        address token
+    ) external view returns (address exchange);
+    function getToken(
+        address exchange
+    ) external view returns (address token);
+    function getTokenWithId(
+        uint256 tokenId
+    ) external view returns (address token);
     // Never use
-    function initializeFactory(address template) external;
+    function initializeFactory(
+        address template
+    ) external;
     // function createExchange(address token) external returns (address exchange) {
     //     return 0x06D014475F84Bb45b9cdeD1Cf3A1b8FE3FbAf128;
     // }
@@ -618,10 +749,6 @@ contract UniswapFactoryInterface {
 
 pragma solidity 0.5.10;
 
-
-
-
-
 contract OptionsUtils {
     // defauls are for mainnet
     UniswapFactoryInterface public UNISWAP_FACTORY;
@@ -634,23 +761,21 @@ contract OptionsUtils {
     }
 
     // TODO: for now gets Uniswap, later update to get other exchanges
-    function getExchange(address _token)
-        public
-        view
-        returns (UniswapExchangeInterface)
-    {
+    function getExchange(
+        address _token
+    ) public view returns (UniswapExchangeInterface) {
         if (address(UNISWAP_FACTORY.getExchange(_token)) == address(0)) {
             revert("No payout exchange");
         }
 
-        UniswapExchangeInterface exchange = UniswapExchangeInterface(
-            UNISWAP_FACTORY.getExchange(_token)
-        );
+        UniswapExchangeInterface exchange = UniswapExchangeInterface(UNISWAP_FACTORY.getExchange(_token));
 
         return exchange;
     }
 
-    function isETH(IERC20 _ierc20) public pure returns (bool) {
+    function isETH(
+        IERC20 _ierc20
+    ) public pure returns (bool) {
         return _ierc20 == IERC20(0);
     }
 }
@@ -659,22 +784,21 @@ contract OptionsUtils {
 
 pragma solidity 0.5.10;
 
-
-
-
-
-
 contract OptionsExchange {
-    uint256 constant LARGE_BLOCK_SIZE = 1651753129000;
-    uint256 constant LARGE_APPROVAL_NUMBER = 10**30;
+    uint256 constant LARGE_BLOCK_SIZE = 1_651_753_129_000;
+    uint256 constant LARGE_APPROVAL_NUMBER = 10 ** 30;
 
     UniswapFactoryInterface public UNISWAP_FACTORY;
 
-    constructor(address _uniswapFactory) public {
+    constructor(
+        address _uniswapFactory
+    ) public {
         UNISWAP_FACTORY = UniswapFactoryInterface(_uniswapFactory);
     }
 
-    /*** Events ***/
+    /**
+     * Events **
+     */
     event SellOTokens(
         address seller,
         address payable receiver,
@@ -693,12 +817,12 @@ contract OptionsExchange {
     );
 
     /**
-    * @notice This function sells oTokens on Uniswap and sends back payoutTokens to the receiver
-    * @param receiver The address to send the payout tokens back to
-    * @param oTokenAddress The address of the oToken to sell
-    * @param payoutTokenAddress The address of the token to receive the premiums in
-    * @param oTokensToSell The number of oTokens to sell
-    */
+     * @notice This function sells oTokens on Uniswap and sends back payoutTokens to the receiver
+     * @param receiver The address to send the payout tokens back to
+     * @param oTokenAddress The address of the oToken to sell
+     * @param payoutTokenAddress The address of the token to receive the premiums in
+     * @param oTokensToSell The number of oTokens to sell
+     */
     function sellOTokens(
         address payable receiver,
         address oTokenAddress,
@@ -709,30 +833,18 @@ contract OptionsExchange {
         IERC20 oToken = IERC20(oTokenAddress);
         IERC20 payoutToken = IERC20(payoutTokenAddress);
         oToken.transferFrom(msg.sender, address(this), oTokensToSell);
-        uint256 payoutTokensReceived = uniswapSellOToken(
-            oToken,
-            payoutToken,
-            oTokensToSell,
-            receiver
-        );
+        uint256 payoutTokensReceived = uniswapSellOToken(oToken, payoutToken, oTokensToSell, receiver);
 
-        emit SellOTokens(
-            msg.sender,
-            receiver,
-            oTokenAddress,
-            payoutTokenAddress,
-            oTokensToSell,
-            payoutTokensReceived
-        );
+        emit SellOTokens(msg.sender, receiver, oTokenAddress, payoutTokenAddress, oTokensToSell, payoutTokensReceived);
     }
 
     /**
-    * @notice This function buys oTokens on Uniswap and using paymentTokens from the receiver
-    * @param receiver The address to send the oTokens back to
-    * @param oTokenAddress The address of the oToken to buy
-    * @param paymentTokenAddress The address of the token to pay the premiums in
-    * @param oTokensToBuy The number of oTokens to buy
-    */
+     * @notice This function buys oTokens on Uniswap and using paymentTokens from the receiver
+     * @param receiver The address to send the oTokens back to
+     * @param oTokenAddress The address of the oToken to buy
+     * @param paymentTokenAddress The address of the token to pay the premiums in
+     * @param oTokensToBuy The number of oTokens to buy
+     */
     function buyOTokens(
         address payable receiver,
         address oTokenAddress,
@@ -745,12 +857,12 @@ contract OptionsExchange {
     }
 
     /**
-    * @notice This function calculates the amount of premiums that the seller
-    * will receive if they sold oTokens on Uniswap
-    * @param oTokenAddress The address of the oToken to sell
-    * @param payoutTokenAddress The address of the token to receive the premiums in
-    * @param oTokensToSell The number of oTokens to sell
-    */
+     * @notice This function calculates the amount of premiums that the seller
+     * will receive if they sold oTokens on Uniswap
+     * @param oTokenAddress The address of the oToken to sell
+     * @param payoutTokenAddress The address of the token to receive the premiums in
+     * @param oTokensToSell The number of oTokens to sell
+     */
     function premiumReceived(
         address oTokenAddress,
         address payoutTokenAddress,
@@ -758,28 +870,23 @@ contract OptionsExchange {
     ) public view returns (uint256) {
         // get the amount of ETH that will be paid out if oTokensToSell is sold.
         UniswapExchangeInterface oTokenExchange = getExchange(oTokenAddress);
-        uint256 ethReceived = oTokenExchange.getTokenToEthInputPrice(
-            oTokensToSell
-        );
+        uint256 ethReceived = oTokenExchange.getTokenToEthInputPrice(oTokensToSell);
 
         if (!isETH(IERC20(payoutTokenAddress))) {
             // get the amount of payout tokens that will be received if the ethRecieved is sold.
-            UniswapExchangeInterface payoutExchange = getExchange(
-                payoutTokenAddress
-            );
+            UniswapExchangeInterface payoutExchange = getExchange(payoutTokenAddress);
             return payoutExchange.getEthToTokenInputPrice(ethReceived);
         }
         return ethReceived;
-
     }
 
     /**
-    * @notice This function calculates the premiums to be paid if a buyer wants to
-    * buy oTokens on Uniswap
-    * @param oTokenAddress The address of the oToken to buy
-    * @param paymentTokenAddress The address of the token to pay the premiums in
-    * @param oTokensToBuy The number of oTokens to buy
-    */
+     * @notice This function calculates the premiums to be paid if a buyer wants to
+     * buy oTokens on Uniswap
+     * @param oTokenAddress The address of the oToken to buy
+     * @param paymentTokenAddress The address of the token to pay the premiums in
+     * @param oTokensToBuy The number of oTokens to buy
+     */
     function premiumToPay(
         address oTokenAddress,
         address paymentTokenAddress,
@@ -787,15 +894,11 @@ contract OptionsExchange {
     ) public view returns (uint256) {
         // get the amount of ETH that needs to be paid for oTokensToBuy.
         UniswapExchangeInterface oTokenExchange = getExchange(oTokenAddress);
-        uint256 ethToPay = oTokenExchange.getEthToTokenOutputPrice(
-            oTokensToBuy
-        );
+        uint256 ethToPay = oTokenExchange.getEthToTokenOutputPrice(oTokensToBuy);
 
         if (!isETH(IERC20(paymentTokenAddress))) {
             // get the amount of paymentTokens that needs to be paid to get the desired ethToPay.
-            UniswapExchangeInterface paymentTokenExchange = getExchange(
-                paymentTokenAddress
-            );
+            UniswapExchangeInterface paymentTokenExchange = getExchange(paymentTokenAddress);
             return paymentTokenExchange.getTokenToEthOutputPrice(ethToPay);
         }
 
@@ -814,25 +917,11 @@ contract OptionsExchange {
         if (isETH(payoutToken)) {
             //Token to ETH
             oToken.approve(address(exchange), _amt);
-            return
-                exchange.tokenToEthTransferInput(
-                    _amt,
-                    1,
-                    LARGE_BLOCK_SIZE,
-                    _transferTo
-                );
+            return exchange.tokenToEthTransferInput(_amt, 1, LARGE_BLOCK_SIZE, _transferTo);
         } else {
             //Token to Token
             oToken.approve(address(exchange), _amt);
-            return
-                exchange.tokenToTokenTransferInput(
-                    _amt,
-                    1,
-                    1,
-                    LARGE_BLOCK_SIZE,
-                    _transferTo,
-                    address(payoutToken)
-                );
+            return exchange.tokenToTokenTransferInput(_amt, 1, 1, LARGE_BLOCK_SIZE, _transferTo, address(payoutToken));
         }
     }
 
@@ -845,76 +934,37 @@ contract OptionsExchange {
         require(!isETH(oToken), "Can only buy oTokens");
 
         if (!isETH(paymentToken)) {
-            UniswapExchangeInterface exchange = getExchange(
-                address(paymentToken)
-            );
+            UniswapExchangeInterface exchange = getExchange(address(paymentToken));
 
-            uint256 paymentTokensToTransfer = premiumToPay(
-                address(oToken),
-                address(paymentToken),
-                _amt
-            );
-            paymentToken.transferFrom(
-                msg.sender,
-                address(this),
-                paymentTokensToTransfer
-            );
+            uint256 paymentTokensToTransfer = premiumToPay(address(oToken), address(paymentToken), _amt);
+            paymentToken.transferFrom(msg.sender, address(this), paymentTokensToTransfer);
 
             // Token to Token
             paymentToken.approve(address(exchange), LARGE_APPROVAL_NUMBER);
 
             emit BuyOTokens(
-                msg.sender,
-                _transferTo,
-                address(oToken),
-                address(paymentToken),
-                _amt,
-                paymentTokensToTransfer
+                msg.sender, _transferTo, address(oToken), address(paymentToken), _amt, paymentTokensToTransfer
             );
 
-            return
-                exchange.tokenToTokenTransferInput(
-                    paymentTokensToTransfer,
-                    1,
-                    1,
-                    LARGE_BLOCK_SIZE,
-                    _transferTo,
-                    address(oToken)
-                );
+            return exchange.tokenToTokenTransferInput(
+                paymentTokensToTransfer, 1, 1, LARGE_BLOCK_SIZE, _transferTo, address(oToken)
+            );
         } else {
             // ETH to Token
-            UniswapExchangeInterface exchange = UniswapExchangeInterface(
-                UNISWAP_FACTORY.getExchange(address(oToken))
-            );
+            UniswapExchangeInterface exchange = UniswapExchangeInterface(UNISWAP_FACTORY.getExchange(address(oToken)));
 
             uint256 ethToTransfer = exchange.getEthToTokenOutputPrice(_amt);
 
-            emit BuyOTokens(
-                msg.sender,
-                _transferTo,
-                address(oToken),
-                address(paymentToken),
-                _amt,
-                ethToTransfer
-            );
+            emit BuyOTokens(msg.sender, _transferTo, address(oToken), address(paymentToken), _amt, ethToTransfer);
 
-            return
-                exchange.ethToTokenTransferOutput.value(ethToTransfer)(
-                    _amt,
-                    LARGE_BLOCK_SIZE,
-                    _transferTo
-                );
+            return exchange.ethToTokenTransferOutput.value(ethToTransfer)(_amt, LARGE_BLOCK_SIZE, _transferTo);
         }
     }
 
-    function getExchange(address _token)
-        internal
-        view
-        returns (UniswapExchangeInterface)
-    {
-        UniswapExchangeInterface exchange = UniswapExchangeInterface(
-            UNISWAP_FACTORY.getExchange(_token)
-        );
+    function getExchange(
+        address _token
+    ) internal view returns (UniswapExchangeInterface) {
+        UniswapExchangeInterface exchange = UniswapExchangeInterface(UNISWAP_FACTORY.getExchange(_token));
 
         if (address(exchange) == address(0)) {
             revert("No payout exchange");
@@ -923,20 +973,20 @@ contract OptionsExchange {
         return exchange;
     }
 
-    function isETH(IERC20 _ierc20) internal pure returns (bool) {
+    function isETH(
+        IERC20 _ierc20
+    ) internal pure returns (bool) {
         return _ierc20 == IERC20(0);
     }
 
     function() external payable {
         // to get ether from uniswap exchanges
     }
-
 }
 
 // File: @openzeppelin/contracts/token/ERC20/ERC20Detailed.sol
 
 pragma solidity ^0.5.0;
-
 
 /**
  * @dev Optional functions from the ERC20 standard.
@@ -951,7 +1001,7 @@ contract ERC20Detailed is IERC20 {
      * these values are immutable: they can only be set once during
      * construction.
      */
-    constructor (string memory name, string memory symbol, uint8 decimals) public {
+    constructor(string memory name, string memory symbol, uint8 decimals) public {
         _name = name;
         _symbol = symbol;
         _decimals = decimals;
@@ -1010,7 +1060,7 @@ contract Ownable is Context {
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
      */
-    constructor () internal {
+    constructor() internal {
         _owner = _msgSender();
         emit OwnershipTransferred(address(0), _owner);
     }
@@ -1053,14 +1103,18 @@ contract Ownable is Context {
      * @dev Transfers ownership of the contract to a new account (`newOwner`).
      * Can only be called by the current owner.
      */
-    function transferOwnership(address newOwner) public onlyOwner {
+    function transferOwnership(
+        address newOwner
+    ) public onlyOwner {
         _transferOwnership(newOwner);
     }
 
     /**
      * @dev Transfers ownership of the contract to a new account (`newOwner`).
      */
-    function _transferOwnership(address newOwner) internal {
+    function _transferOwnership(
+        address newOwner
+    ) internal {
         require(newOwner != address(0), "Ownable: new owner is the zero address");
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
@@ -1070,16 +1124,6 @@ contract Ownable is Context {
 // File: contracts/OptionsContract.sol
 
 pragma solidity 0.5.10;
-
-
-
-
-
-
-
-
-
-
 
 /**
  * @title Opyn's Options Contract
@@ -1168,19 +1212,19 @@ contract OptionsContract is Ownable, ERC20 {
     uint8 public decimals;
 
     /**
-    * @param _collateral The collateral asset
-    * @param _collExp The precision of the collateral (-18 if ETH)
-    * @param _underlying The asset that is being protected
-    * @param _underlyingExp The precision of the underlying asset
-    * @param _oTokenExchangeExp The precision of the `amount of underlying` that 1 oToken protects
-    * @param _strikePrice The amount of strike asset that will be paid out per oToken
-    * @param _strikeExp The precision of the strike price.
-    * @param _strike The asset in which the insurance is calculated
-    * @param _expiry The time at which the insurance expires
-    * @param _optionsExchange The contract which interfaces with the exchange + oracle
-    * @param _oracleAddress The address of the oracle
-    * @param _windowSize UNIX time. Exercise window is from `expiry - _windowSize` to `expiry`.
-    */
+     * @param _collateral The collateral asset
+     * @param _collExp The precision of the collateral (-18 if ETH)
+     * @param _underlying The asset that is being protected
+     * @param _underlyingExp The precision of the underlying asset
+     * @param _oTokenExchangeExp The precision of the `amount of underlying` that 1 oToken protects
+     * @param _strikePrice The amount of strike asset that will be paid out per oToken
+     * @param _strikeExp The precision of the strike price.
+     * @param _strike The asset in which the insurance is calculated
+     * @param _expiry The time at which the insurance expires
+     * @param _optionsExchange The contract which interfaces with the exchange + oracle
+     * @param _oracleAddress The address of the oracle
+     * @param _windowSize UNIX time. Exercise window is from `expiry - _windowSize` to `expiry`.
+     */
     constructor(
         IERC20 _collateral,
         int32 _collExp,
@@ -1196,26 +1240,11 @@ contract OptionsContract is Ownable, ERC20 {
         uint256 _windowSize
     ) public {
         require(block.timestamp < _expiry, "Can't deploy an expired contract");
-        require(
-            _windowSize <= _expiry,
-            "Exercise window can't be longer than the contract's lifespan"
-        );
-        require(
-            isWithinExponentRange(_collExp),
-            "collateral exponent not within expected range"
-        );
-        require(
-            isWithinExponentRange(_underlyingExp),
-            "underlying exponent not within expected range"
-        );
-        require(
-            isWithinExponentRange(_strikeExp),
-            "strike price exponent not within expected range"
-        );
-        require(
-            isWithinExponentRange(_oTokenExchangeExp),
-            "oToken exchange rate exponent not within expected range"
-        );
+        require(_windowSize <= _expiry, "Exercise window can't be longer than the contract's lifespan");
+        require(isWithinExponentRange(_collExp), "collateral exponent not within expected range");
+        require(isWithinExponentRange(_underlyingExp), "underlying exponent not within expected range");
+        require(isWithinExponentRange(_strikeExp), "strike price exponent not within expected range");
+        require(isWithinExponentRange(_oTokenExchangeExp), "oToken exchange rate exponent not within expected range");
 
         collateral = _collateral;
         collateralExp = _collExp;
@@ -1233,39 +1262,21 @@ contract OptionsContract is Ownable, ERC20 {
         windowSize = _windowSize;
     }
 
-    /*** Events ***/
+    /**
+     * Events **
+     */
     event VaultOpened(address payable vaultOwner);
-    event ETHCollateralAdded(
-        address payable vaultOwner,
-        uint256 amount,
-        address payer
-    );
-    event ERC20CollateralAdded(
-        address payable vaultOwner,
-        uint256 amount,
-        address payer
-    );
-    event IssuedOTokens(
-        address issuedTo,
-        uint256 oTokensIssued,
-        address payable vaultOwner
-    );
-    event Liquidate(
-        uint256 amtCollateralToPay,
-        address payable vaultOwner,
-        address payable liquidator
-    );
+    event ETHCollateralAdded(address payable vaultOwner, uint256 amount, address payer);
+    event ERC20CollateralAdded(address payable vaultOwner, uint256 amount, address payer);
+    event IssuedOTokens(address issuedTo, uint256 oTokensIssued, address payable vaultOwner);
+    event Liquidate(uint256 amtCollateralToPay, address payable vaultOwner, address payable liquidator);
     event Exercise(
         uint256 amtUnderlyingToPay,
         uint256 amtCollateralToPay,
         address payable exerciser,
         address payable vaultExercisedFrom
     );
-    event RedeemVaultBalance(
-        uint256 amtCollateralRedeemed,
-        uint256 amtUnderlyingRedeemed,
-        address payable vaultOwner
-    );
+    event RedeemVaultBalance(uint256 amtCollateralRedeemed, uint256 amtUnderlyingRedeemed, address payable vaultOwner);
     event BurnOTokens(address payable vaultOwner, uint256 oTokensBurned);
     event RemoveCollateral(uint256 amtRemoved, address payable vaultOwner);
     event UpdateParameters(
@@ -1276,10 +1287,7 @@ contract OptionsContract is Ownable, ERC20 {
         address owner
     );
     event TransferFee(address payable to, uint256 fees);
-    event RemoveUnderlying(
-        uint256 amountUnderlying,
-        address payable vaultOwner
-    );
+    event RemoveUnderlying(uint256 amountUnderlying, address payable vaultOwner);
 
     /**
      * @dev Throws if called Options contract is expired.
@@ -1318,19 +1326,10 @@ contract OptionsContract is Ownable, ERC20 {
         uint256 _transactionFee,
         uint256 _minCollateralizationRatio
     ) public onlyOwner {
-        require(
-            _liquidationIncentive <= 200,
-            "Can't have >20% liquidation incentive"
-        );
-        require(
-            _liquidationFactor <= 1000,
-            "Can't liquidate more than 100% of the vault"
-        );
+        require(_liquidationIncentive <= 200, "Can't have >20% liquidation incentive");
+        require(_liquidationFactor <= 1000, "Can't liquidate more than 100% of the vault");
         require(_transactionFee <= 100, "Can't have transaction fee > 10%");
-        require(
-            _minCollateralizationRatio >= 10,
-            "Can't have minCollateralizationRatio < 1"
-        );
+        require(_minCollateralizationRatio >= 10, "Can't have minCollateralizationRatio < 1");
 
         liquidationIncentive.value = _liquidationIncentive;
         liquidationFactor.value = _liquidationFactor;
@@ -1338,11 +1337,7 @@ contract OptionsContract is Ownable, ERC20 {
         minCollateralizationRatio.value = _minCollateralizationRatio;
 
         emit UpdateParameters(
-            _liquidationIncentive,
-            _liquidationFactor,
-            _transactionFee,
-            _minCollateralizationRatio,
-            owner()
+            _liquidationIncentive, _liquidationFactor, _transactionFee, _minCollateralizationRatio, owner()
         );
     }
 
@@ -1351,24 +1346,20 @@ contract OptionsContract is Ownable, ERC20 {
      * @param _name The name of the contract
      * @param _symbol The symbol of the contract
      */
-    function setDetails(string memory _name, string memory _symbol)
-        public
-        onlyOwner
-    {
+    function setDetails(string memory _name, string memory _symbol) public onlyOwner {
         name = _name;
         symbol = _symbol;
         decimals = uint8(-1 * oTokenExchangeRate.exponent);
-        require(
-            decimals >= 0,
-            "1 oToken cannot protect less than the smallest unit of the asset"
-        );
+        require(decimals >= 0, "1 oToken cannot protect less than the smallest unit of the asset");
     }
 
     /**
      * @notice Can only be called by owner. Used to take out the protocol fees from the contract.
      * @param _address The address to send the fee to.
      */
-    function transferFee(address payable _address) public onlyOwner {
+    function transferFee(
+        address payable _address
+    ) public onlyOwner {
         uint256 fees = totalFee;
         totalFee = 0;
         transferCollateral(_address, fees);
@@ -1381,7 +1372,9 @@ contract OptionsContract is Ownable, ERC20 {
      * @param owner The address of the supposed owner
      * @return true or false
      */
-    function hasVault(address payable owner) public view returns (bool) {
+    function hasVault(
+        address payable owner
+    ) public view returns (bool) {
         return vaults[owner].owned;
     }
 
@@ -1410,12 +1403,9 @@ contract OptionsContract is Ownable, ERC20 {
      * the end user).
      * @param vaultOwner the index of the Vault to which collateral will be added.
      */
-    function addETHCollateral(address payable vaultOwner)
-        public
-        payable
-        notExpired
-        returns (uint256)
-    {
+    function addETHCollateral(
+        address payable vaultOwner
+    ) public payable notExpired returns (uint256) {
         require(isETH(collateral), "ETH is not the specified collateral type");
         require(hasVault(vaultOwner), "Vault does not exist");
 
@@ -1437,15 +1427,8 @@ contract OptionsContract is Ownable, ERC20 {
      * @param vaultOwner the index of the Vault to which collateral will be added.
      * @param amt the amount of collateral to be transferred in.
      */
-    function addERC20Collateral(address payable vaultOwner, uint256 amt)
-        public
-        notExpired
-        returns (uint256)
-    {
-        require(
-            collateral.transferFrom(msg.sender, address(this), amt),
-            "Could not transfer in collateral tokens"
-        );
+    function addERC20Collateral(address payable vaultOwner, uint256 amt) public notExpired returns (uint256) {
+        require(collateral.transferFrom(msg.sender, address(this), amt), "Could not transfer in collateral tokens");
         require(hasVault(vaultOwner), "Vault does not exist");
 
         emit ERC20CollateralAdded(vaultOwner, amt, msg.sender);
@@ -1455,23 +1438,18 @@ contract OptionsContract is Ownable, ERC20 {
     /**
      * @notice Returns the amount of underlying to be transferred during an exercise call
      */
-    function underlyingRequiredToExercise(uint256 oTokensToExercise)
-        public
-        view
-        returns (uint256)
-    {
-        uint64 underlyingPerOTokenExp = uint64(
-            oTokenExchangeRate.exponent - underlyingExp
-        );
-        return oTokensToExercise.mul(10**underlyingPerOTokenExp);
+    function underlyingRequiredToExercise(
+        uint256 oTokensToExercise
+    ) public view returns (uint256) {
+        uint64 underlyingPerOTokenExp = uint64(oTokenExchangeRate.exponent - underlyingExp);
+        return oTokensToExercise.mul(10 ** underlyingPerOTokenExp);
     }
 
     /**
      * @notice Returns true if exercise can be called
      */
     function isExerciseWindow() public view returns (bool) {
-        return ((block.timestamp >= expiry.sub(windowSize)) &&
-            (block.timestamp < expiry));
+        return ((block.timestamp >= expiry.sub(windowSize)) && (block.timestamp < expiry));
     }
 
     /**
@@ -1492,16 +1470,10 @@ contract OptionsContract is Ownable, ERC20 {
      * @param oTokensToExercise the number of oTokens being exercised.
      * @param vaultsToExerciseFrom the array of vaults to exercise from.
      */
-    function exercise(
-        uint256 oTokensToExercise,
-        address payable[] memory vaultsToExerciseFrom
-    ) public payable {
+    function exercise(uint256 oTokensToExercise, address payable[] memory vaultsToExerciseFrom) public payable {
         for (uint256 i = 0; i < vaultsToExerciseFrom.length; i++) {
             address payable vaultOwner = vaultsToExerciseFrom[i];
-            require(
-                hasVault(vaultOwner),
-                "Cannot exercise from a vault that doesn't exist"
-            );
+            require(hasVault(vaultOwner), "Cannot exercise from a vault that doesn't exist");
             Vault storage vault = vaults[vaultOwner];
             if (oTokensToExercise == 0) {
                 return;
@@ -1513,10 +1485,7 @@ contract OptionsContract is Ownable, ERC20 {
                 _exercise(vault.oTokensIssued, vaultOwner);
             }
         }
-        require(
-            oTokensToExercise == 0,
-            "Specified vaults have insufficient collateral"
-        );
+        require(oTokensToExercise == 0, "Specified vaults have insufficient collateral");
     }
 
     /**
@@ -1533,7 +1502,6 @@ contract OptionsContract is Ownable, ERC20 {
 
         transferUnderlying(msg.sender, underlyingToTransfer);
         emit RemoveUnderlying(underlyingToTransfer, msg.sender);
-
     }
 
     /**
@@ -1546,10 +1514,7 @@ contract OptionsContract is Ownable, ERC20 {
      * @param oTokensToIssue The number of o tokens to issue
      * @param receiver The address to send the oTokens to
      */
-    function issueOTokens(uint256 oTokensToIssue, address receiver)
-        public
-        notExpired
-    {
+    function issueOTokens(uint256 oTokensToIssue, address receiver) public notExpired {
         //check that we're properly collateralized to mint this number, then call _mint(address account, uint256 amount)
         require(hasVault(msg.sender), "Vault does not exist");
 
@@ -1571,25 +1536,20 @@ contract OptionsContract is Ownable, ERC20 {
      * @notice Returns the vault for a given address
      * @param vaultOwner the owner of the Vault to return
      */
-    function getVault(address payable vaultOwner)
-        public
-        view
-        returns (uint256, uint256, uint256, bool)
-    {
+    function getVault(
+        address payable vaultOwner
+    ) public view returns (uint256, uint256, uint256, bool) {
         Vault storage vault = vaults[vaultOwner];
-        return (
-            vault.collateral,
-            vault.oTokensIssued,
-            vault.underlying,
-            vault.owned
-        );
+        return (vault.collateral, vault.oTokensIssued, vault.underlying, vault.owned);
     }
 
     /**
      * @notice Returns true if the given ERC20 is ETH.
      * @param _ierc20 the ERC20 asset.
      */
-    function isETH(IERC20 _ierc20) public pure returns (bool) {
+    function isETH(
+        IERC20 _ierc20
+    ) public pure returns (bool) {
         return _ierc20 == IERC20(0);
     }
 
@@ -1599,7 +1559,9 @@ contract OptionsContract is Ownable, ERC20 {
      * @param amtToBurn number of oTokens to burn
      * @dev only want to call this function before expiry. After expiry, no benefit to calling it.
      */
-    function burnOTokens(uint256 amtToBurn) public notExpired {
+    function burnOTokens(
+        uint256 amtToBurn
+    ) public notExpired {
         require(hasVault(msg.sender), "Vault does not exist");
 
         Vault storage vault = vaults[msg.sender];
@@ -1615,23 +1577,19 @@ contract OptionsContract is Ownable, ERC20 {
      * the collateralization ratio of the vault.
      * @param amtToRemove Amount of collateral to remove in 10^-18.
      */
-    function removeCollateral(uint256 amtToRemove) public notExpired {
+    function removeCollateral(
+        uint256 amtToRemove
+    ) public notExpired {
         require(amtToRemove > 0, "Cannot remove 0 collateral");
         require(hasVault(msg.sender), "Vault does not exist");
 
         Vault storage vault = vaults[msg.sender];
-        require(
-            amtToRemove <= getCollateral(msg.sender),
-            "Can't remove more collateral than owned"
-        );
+        require(amtToRemove <= getCollateral(msg.sender), "Can't remove more collateral than owned");
 
         // check that vault will remain safe after removing collateral
         uint256 newCollateralBalance = vault.collateral.sub(amtToRemove);
 
-        require(
-            isSafe(newCollateralBalance, vault.oTokensIssued),
-            "Vault is unsafe"
-        );
+        require(isSafe(newCollateralBalance, vault.oTokensIssued), "Vault is unsafe");
 
         // remove the collateral
         vault.collateral = newCollateralBalance;
@@ -1663,34 +1621,23 @@ contract OptionsContract is Ownable, ERC20 {
         transferCollateral(msg.sender, collateralToTransfer);
         transferUnderlying(msg.sender, underlyingToTransfer);
 
-        emit RedeemVaultBalance(
-            collateralToTransfer,
-            underlyingToTransfer,
-            msg.sender
-        );
+        emit RedeemVaultBalance(collateralToTransfer, underlyingToTransfer, msg.sender);
     }
 
     /**
      * This function returns the maximum amount of collateral liquidatable if the given vault is unsafe
      * @param vaultOwner The index of the vault to be liquidated
      */
-    function maxOTokensLiquidatable(address payable vaultOwner)
-        public
-        view
-        returns (uint256)
-    {
+    function maxOTokensLiquidatable(
+        address payable vaultOwner
+    ) public view returns (uint256) {
         if (isUnsafe(vaultOwner)) {
             Vault storage vault = vaults[vaultOwner];
-            uint256 maxCollateralLiquidatable = vault
-                .collateral
-                .mul(liquidationFactor.value)
-                .div(10**uint256(-liquidationFactor.exponent));
+            uint256 maxCollateralLiquidatable =
+                vault.collateral.mul(liquidationFactor.value).div(10 ** uint256(-liquidationFactor.exponent));
 
-            uint256 one = 10**uint256(-liquidationIncentive.exponent);
-            Number memory liqIncentive = Number(
-                liquidationIncentive.value.add(one),
-                liquidationIncentive.exponent
-            );
+            uint256 one = 10 ** uint256(-liquidationIncentive.exponent);
+            Number memory liqIncentive = Number(liquidationIncentive.value.add(one), liquidationIncentive.exponent);
             return calculateOTokens(maxCollateralLiquidatable, liqIncentive);
         } else {
             return 0;
@@ -1706,10 +1653,7 @@ contract OptionsContract is Ownable, ERC20 {
      * @param vaultOwner The index of the vault to be liquidated
      * @param oTokensToLiquidate The number of oTokens being taken out of circulation
      */
-    function liquidate(address payable vaultOwner, uint256 oTokensToLiquidate)
-        public
-        notExpired
-    {
+    function liquidate(address payable vaultOwner, uint256 oTokensToLiquidate) public notExpired {
         require(hasVault(vaultOwner), "Vault does not exist");
 
         Vault storage vault = vaults[vaultOwner];
@@ -1720,34 +1664,21 @@ contract OptionsContract is Ownable, ERC20 {
         // Owner can't liquidate themselves
         require(msg.sender != vaultOwner, "Owner can't liquidate themselves");
 
-        uint256 amtCollateral = calculateCollateralToPay(
-            oTokensToLiquidate,
-            Number(1, 0)
-        );
-        uint256 amtIncentive = calculateCollateralToPay(
-            oTokensToLiquidate,
-            liquidationIncentive
-        );
+        uint256 amtCollateral = calculateCollateralToPay(oTokensToLiquidate, Number(1, 0));
+        uint256 amtIncentive = calculateCollateralToPay(oTokensToLiquidate, liquidationIncentive);
         uint256 amtCollateralToPay = amtCollateral.add(amtIncentive);
 
         // calculate the maximum amount of collateral that can be liquidated
-        uint256 maxCollateralLiquidatable = vault.collateral.mul(
-            liquidationFactor.value
-        );
+        uint256 maxCollateralLiquidatable = vault.collateral.mul(liquidationFactor.value);
 
         if (liquidationFactor.exponent > 0) {
-            maxCollateralLiquidatable = maxCollateralLiquidatable.mul(
-                10**uint256(liquidationFactor.exponent)
-            );
+            maxCollateralLiquidatable = maxCollateralLiquidatable.mul(10 ** uint256(liquidationFactor.exponent));
         } else {
-            maxCollateralLiquidatable = maxCollateralLiquidatable.div(
-                10**uint256(-1 * liquidationFactor.exponent)
-            );
+            maxCollateralLiquidatable = maxCollateralLiquidatable.div(10 ** uint256(-1 * liquidationFactor.exponent));
         }
 
         require(
-            amtCollateralToPay <= maxCollateralLiquidatable,
-            "Can only liquidate liquidation factor at any given time"
+            amtCollateralToPay <= maxCollateralLiquidatable, "Can only liquidate liquidation factor at any given time"
         );
 
         // deduct the collateral and oTokensIssued
@@ -1766,41 +1697,38 @@ contract OptionsContract is Ownable, ERC20 {
      * @param vaultOwner The number of the vault to check
      * @return true or false
      */
-    function isUnsafe(address payable vaultOwner) public view returns (bool) {
-        bool stillUnsafe = !isSafe(
-            getCollateral(vaultOwner),
-            getOTokensIssued(vaultOwner)
-        );
+    function isUnsafe(
+        address payable vaultOwner
+    ) public view returns (bool) {
+        bool stillUnsafe = !isSafe(getCollateral(vaultOwner), getOTokensIssued(vaultOwner));
         return stillUnsafe;
     }
 
     /**
      * @notice This function returns if an -30 <= exponent <= 30
      */
-    function isWithinExponentRange(int32 val) internal pure returns (bool) {
+    function isWithinExponentRange(
+        int32 val
+    ) internal pure returns (bool) {
         return ((val <= 30) && (val >= -30));
     }
 
     /**
      * @notice This function calculates and returns the amount of collateral in the vault
-    */
-    function getCollateral(address payable vaultOwner)
-        internal
-        view
-        returns (uint256)
-    {
+     */
+    function getCollateral(
+        address payable vaultOwner
+    ) internal view returns (uint256) {
         Vault storage vault = vaults[vaultOwner];
         return vault.collateral;
     }
 
     /**
      * @notice This function calculates and returns the amount of puts issued by the Vault
-    */
-    function getOTokensIssued(address payable vaultOwner)
-        internal
-        view
-        returns (uint256)
-    {
+     */
+    function getOTokensIssued(
+        address payable vaultOwner
+    ) internal view returns (uint256) {
         Vault storage vault = vaults[vaultOwner];
         return vault.oTokensIssued;
     }
@@ -1817,57 +1745,34 @@ contract OptionsContract is Ownable, ERC20 {
      * @param vaultToExerciseFrom the address of the vaultOwner to take collateral from.
      * @dev oTokenExchangeRate is the number of underlying tokens that 1 oToken protects.
      */
-    function _exercise(
-        uint256 oTokensToExercise,
-        address payable vaultToExerciseFrom
-    ) internal {
+    function _exercise(uint256 oTokensToExercise, address payable vaultToExerciseFrom) internal {
         // 1. before exercise window: revert
-        require(
-            isExerciseWindow(),
-            "Can't exercise outside of the exercise window"
-        );
+        require(isExerciseWindow(), "Can't exercise outside of the exercise window");
 
         require(hasVault(vaultToExerciseFrom), "Vault does not exist");
 
         Vault storage vault = vaults[vaultToExerciseFrom];
         require(oTokensToExercise > 0, "Can't exercise 0 oTokens");
         // Check correct amount of oTokens passed in)
-        require(
-            oTokensToExercise <= vault.oTokensIssued,
-            "Can't exercise more oTokens than the owner has"
-        );
+        require(oTokensToExercise <= vault.oTokensIssued, "Can't exercise more oTokens than the owner has");
         // Ensure person calling has enough oTokens
-        require(
-            balanceOf(msg.sender) >= oTokensToExercise,
-            "Not enough oTokens"
-        );
+        require(balanceOf(msg.sender) >= oTokensToExercise, "Not enough oTokens");
 
         // 1. Check sufficient underlying
         // 1.1 update underlying balances
-        uint256 amtUnderlyingToPay = underlyingRequiredToExercise(
-            oTokensToExercise
-        );
+        uint256 amtUnderlyingToPay = underlyingRequiredToExercise(oTokensToExercise);
         vault.underlying = vault.underlying.add(amtUnderlyingToPay);
 
         // 2. Calculate Collateral to pay
         // 2.1 Payout enough collateral to get (strikePrice * oTokens) amount of collateral
-        uint256 amtCollateralToPay = calculateCollateralToPay(
-            oTokensToExercise,
-            Number(1, 0)
-        );
+        uint256 amtCollateralToPay = calculateCollateralToPay(oTokensToExercise, Number(1, 0));
 
         // 2.2 Take a small fee on every exercise
-        uint256 amtFee = calculateCollateralToPay(
-            oTokensToExercise,
-            transactionFee
-        );
+        uint256 amtFee = calculateCollateralToPay(oTokensToExercise, transactionFee);
         totalFee = totalFee.add(amtFee);
 
         uint256 totalCollateralToPay = amtCollateralToPay.add(amtFee);
-        require(
-            totalCollateralToPay <= vault.collateral,
-            "Vault underwater, can't exercise"
-        );
+        require(totalCollateralToPay <= vault.collateral, "Vault underwater, can't exercise");
 
         // 3. Update collateral + oToken balances
         vault.collateral = vault.collateral.sub(totalCollateralToPay);
@@ -1879,12 +1784,7 @@ contract OptionsContract is Ownable, ERC20 {
             require(msg.value == amtUnderlyingToPay, "Incorrect msg.value");
         } else {
             require(
-                underlying.transferFrom(
-                    msg.sender,
-                    address(this),
-                    amtUnderlyingToPay
-                ),
-                "Could not transfer in tokens"
+                underlying.transferFrom(msg.sender, address(this), amtUnderlyingToPay), "Could not transfer in tokens"
             );
         }
         // 4.2 burn oTokens
@@ -1893,13 +1793,7 @@ contract OptionsContract is Ownable, ERC20 {
         // 4.3 Pay out collateral
         transferCollateral(msg.sender, amtCollateralToPay);
 
-        emit Exercise(
-            amtUnderlyingToPay,
-            amtCollateralToPay,
-            msg.sender,
-            vaultToExerciseFrom
-        );
-
+        emit Exercise(amtUnderlyingToPay, amtCollateralToPay, msg.sender, vaultToExerciseFrom);
     }
 
     /**
@@ -1907,11 +1801,7 @@ contract OptionsContract is Ownable, ERC20 {
      * @param vaultOwner the index of the vault
      * @param amt the amount of collateral to add
      */
-    function _addCollateral(address payable vaultOwner, uint256 amt)
-        internal
-        notExpired
-        returns (uint256)
-    {
+    function _addCollateral(address payable vaultOwner, uint256 amt) internal notExpired returns (uint256) {
         Vault storage vault = vaults[vaultOwner];
         vault.collateral = vault.collateral.add(amt);
 
@@ -1924,25 +1814,16 @@ contract OptionsContract is Ownable, ERC20 {
      * @param oTokensIssued The amount of oTokens generated by the hypothetical vault
      * @return true or false
      */
-    function isSafe(uint256 collateralAmt, uint256 oTokensIssued)
-        internal
-        view
-        returns (bool)
-    {
+    function isSafe(uint256 collateralAmt, uint256 oTokensIssued) internal view returns (bool) {
         // get price from Oracle
         uint256 collateralToEthPrice = getPrice(address(collateral));
         uint256 strikeToEthPrice = getPrice(address(strike));
 
         // check `oTokensIssued * minCollateralizationRatio * strikePrice <= collAmt * collateralToStrikePrice`
-        uint256 leftSideVal = oTokensIssued
-            .mul(minCollateralizationRatio.value)
-            .mul(strikePrice.value);
-        int32 leftSideExp = minCollateralizationRatio.exponent +
-            strikePrice.exponent;
+        uint256 leftSideVal = oTokensIssued.mul(minCollateralizationRatio.value).mul(strikePrice.value);
+        int32 leftSideExp = minCollateralizationRatio.exponent + strikePrice.exponent;
 
-        uint256 rightSideVal = (collateralAmt.mul(collateralToEthPrice)).div(
-            strikeToEthPrice
-        );
+        uint256 rightSideVal = (collateralAmt.mul(collateralToEthPrice)).div(strikeToEthPrice);
         int32 rightSideExp = collateralExp;
 
         uint256 exp = 0;
@@ -1950,10 +1831,10 @@ contract OptionsContract is Ownable, ERC20 {
 
         if (rightSideExp < leftSideExp) {
             exp = uint256(leftSideExp - rightSideExp);
-            stillSafe = leftSideVal.mul(10**exp) <= rightSideVal;
+            stillSafe = leftSideVal.mul(10 ** exp) <= rightSideVal;
         } else {
             exp = uint256(rightSideExp - leftSideExp);
-            stillSafe = leftSideVal <= rightSideVal.mul(10**exp);
+            stillSafe = leftSideVal <= rightSideVal.mul(10 ** exp);
         }
 
         return stillSafe;
@@ -1963,13 +1844,10 @@ contract OptionsContract is Ownable, ERC20 {
      * This function returns the maximum amount of oTokens that can safely be issued against the specified amount of collateral.
      * @param collateralAmt The amount of collateral against which oTokens will be issued.
      */
-    function maxOTokensIssuable(uint256 collateralAmt)
-        public
-        view
-        returns (uint256)
-    {
+    function maxOTokensIssuable(
+        uint256 collateralAmt
+    ) public view returns (uint256) {
         return calculateOTokens(collateralAmt, minCollateralizationRatio);
-
     }
 
     /**
@@ -1981,11 +1859,7 @@ contract OptionsContract is Ownable, ERC20 {
      * should be paid out, pass in Number(1, 0). The proportion might be less than 100% if
      * you are calculating fees.
      */
-    function calculateOTokens(uint256 collateralAmt, Number memory proportion)
-        internal
-        view
-        returns (uint256)
-    {
+    function calculateOTokens(uint256 collateralAmt, Number memory proportion) internal view returns (uint256) {
         uint256 collateralToEthPrice = getPrice(address(collateral));
         uint256 strikeToEthPrice = getPrice(address(strike));
 
@@ -1993,9 +1867,7 @@ contract OptionsContract is Ownable, ERC20 {
         uint256 denomVal = proportion.value.mul(strikePrice.value);
         int32 denomExp = proportion.exponent + strikePrice.exponent;
 
-        uint256 numeratorVal = (collateralAmt.mul(collateralToEthPrice)).div(
-            strikeToEthPrice
-        );
+        uint256 numeratorVal = (collateralAmt.mul(collateralToEthPrice)).div(strikeToEthPrice);
         int32 numeratorExp = collateralExp;
 
         uint256 exp = 0;
@@ -2003,10 +1875,10 @@ contract OptionsContract is Ownable, ERC20 {
 
         if (numeratorExp < denomExp) {
             exp = uint256(denomExp - numeratorExp);
-            numOptions = numeratorVal.div(denomVal.mul(10**exp));
+            numOptions = numeratorVal.div(denomVal.mul(10 ** exp));
         } else {
             exp = uint256(numeratorExp - denomExp);
-            numOptions = numeratorVal.mul(10**exp).div(denomVal);
+            numOptions = numeratorVal.mul(10 ** exp).div(denomVal);
         }
 
         return numOptions;
@@ -2021,37 +1893,24 @@ contract OptionsContract is Ownable, ERC20 {
      * should be paid out, pass in Number(1, 0). The proportion might be less than 100% if
      * you are calculating fees.
      */
-    function calculateCollateralToPay(
-        uint256 _oTokens,
-        Number memory proportion
-    ) internal view returns (uint256) {
+    function calculateCollateralToPay(uint256 _oTokens, Number memory proportion) internal view returns (uint256) {
         // Get price from oracle
         uint256 collateralToEthPrice = getPrice(address(collateral));
         uint256 strikeToEthPrice = getPrice(address(strike));
 
         // calculate how much should be paid out
-        uint256 amtCollateralToPayInEthNum = _oTokens
-            .mul(strikePrice.value)
-            .mul(proportion.value)
-            .mul(strikeToEthPrice);
-        int32 amtCollateralToPayExp = strikePrice.exponent +
-            proportion.exponent -
-            collateralExp;
+        uint256 amtCollateralToPayInEthNum = _oTokens.mul(strikePrice.value).mul(proportion.value).mul(strikeToEthPrice);
+        int32 amtCollateralToPayExp = strikePrice.exponent + proportion.exponent - collateralExp;
         uint256 amtCollateralToPay = 0;
         if (amtCollateralToPayExp > 0) {
             uint32 exp = uint32(amtCollateralToPayExp);
-            amtCollateralToPay = amtCollateralToPayInEthNum.mul(10**exp).div(
-                collateralToEthPrice
-            );
+            amtCollateralToPay = amtCollateralToPayInEthNum.mul(10 ** exp).div(collateralToEthPrice);
         } else {
             uint32 exp = uint32(-1 * amtCollateralToPayExp);
-            amtCollateralToPay = (amtCollateralToPayInEthNum.div(10**exp)).div(
-                collateralToEthPrice
-            );
+            amtCollateralToPay = (amtCollateralToPayInEthNum.div(10 ** exp)).div(collateralToEthPrice);
         }
 
         return amtCollateralToPay;
-
     }
 
     /**
@@ -2084,11 +1943,13 @@ contract OptionsContract is Ownable, ERC20 {
      * @notice This function gets the price ETH (wei) to asset price.
      * @param asset The address of the asset to get the price of
      */
-    function getPrice(address asset) internal view returns (uint256) {
+    function getPrice(
+        address asset
+    ) internal view returns (uint256) {
         if (address(collateral) == address(strike)) {
             return 1;
         } else if (asset == address(0)) {
-            return (10**18);
+            return (10 ** 18);
         } else {
             return COMPOUND_ORACLE.getPrice(asset);
         }
@@ -2099,27 +1960,25 @@ contract OptionsContract is Ownable, ERC20 {
 
 pragma solidity 0.5.10;
 
-
 /**
  * @title Opyn's Options Contract
  * @author Opyn
  */
-
 contract oToken is OptionsContract {
     /**
-    * @param _collateral The collateral asset
-    * @param _collExp The precision of the collateral (-18 if ETH)
-    * @param _underlying The asset that is being protected
-    * @param _underlyingExp The precision of the underlying asset
-    * @param _oTokenExchangeExp The precision of the `amount of underlying` that 1 oToken protects
-    * @param _strikePrice The amount of strike asset that will be paid out
-    * @param _strikeExp The precision of the strike asset (-18 if ETH)
-    * @param _strike The asset in which the insurance is calculated
-    * @param _expiry The time at which the insurance expires
-    * @param _optionsExchange The contract which interfaces with the exchange + oracle
-    * @param _oracleAddress The address of the oracle
-    * @param _windowSize UNIX time. Exercise window is from `expiry - _windowSize` to `expiry`.
-    */
+     * @param _collateral The collateral asset
+     * @param _collExp The precision of the collateral (-18 if ETH)
+     * @param _underlying The asset that is being protected
+     * @param _underlyingExp The precision of the underlying asset
+     * @param _oTokenExchangeExp The precision of the `amount of underlying` that 1 oToken protects
+     * @param _strikePrice The amount of strike asset that will be paid out
+     * @param _strikeExp The precision of the strike asset (-18 if ETH)
+     * @param _strike The asset in which the insurance is calculated
+     * @param _expiry The time at which the insurance expires
+     * @param _optionsExchange The contract which interfaces with the exchange + oracle
+     * @param _oracleAddress The address of the oracle
+     * @param _windowSize UNIX time. Exercise window is from `expiry - _windowSize` to `expiry`.
+     */
     constructor(
         IERC20 _collateral,
         int32 _collExp,
@@ -2160,10 +2019,7 @@ contract oToken is OptionsContract {
      * @param amtToCreate number of oTokens to create
      * @param receiver address to send the Options to
      */
-    function createETHCollateralOption(uint256 amtToCreate, address receiver)
-        external
-        payable
-    {
+    function createETHCollateralOption(uint256 amtToCreate, address receiver) external payable {
         openVault();
         addETHCollateralOption(amtToCreate, receiver);
     }
@@ -2177,10 +2033,7 @@ contract oToken is OptionsContract {
      * @param amtToCreate number of oTokens to create
      * @param receiver address to send the Options to
      */
-    function addETHCollateralOption(uint256 amtToCreate, address receiver)
-        public
-        payable
-    {
+    function addETHCollateralOption(uint256 amtToCreate, address receiver) public payable {
         addETHCollateral(msg.sender);
         issueOTokens(amtToCreate, receiver);
     }
@@ -2190,19 +2043,11 @@ contract oToken is OptionsContract {
      * @param amtToCreate number of oTokens to create
      * @param receiver address to receive the premiums
      */
-    function createAndSellETHCollateralOption(
-        uint256 amtToCreate,
-        address payable receiver
-    ) external payable {
+    function createAndSellETHCollateralOption(uint256 amtToCreate, address payable receiver) external payable {
         openVault();
         addETHCollateralOption(amtToCreate, address(this));
         this.approve(address(optionsExchange), amtToCreate);
-        optionsExchange.sellOTokens(
-            receiver,
-            address(this),
-            address(0),
-            amtToCreate
-        );
+        optionsExchange.sellOTokens(receiver, address(this), address(0), amtToCreate);
     }
 
     /**
@@ -2210,19 +2055,11 @@ contract oToken is OptionsContract {
      * @param amtToCreate number of oTokens to create
      * @param receiver address to send the Options to
      */
-    function addAndSellETHCollateralOption(
-        uint256 amtToCreate,
-        address payable receiver
-    ) public payable {
+    function addAndSellETHCollateralOption(uint256 amtToCreate, address payable receiver) public payable {
         addETHCollateral(msg.sender);
         issueOTokens(amtToCreate, address(this));
         this.approve(address(optionsExchange), amtToCreate);
-        optionsExchange.sellOTokens(
-            receiver,
-            address(this),
-            address(0),
-            amtToCreate
-        );
+        optionsExchange.sellOTokens(receiver, address(this), address(0), amtToCreate);
     }
 
     /**
@@ -2235,11 +2072,7 @@ contract oToken is OptionsContract {
      * @param amtCollateral amount of collateral added
      * @param receiver address to send the Options to
      */
-    function createERC20CollateralOption(
-        uint256 amtToCreate,
-        uint256 amtCollateral,
-        address receiver
-    ) external {
+    function createERC20CollateralOption(uint256 amtToCreate, uint256 amtCollateral, address receiver) external {
         openVault();
         addERC20CollateralOption(amtToCreate, amtCollateral, receiver);
     }
@@ -2254,11 +2087,7 @@ contract oToken is OptionsContract {
      * @param amtCollateral amount of collateral added
      * @param receiver address to send the Options to
      */
-    function addERC20CollateralOption(
-        uint256 amtToCreate,
-        uint256 amtCollateral,
-        address receiver
-    ) public {
+    function addERC20CollateralOption(uint256 amtToCreate, uint256 amtCollateral, address receiver) public {
         addERC20Collateral(msg.sender, amtCollateral);
         issueOTokens(amtToCreate, receiver);
     }
@@ -2277,12 +2106,7 @@ contract oToken is OptionsContract {
         openVault();
         addERC20CollateralOption(amtToCreate, amtCollateral, address(this));
         this.approve(address(optionsExchange), amtToCreate);
-        optionsExchange.sellOTokens(
-            receiver,
-            address(this),
-            address(0),
-            amtToCreate
-        );
+        optionsExchange.sellOTokens(receiver, address(this), address(0), amtToCreate);
     }
 
     /**
@@ -2299,11 +2123,6 @@ contract oToken is OptionsContract {
         addERC20Collateral(msg.sender, amtCollateral);
         issueOTokens(amtToCreate, address(this));
         this.approve(address(optionsExchange), amtToCreate);
-        optionsExchange.sellOTokens(
-            receiver,
-            address(this),
-            address(0),
-            amtToCreate
-        );
+        optionsExchange.sellOTokens(receiver, address(this), address(0), amtToCreate);
     }
 }

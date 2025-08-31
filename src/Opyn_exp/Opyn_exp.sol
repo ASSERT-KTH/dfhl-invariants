@@ -24,7 +24,7 @@ contract ContractTest is Test {
         cheats.createSelectFork("mainnet", 10_592_516); //fork mainnet at block 10592516
         string memory bytecodePath = vm.envString("BYTECODE_PATH");
         bytes memory newRuntimeBytecode = vm.readFileBinary(bytecodePath);
-        vm.etch(address(opyn),newRuntimeBytecode);
+        vm.etch(address(opyn), newRuntimeBytecode);
     }
 
     function test_attack() public {
