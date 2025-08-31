@@ -1,10 +1,10 @@
 /**
- *Submitted for verification at Etherscan.io on 2021-10-31
-*/
+ * Submitted for verification at Etherscan.io on 2021-10-31
+ */
 
 /**
- *Submitted for verification at polygonscan.com on 2021-10-30
-*/
+ * Submitted for verification at polygonscan.com on 2021-10-30
+ */
 
 // File: @openzeppelin/contracts/token/ERC20/IERC20.sol
 
@@ -24,7 +24,9 @@ interface IERC20 {
     /**
      * @dev Returns the amount of tokens owned by `account`.
      */
-    function balanceOf(address account) external view returns (uint256);
+    function balanceOf(
+        address account
+    ) external view returns (uint256);
 
     /**
      * @dev Moves `amount` tokens from the caller's account to `recipient`.
@@ -87,8 +89,6 @@ interface IERC20 {
 }
 
 // File: @openzeppelin/contracts/math/SafeMath.sol
-
-
 
 pragma solidity >=0.6.0 <0.8.0;
 
@@ -305,8 +305,6 @@ library SafeMath {
 
 // File: @openzeppelin/contracts/utils/Address.sol
 
-
-
 pragma solidity >=0.6.2 <0.8.0;
 
 /**
@@ -330,14 +328,18 @@ library Address {
      *  - an address where a contract lived, but was destroyed
      * ====
      */
-    function isContract(address account) internal view returns (bool) {
+    function isContract(
+        address account
+    ) internal view returns (bool) {
         // This method relies on extcodesize, which returns 0 for contracts in
         // construction, since the code is only stored at the end of the
         // constructor execution.
 
         uint256 size;
         // solhint-disable-next-line no-inline-assembly
-        assembly { size := extcodesize(account) }
+        assembly {
+            size := extcodesize(account)
+        }
         return size > 0;
     }
 
@@ -361,7 +363,7 @@ library Address {
         require(address(this).balance >= amount, "Address: insufficient balance");
 
         // solhint-disable-next-line avoid-low-level-calls, avoid-call-value
-        (bool success, ) = recipient.call{ value: amount }("");
+        (bool success,) = recipient.call{value: amount}("");
         require(success, "Address: unable to send value, recipient may have reverted");
     }
 
@@ -384,7 +386,7 @@ library Address {
      * _Available since v3.1._
      */
     function functionCall(address target, bytes memory data) internal returns (bytes memory) {
-      return functionCall(target, data, "Address: low-level call failed");
+        return functionCall(target, data, "Address: low-level call failed");
     }
 
     /**
@@ -393,7 +395,11 @@ library Address {
      *
      * _Available since v3.1._
      */
-    function functionCall(address target, bytes memory data, string memory errorMessage) internal returns (bytes memory) {
+    function functionCall(
+        address target,
+        bytes memory data,
+        string memory errorMessage
+    ) internal returns (bytes memory) {
         return functionCallWithValue(target, data, 0, errorMessage);
     }
 
@@ -418,12 +424,17 @@ library Address {
      *
      * _Available since v3.1._
      */
-    function functionCallWithValue(address target, bytes memory data, uint256 value, string memory errorMessage) internal returns (bytes memory) {
+    function functionCallWithValue(
+        address target,
+        bytes memory data,
+        uint256 value,
+        string memory errorMessage
+    ) internal returns (bytes memory) {
         require(address(this).balance >= value, "Address: insufficient balance for call");
         require(isContract(target), "Address: call to non-contract");
 
         // solhint-disable-next-line avoid-low-level-calls
-        (bool success, bytes memory returndata) = target.call{ value: value }(data);
+        (bool success, bytes memory returndata) = target.call{value: value}(data);
         return _verifyCallResult(success, returndata, errorMessage);
     }
 
@@ -443,7 +454,11 @@ library Address {
      *
      * _Available since v3.3._
      */
-    function functionStaticCall(address target, bytes memory data, string memory errorMessage) internal view returns (bytes memory) {
+    function functionStaticCall(
+        address target,
+        bytes memory data,
+        string memory errorMessage
+    ) internal view returns (bytes memory) {
         require(isContract(target), "Address: static call to non-contract");
 
         // solhint-disable-next-line avoid-low-level-calls
@@ -467,7 +482,11 @@ library Address {
      *
      * _Available since v3.4._
      */
-    function functionDelegateCall(address target, bytes memory data, string memory errorMessage) internal returns (bytes memory) {
+    function functionDelegateCall(
+        address target,
+        bytes memory data,
+        string memory errorMessage
+    ) internal returns (bytes memory) {
         require(isContract(target), "Address: delegate call to non-contract");
 
         // solhint-disable-next-line avoid-low-level-calls
@@ -475,7 +494,11 @@ library Address {
         return _verifyCallResult(success, returndata, errorMessage);
     }
 
-    function _verifyCallResult(bool success, bytes memory returndata, string memory errorMessage) private pure returns(bytes memory) {
+    function _verifyCallResult(
+        bool success,
+        bytes memory returndata,
+        string memory errorMessage
+    ) private pure returns (bytes memory) {
         if (success) {
             return returndata;
         } else {
@@ -497,12 +520,7 @@ library Address {
 
 // File: @openzeppelin/contracts/token/ERC20/SafeERC20.sol
 
-
-
 pragma solidity >=0.6.0 <0.8.0;
-
-
-
 
 /**
  * @title SafeERC20
@@ -537,7 +555,8 @@ library SafeERC20 {
         // or when resetting it to zero. To increase and decrease it, use
         // 'safeIncreaseAllowance' and 'safeDecreaseAllowance'
         // solhint-disable-next-line max-line-length
-        require((value == 0) || (token.allowance(address(this), spender) == 0),
+        require(
+            (value == 0) || (token.allowance(address(this), spender) == 0),
             "SafeERC20: approve from non-zero to non-zero allowance"
         );
         _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, value));
@@ -549,7 +568,8 @@ library SafeERC20 {
     }
 
     function safeDecreaseAllowance(IERC20 token, address spender, uint256 value) internal {
-        uint256 newAllowance = token.allowance(address(this), spender).sub(value, "SafeERC20: decreased allowance below zero");
+        uint256 newAllowance =
+            token.allowance(address(this), spender).sub(value, "SafeERC20: decreased allowance below zero");
         _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, newAllowance));
     }
 
@@ -565,7 +585,8 @@ library SafeERC20 {
         // the target address contains contract code and also asserts for success in the low-level call.
 
         bytes memory returndata = address(token).functionCall(data, "SafeERC20: low-level call failed");
-        if (returndata.length > 0) { // Return data is optional
+        if (returndata.length > 0) {
+            // Return data is optional
             // solhint-disable-next-line max-line-length
             require(abi.decode(returndata, (bool)), "SafeERC20: ERC20 operation did not succeed");
         }
@@ -573,8 +594,6 @@ library SafeERC20 {
 }
 
 // File: @openzeppelin/contracts/introspection/IERC165.sol
-
-
 
 pragma solidity >=0.6.0 <0.8.0;
 
@@ -596,15 +615,14 @@ interface IERC165 {
      *
      * This function call must use less than 30 000 gas.
      */
-    function supportsInterface(bytes4 interfaceId) external view returns (bool);
+    function supportsInterface(
+        bytes4 interfaceId
+    ) external view returns (bool);
 }
 
 // File: @openzeppelin/contracts/token/ERC1155/IERC1155.sol
 
-
-
 pragma solidity >=0.6.2 <0.8.0;
-
 
 /**
  * @dev Required interface of an ERC1155 compliant contract, as defined in the
@@ -622,7 +640,9 @@ interface IERC1155 is IERC165 {
      * @dev Equivalent to multiple {TransferSingle} events, where `operator`, `from` and `to` are the same for all
      * transfers.
      */
-    event TransferBatch(address indexed operator, address indexed from, address indexed to, uint256[] ids, uint256[] values);
+    event TransferBatch(
+        address indexed operator, address indexed from, address indexed to, uint256[] ids, uint256[] values
+    );
 
     /**
      * @dev Emitted when `account` grants or revokes permission to `operator` to transfer their tokens, according to
@@ -655,7 +675,10 @@ interface IERC1155 is IERC165 {
      *
      * - `accounts` and `ids` must have the same length.
      */
-    function balanceOfBatch(address[] calldata accounts, uint256[] calldata ids) external view returns (uint256[] memory);
+    function balanceOfBatch(
+        address[] calldata accounts,
+        uint256[] calldata ids
+    ) external view returns (uint256[] memory);
 
     /**
      * @dev Grants or revokes permission to `operator` to transfer the caller's tokens, according to `approved`,
@@ -701,15 +724,18 @@ interface IERC1155 is IERC165 {
      * - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the
      * acceptance magic value.
      */
-    function safeBatchTransferFrom(address from, address to, uint256[] calldata ids, uint256[] calldata amounts, bytes calldata data) external;
+    function safeBatchTransferFrom(
+        address from,
+        address to,
+        uint256[] calldata ids,
+        uint256[] calldata amounts,
+        bytes calldata data
+    ) external;
 }
 
 // File: @openzeppelin/contracts/token/ERC1155/IERC1155MetadataURI.sol
 
-
-
 pragma solidity >=0.6.2 <0.8.0;
-
 
 /**
  * @dev Interface of the optional ERC1155MetadataExtension interface, as defined
@@ -724,71 +750,63 @@ interface IERC1155MetadataURI is IERC1155 {
      * If the `\{id\}` substring is present in the URI, it must be replaced by
      * clients with the actual token type ID.
      */
-    function uri(uint256 id) external view returns (string memory);
+    function uri(
+        uint256 id
+    ) external view returns (string memory);
 }
 
 // File: @openzeppelin/contracts/token/ERC1155/IERC1155Receiver.sol
 
-
-
 pragma solidity >=0.6.0 <0.8.0;
-
 
 /**
  * _Available since v3.1._
  */
 interface IERC1155Receiver is IERC165 {
-
     /**
-        @dev Handles the receipt of a single ERC1155 token type. This function is
-        called at the end of a `safeTransferFrom` after the balance has been updated.
-        To accept the transfer, this must return
-        `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))`
-        (i.e. 0xf23a6e61, or its own function selector).
-        @param operator The address which initiated the transfer (i.e. msg.sender)
-        @param from The address which previously owned the token
-        @param id The ID of the token being transferred
-        @param value The amount of tokens being transferred
-        @param data Additional data with no specified format
-        @return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))` if transfer is allowed
-    */
+     * @dev Handles the receipt of a single ERC1155 token type. This function is
+     *     called at the end of a `safeTransferFrom` after the balance has been updated.
+     *     To accept the transfer, this must return
+     *     `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))`
+     *     (i.e. 0xf23a6e61, or its own function selector).
+     *     @param operator The address which initiated the transfer (i.e. msg.sender)
+     *     @param from The address which previously owned the token
+     *     @param id The ID of the token being transferred
+     *     @param value The amount of tokens being transferred
+     *     @param data Additional data with no specified format
+     *     @return `bytes4(keccak256("onERC1155Received(address,address,uint256,uint256,bytes)"))` if transfer is allowed
+     */
     function onERC1155Received(
         address operator,
         address from,
         uint256 id,
         uint256 value,
         bytes calldata data
-    )
-        external
-        returns(bytes4);
+    ) external returns (bytes4);
 
     /**
-        @dev Handles the receipt of a multiple ERC1155 token types. This function
-        is called at the end of a `safeBatchTransferFrom` after the balances have
-        been updated. To accept the transfer(s), this must return
-        `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
-        (i.e. 0xbc197c81, or its own function selector).
-        @param operator The address which initiated the batch transfer (i.e. msg.sender)
-        @param from The address which previously owned the token
-        @param ids An array containing ids of each token being transferred (order and length must match values array)
-        @param values An array containing amounts of each token being transferred (order and length must match ids array)
-        @param data Additional data with no specified format
-        @return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` if transfer is allowed
-    */
+     * @dev Handles the receipt of a multiple ERC1155 token types. This function
+     *     is called at the end of a `safeBatchTransferFrom` after the balances have
+     *     been updated. To accept the transfer(s), this must return
+     *     `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))`
+     *     (i.e. 0xbc197c81, or its own function selector).
+     *     @param operator The address which initiated the batch transfer (i.e. msg.sender)
+     *     @param from The address which previously owned the token
+     *     @param ids An array containing ids of each token being transferred (order and length must match values array)
+     *     @param values An array containing amounts of each token being transferred (order and length must match ids array)
+     *     @param data Additional data with no specified format
+     *     @return `bytes4(keccak256("onERC1155BatchReceived(address,address,uint256[],uint256[],bytes)"))` if transfer is allowed
+     */
     function onERC1155BatchReceived(
         address operator,
         address from,
         uint256[] calldata ids,
         uint256[] calldata values,
         bytes calldata data
-    )
-        external
-        returns(bytes4);
+    ) external returns (bytes4);
 }
 
 // File: @openzeppelin/contracts/utils/Context.sol
-
-
 
 pragma solidity >=0.6.0 <0.8.0;
 
@@ -815,10 +833,7 @@ abstract contract Context {
 
 // File: @openzeppelin/contracts/introspection/ERC165.sol
 
-
-
 pragma solidity >=0.6.0 <0.8.0;
-
 
 /**
  * @dev Implementation of the {IERC165} interface.
@@ -837,7 +852,7 @@ abstract contract ERC165 is IERC165 {
      */
     mapping(bytes4 => bool) private _supportedInterfaces;
 
-    constructor () internal {
+    constructor() internal {
         // Derived contracts need only register support for their own interfaces,
         // we register support for ERC165 itself here
         _registerInterface(_INTERFACE_ID_ERC165);
@@ -848,7 +863,9 @@ abstract contract ERC165 is IERC165 {
      *
      * Time complexity O(1), guaranteed to always use less than 30 000 gas.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override returns (bool) {
         return _supportedInterfaces[interfaceId];
     }
 
@@ -863,7 +880,9 @@ abstract contract ERC165 is IERC165 {
      *
      * - `interfaceId` cannot be the ERC165 invalid interface (`0xffffffff`).
      */
-    function _registerInterface(bytes4 interfaceId) internal virtual {
+    function _registerInterface(
+        bytes4 interfaceId
+    ) internal virtual {
         require(interfaceId != 0xffffffff, "ERC165: invalid interface id");
         _supportedInterfaces[interfaceId] = true;
     }
@@ -871,16 +890,7 @@ abstract contract ERC165 is IERC165 {
 
 // File: @openzeppelin/contracts/token/ERC1155/ERC1155.sol
 
-
-
 pragma solidity >=0.6.0 <0.8.0;
-
-
-
-
-
-
-
 
 /**
  *
@@ -895,10 +905,10 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     using Address for address;
 
     // Mapping from token ID to account balances
-    mapping (uint256 => mapping(address => uint256)) private _balances;
+    mapping(uint256 => mapping(address => uint256)) private _balances;
 
     // Mapping from account to operator approvals
-    mapping (address => mapping(address => bool)) private _operatorApprovals;
+    mapping(address => mapping(address => bool)) private _operatorApprovals;
 
     // Used as the URI for all token types by relying on ID substitution, e.g. https://token-cdn-domain/{id}.json
     string private _uri;
@@ -924,7 +934,9 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     /**
      * @dev See {_setURI}.
      */
-    constructor (string memory uri_) public {
+    constructor(
+        string memory uri_
+    ) public {
         _setURI(uri_);
 
         // register the supported interfaces to conform to ERC1155 via ERC165
@@ -933,8 +945,6 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         // register the supported interfaces to conform to ERC1155MetadataURI via ERC165
         _registerInterface(_INTERFACE_ID_ERC1155_METADATA_URI);
     }
-
-
 
     /**
      * @dev See {IERC1155MetadataURI-uri}.
@@ -946,7 +956,9 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
      * Clients calling this function must replace the `\{id\}` substring with the
      * actual token type ID.
      */
-    function uri(uint256) external view virtual override returns (string memory) {
+    function uri(
+        uint256
+    ) external view virtual override returns (string memory) {
         return _uri;
     }
 
@@ -972,13 +984,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
     function balanceOfBatch(
         address[] memory accounts,
         uint256[] memory ids
-    )
-        public
-        view
-        virtual
-        override
-        returns (uint256[] memory)
-    {
+    ) public view virtual override returns (uint256[] memory) {
         require(accounts.length == ids.length, "ERC1155: accounts and ids length mismatch");
 
         uint256[] memory batchBalances = new uint256[](accounts.length);
@@ -1016,15 +1022,10 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         uint256 id,
         uint256 amount,
         bytes memory data
-    )
-        public
-        virtual
-        override
-    {
+    ) public virtual override {
         require(to != address(0), "ERC1155: transfer to the zero address");
         require(
-            from == _msgSender() || isApprovedForAll(from, _msgSender()),
-            "ERC1155: caller is not owner nor approved"
+            from == _msgSender() || isApprovedForAll(from, _msgSender()), "ERC1155: caller is not owner nor approved"
         );
 
         address operator = _msgSender();
@@ -1048,11 +1049,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         uint256[] memory ids,
         uint256[] memory amounts,
         bytes memory data
-    )
-        public
-        virtual
-        override
-    {
+    ) public virtual override {
         require(ids.length == amounts.length, "ERC1155: ids and amounts length mismatch");
         require(to != address(0), "ERC1155: transfer to the zero address");
         require(
@@ -1068,10 +1065,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
             uint256 id = ids[i];
             uint256 amount = amounts[i];
 
-            _balances[id][from] = _balances[id][from].sub(
-                amount,
-                "ERC1155: insufficient balance for transfer"
-            );
+            _balances[id][from] = _balances[id][from].sub(amount, "ERC1155: insufficient balance for transfer");
             _balances[id][to] = _balances[id][to].add(amount);
         }
 
@@ -1099,7 +1093,9 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
      * Because these URIs cannot be meaningfully represented by the {URI} event,
      * this function emits no events.
      */
-    function _setURI(string memory newuri) internal virtual {
+    function _setURI(
+        string memory newuri
+    ) internal virtual {
         _uri = newuri;
     }
 
@@ -1136,7 +1132,12 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
      * - If `to` refers to a smart contract, it must implement {IERC1155Receiver-onERC1155BatchReceived} and return the
      * acceptance magic value.
      */
-    function _mintBatch(address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data) internal virtual {
+    function _mintBatch(
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) internal virtual {
         require(to != address(0), "ERC1155: mint to the zero address");
         require(ids.length == amounts.length, "ERC1155: ids and amounts length mismatch");
 
@@ -1144,7 +1145,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 
         _beforeTokenTransfer(operator, address(0), to, ids, amounts, data);
 
-        for (uint i = 0; i < ids.length; i++) {
+        for (uint256 i = 0; i < ids.length; i++) {
             _balances[ids[i]][to] = amounts[i].add(_balances[ids[i]][to]);
         }
 
@@ -1168,10 +1169,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 
         _beforeTokenTransfer(operator, account, address(0), _asSingletonArray(id), _asSingletonArray(amount), "");
 
-        _balances[id][account] = _balances[id][account].sub(
-            amount,
-            "ERC1155: burn amount exceeds balance"
-        );
+        _balances[id][account] = _balances[id][account].sub(amount, "ERC1155: burn amount exceeds balance");
 
         emit TransferSingle(operator, account, address(0), id, amount);
     }
@@ -1191,11 +1189,9 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 
         _beforeTokenTransfer(operator, account, address(0), ids, amounts, "");
 
-        for (uint i = 0; i < ids.length; i++) {
-            _balances[ids[i]][account] = _balances[ids[i]][account].sub(
-                amounts[i],
-                "ERC1155: burn amount exceeds balance"
-            );
+        for (uint256 i = 0; i < ids.length; i++) {
+            _balances[ids[i]][account] =
+                _balances[ids[i]][account].sub(amounts[i], "ERC1155: burn amount exceeds balance");
         }
 
         emit TransferBatch(operator, account, address(0), ids, amounts);
@@ -1228,10 +1224,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         uint256[] memory ids,
         uint256[] memory amounts,
         bytes memory data
-    )
-        internal
-        virtual
-    { }
+    ) internal virtual {}
 
     function _doSafeTransferAcceptanceCheck(
         address operator,
@@ -1240,9 +1233,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         uint256 id,
         uint256 amount,
         bytes memory data
-    )
-        private
-    {
+    ) private {
         if (to.isContract()) {
             try IERC1155Receiver(to).onERC1155Received(operator, from, id, amount, data) returns (bytes4 response) {
                 if (response != IERC1155Receiver(to).onERC1155Received.selector) {
@@ -1263,11 +1254,11 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         uint256[] memory ids,
         uint256[] memory amounts,
         bytes memory data
-    )
-        private
-    {
+    ) private {
         if (to.isContract()) {
-            try IERC1155Receiver(to).onERC1155BatchReceived(operator, from, ids, amounts, data) returns (bytes4 response) {
+            try IERC1155Receiver(to).onERC1155BatchReceived(operator, from, ids, amounts, data) returns (
+                bytes4 response
+            ) {
                 if (response != IERC1155Receiver(to).onERC1155BatchReceived.selector) {
                     revert("ERC1155: ERC1155Receiver rejected tokens");
                 }
@@ -1279,7 +1270,9 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
         }
     }
 
-    function _asSingletonArray(uint256 element) private pure returns (uint256[] memory) {
+    function _asSingletonArray(
+        uint256 element
+    ) private pure returns (uint256[] memory) {
         uint256[] memory array = new uint256[](1);
         array[0] = element;
 
@@ -1289,10 +1282,7 @@ contract ERC1155 is Context, ERC165, IERC1155, IERC1155MetadataURI {
 
 // File: @openzeppelin/contracts/token/ERC1155/ERC1155Burnable.sol
 
-
-
 pragma solidity >=0.6.0 <0.8.0;
-
 
 /**
  * @dev Extension of {ERC1155} that allows token holders to destroy both their
@@ -1322,11 +1312,7 @@ abstract contract ERC1155Burnable is ERC1155 {
 
 // File: @openzeppelin/contracts/token/ERC1155/ERC1155Receiver.sol
 
-
-
 pragma solidity >=0.6.0 <0.8.0;
-
-
 
 /**
  * @dev _Available since v3.1._
@@ -1334,15 +1320,13 @@ pragma solidity >=0.6.0 <0.8.0;
 abstract contract ERC1155Receiver is ERC165, IERC1155Receiver {
     constructor() internal {
         _registerInterface(
-            ERC1155Receiver(address(0)).onERC1155Received.selector ^
-            ERC1155Receiver(address(0)).onERC1155BatchReceived.selector
+            ERC1155Receiver(address(0)).onERC1155Received.selector
+                ^ ERC1155Receiver(address(0)).onERC1155BatchReceived.selector
         );
     }
 }
 
 // File: @openzeppelin/contracts/access/Ownable.sol
-
-
 
 pragma solidity >=0.6.0 <0.8.0;
 
@@ -1366,7 +1350,7 @@ abstract contract Ownable is Context {
     /**
      * @dev Initializes the contract setting the deployer as the initial owner.
      */
-    constructor () internal {
+    constructor() internal {
         address msgSender = _msgSender();
         _owner = msgSender;
         emit OwnershipTransferred(address(0), msgSender);
@@ -1403,7 +1387,9 @@ abstract contract Ownable is Context {
      * @dev Transfers ownership of the contract to a new account (`newOwner`).
      * Can only be called by the current owner.
      */
-    function transferOwnership(address newOwner) public virtual onlyOwner {
+    function transferOwnership(
+        address newOwner
+    ) public virtual onlyOwner {
         require(newOwner != address(0), "Ownable: new owner is the zero address");
         emit OwnershipTransferred(_owner, newOwner);
         _owner = newOwner;
@@ -1414,50 +1400,48 @@ abstract contract Ownable is Context {
 
 pragma solidity 0.6.12;
 
-
 // Copied from https://github.com/sushiswap/sushiswap/blob/master/contracts/MasterChef.sol
 // Modified by 0xLeia
 
-
-/** PATCH
-1. Reentrancy Guard (__lock_modifier0) in `deposit()` and `withdraw()`
-Prevents reentrant entry into deposit() or withdraw() from any internal callback 
-(e.g. _mint() triggers a reentrant withdraw()).
-
-2. require(_amount > 0 || user.amount > 0)
-Prevents 0-token deposits from contracts with no prior stake.
-which were previously exploitable to trigger reward minting without real deposits
-
-better:follow Check-Effects-Interactions pattern
+/**
+ * PATCH
+ * 1. Reentrancy Guard (__lock_modifier0) in `deposit()` and `withdraw()`
+ * Prevents reentrant entry into deposit() or withdraw() from any internal callback 
+ * (e.g. _mint() triggers a reentrant withdraw()).
+ *
+ * 2. require(_amount > 0 || user.amount > 0)
+ * Prevents 0-token deposits from contracts with no prior stake.
+ * which were previously exploitable to trigger reward minting without real deposits
+ *
+ * better:follow Check-Effects-Interactions pattern
  */
-
 contract PointFarm_patch is ERC1155Burnable, ERC1155Receiver, Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
-    bytes private constant VALIDATOR = bytes('JCNH');
+    bytes private constant VALIDATOR = bytes("JCNH");
 
     // Info of each user.
     struct UserInfo {
-        uint256 amount;     // How many LP tokens the user has provided.
+        uint256 amount; // How many LP tokens the user has provided.
         uint256 rewardDebt; // Reward debt. See explanation below.
-        //
-        // We do some fancy math here. Basically, any point in time, the amount of points
-        // entitled to a user but is pending to be distributed is:
-        //
-        //   pending reward = (user.amount * pool.accPointsPerShare) - user.rewardDebt
-        //
-        // Whenever a user deposits or withdraws LP tokens to a pool. Here's what happens:
-        //   1. The pool's `accPointsPerShare` (and `lastRewardBlock`) gets updated.
-        //   2. User receives the pending reward sent to his/her address.
-        //   3. User's `amount` gets updated.
-        //   4. User's `rewardDebt` gets updated.
+            //
+            // We do some fancy math here. Basically, any point in time, the amount of points
+            // entitled to a user but is pending to be distributed is:
+            //
+            //   pending reward = (user.amount * pool.accPointsPerShare) - user.rewardDebt
+            //
+            // Whenever a user deposits or withdraws LP tokens to a pool. Here's what happens:
+            //   1. The pool's `accPointsPerShare` (and `lastRewardBlock`) gets updated.
+            //   2. User receives the pending reward sent to his/her address.
+            //   3. User's `amount` gets updated.
+            //   4. User's `rewardDebt` gets updated.
     }
 
     // Info of each pool.
     struct PoolInfo {
-        IERC20 uToken;           // Address of LP token contract.
-        uint256 lastRewardBlock;  // Last block number that points distribution occurs.
+        IERC20 uToken; // Address of LP token contract.
+        uint256 lastRewardBlock; // Last block number that points distribution occurs.
         uint256 accPointsPerShare; // Accumulated points per share, times 1e18. See below.
     }
 
@@ -1472,7 +1456,7 @@ contract PointFarm_patch is ERC1155Burnable, ERC1155Receiver, Ownable {
     // Info of each pool.
     PoolInfo[] public poolInfo;
     // Info of each user that stakes LP tokens.
-    mapping (uint256 => mapping (address => UserInfo)) public userInfo;
+    mapping(uint256 => mapping(address => UserInfo)) public userInfo;
     // The block number when pointfarming starts.
     uint256 public startBlock;
 
@@ -1488,14 +1472,7 @@ contract PointFarm_patch is ERC1155Burnable, ERC1155Receiver, Ownable {
     event UpdatePool(uint256 pid);
     event URI(string _uri);
 
-    constructor(
-        uint256 _pointsPerBlock,
-        uint256 _startBlock,
-        string memory _uri
-    )
-        public
-        ERC1155(_uri)
-    {
+    constructor(uint256 _pointsPerBlock, uint256 _startBlock, string memory _uri) public ERC1155(_uri) {
         pointsPerBlock = _pointsPerBlock;
         startBlock = _startBlock;
     }
@@ -1507,21 +1484,34 @@ contract PointFarm_patch is ERC1155Burnable, ERC1155Receiver, Ownable {
         __lock_modifier0_lock = true;
         _;
         __lock_modifier0_lock = false;
-}
+    }
 
-
-    function setURI(string memory newuri) public onlyOwner {
+    function setURI(
+        string memory newuri
+    ) public onlyOwner {
         _setURI(newuri);
         emit URI(newuri);
     }
 
     // Unless being used for redeem, points are non transferrable
-    function safeBatchTransferFrom(address from, address to, uint256[] memory ids, uint256[] memory amounts, bytes memory data) override virtual public {
+    function safeBatchTransferFrom(
+        address from,
+        address to,
+        uint256[] memory ids,
+        uint256[] memory amounts,
+        bytes memory data
+    ) public virtual override {
         require(from == address(this) || to == address(this), "Points can not be transferred out");
         super.safeBatchTransferFrom(from, to, ids, amounts, data);
     }
 
-    function safeTransferFrom(address from, address to, uint256 id, uint256 amount, bytes memory data) override virtual public {
+    function safeTransferFrom(
+        address from,
+        address to,
+        uint256 id,
+        uint256 amount,
+        bytes memory data
+    ) public virtual override {
         require(from == address(this) || to == address(this), "Points can not be transferred out");
         super.safeTransferFrom(from, to, id, amount, data);
     }
@@ -1538,11 +1528,7 @@ contract PointFarm_patch is ERC1155Burnable, ERC1155Receiver, Ownable {
             massUpdatePools();
         }
         uint256 lastRewardBlock = block.number > startBlock ? block.number : startBlock;
-        poolInfo.push(PoolInfo({
-            uToken: _uToken,
-            lastRewardBlock: lastRewardBlock,
-            accPointsPerShare: 0
-        }));
+        poolInfo.push(PoolInfo({uToken: _uToken, lastRewardBlock: lastRewardBlock, accPointsPerShare: 0}));
 
         whitelist[address(_uToken)] = true;
         shopIDs[address(_uToken)] = currentShopIndex++;
@@ -1579,7 +1565,9 @@ contract PointFarm_patch is ERC1155Burnable, ERC1155Receiver, Ownable {
     }
 
     // Update reward variables of the given pool to be up-to-date.
-    function updatePool(uint256 _pid) public {
+    function updatePool(
+        uint256 _pid
+    ) public {
         PoolInfo storage pool = poolInfo[_pid];
         if (block.number <= pool.lastRewardBlock) {
             return;
@@ -1598,22 +1586,17 @@ contract PointFarm_patch is ERC1155Burnable, ERC1155Receiver, Ownable {
 
     // Deposit uTokens to PointFarm to farm points.
     function deposit(uint256 _pid, uint256 _amount) public __lock_modifier0 {
-        /**
-        prevents attackers from depositing 0 tokens
-         */
-        require(_amount > 0 || userInfo[_pid][msg.sender].amount > 0, "Invalid deposit: zero amount and no existing stake");
-       
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         updatePool(_pid);
         if (user.amount > 0) {
             uint256 pending = user.amount.mul(pool.accPointsPerShare).div(1e18).sub(user.rewardDebt);
-            if(pending > 0) {
+            if (pending > 0) {
                 bytes memory data;
                 _mint(msg.sender, _pid, pending, data);
             }
         }
-        if(_amount > 0) {
+        if (_amount > 0) {
             pool.uToken.safeTransferFrom(address(msg.sender), address(this), _amount);
             user.amount = user.amount.add(_amount);
         }
@@ -1622,17 +1605,17 @@ contract PointFarm_patch is ERC1155Burnable, ERC1155Receiver, Ownable {
     }
 
     // Withdraw uTokens from PointFarm.
-    function withdraw(uint256 _pid, uint256 _amount) public __lock_modifier0{
+    function withdraw(uint256 _pid, uint256 _amount) public __lock_modifier0 {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         require(user.amount >= _amount, "withdraw: not good");
         updatePool(_pid);
         uint256 pending = user.amount.mul(pool.accPointsPerShare).div(1e18).sub(user.rewardDebt);
-        if(pending > 0) {
+        if (pending > 0) {
             bytes memory data;
             _mint(msg.sender, _pid, pending, data);
         }
-        if(_amount > 0) {
+        if (_amount > 0) {
             user.amount = user.amount.sub(_amount);
             pool.uToken.safeTransfer(address(msg.sender), _amount);
         }
@@ -1641,7 +1624,9 @@ contract PointFarm_patch is ERC1155Burnable, ERC1155Receiver, Ownable {
     }
 
     // Withdraw without caring about rewards. EMERGENCY ONLY.
-    function emergencyWithdraw(uint256 _pid) public {
+    function emergencyWithdraw(
+        uint256 _pid
+    ) public {
         PoolInfo storage pool = poolInfo[_pid];
         UserInfo storage user = userInfo[_pid][msg.sender];
         uint256 amount = user.amount;
@@ -1652,32 +1637,50 @@ contract PointFarm_patch is ERC1155Burnable, ERC1155Receiver, Ownable {
     }
 
     // Set mint rate
-    function setMintRules(uint256 _pointsPerBlock) public onlyOwner {
+    function setMintRules(
+        uint256 _pointsPerBlock
+    ) public onlyOwner {
         pointsPerBlock = _pointsPerBlock;
     }
 
-    function setStartBlock(uint256 _startBlock) public onlyOwner {
+    function setStartBlock(
+        uint256 _startBlock
+    ) public onlyOwner {
         require(block.number < startBlock, "start block can not be modified after it has passed");
         require(block.number < _startBlock, "new start block needs to be in the future");
         startBlock = _startBlock;
     }
 
     // Change shop address
-    function setShop(address _shop) public onlyOwner {
+    function setShop(
+        address _shop
+    ) public onlyOwner {
         shop = _shop;
     }
 
     /**
      * ERC1155 Token ERC1155Receiver
      */
-    function onERC1155Received(address _operator, address _from, uint256 _id, uint256 _value, bytes calldata _data) override external returns(bytes4) {
-        if(keccak256(_data) == keccak256(VALIDATOR)){
+    function onERC1155Received(
+        address _operator,
+        address _from,
+        uint256 _id,
+        uint256 _value,
+        bytes calldata _data
+    ) external override returns (bytes4) {
+        if (keccak256(_data) == keccak256(VALIDATOR)) {
             return 0xf23a6e61;
         }
     }
 
-    function onERC1155BatchReceived(address _operator, address _from, uint256[] calldata _ids, uint256[] calldata _values, bytes calldata _data) override external returns(bytes4) {
-        if(keccak256(_data) == keccak256(VALIDATOR)){
+    function onERC1155BatchReceived(
+        address _operator,
+        address _from,
+        uint256[] calldata _ids,
+        uint256[] calldata _values,
+        bytes calldata _data
+    ) external override returns (bytes4) {
+        if (keccak256(_data) == keccak256(VALIDATOR)) {
             return 0xbc197c81;
         }
     }
