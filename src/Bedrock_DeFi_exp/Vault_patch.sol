@@ -2364,14 +2364,7 @@ abstract contract PausableUpgradeable is Initializable, ContextUpgradeable {
 }
 
 // File: contracts/contracts/Vault.sol
-/**
- * Patch: 
- * Added a require() in the mint function 
- * (`require(msg.value < 1e15, "SYS007: ETH-to-uniBTC minting disabled due to unsafe exchange rate"`);
- * to disable minting with native ETH when the sent amount exceeds a very small threshold (1e15 wei).
- * This prevents abuse from unsafe exchange rates during ETH-to-uniBTC conversion, 
- * mitigating the risk of price exploitation attacks.
- */
+
 contract Vault_patch is Initializable, AccessControlUpgradeable, PausableUpgradeable, ReentrancyGuardUpgradeable {
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
@@ -2406,7 +2399,8 @@ contract Vault_patch is Initializable, AccessControlUpgradeable, PausableUpgrade
      */
     function mint() external payable {
         require(!paused[NATIVE_BTC], "SYS002");
-        require(msg.value < 1e15, "SYS007: ETH-to-uniBTC minting disabled due to unsafe exchange rate");
+        (, uint256 uniBTCAmount) = _amounts(msg.value);
+        require(uniBTCAmount * 1e10 < msg.value, "SYS008: Exchange rate unsafe - prevents 1:1 conversion");
         _mint(msg.sender, msg.value);
     }
 
