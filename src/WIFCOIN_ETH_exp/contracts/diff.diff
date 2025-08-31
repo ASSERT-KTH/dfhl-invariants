@@ -1,31 +1,31 @@
 diff --git a/src/WIFCOIN_ETH_exp/contracts/WIFStaking.sol b/src/WIFCOIN_ETH_exp/contracts/WIFStaking_patch.sol
-index c876a5f..3abd665 100644
+index 07737c8..0c52295 100644
 --- a/src/WIFCOIN_ETH_exp/contracts/WIFStaking.sol
 +++ b/src/WIFCOIN_ETH_exp/contracts/WIFStaking_patch.sol
-@@ -7,6 +7,22 @@
+@@ -6,6 +6,22 @@
  
  // OpenZeppelin Contracts (last updated v4.6.0) (utils/math/SafeMath.sol)
  
-+/**@dev
-+*Vulnerability:
-+Double claimEarned, Each time the claimEarned function is called,
-+the code iterates through all the stakes and accumulates the calculated _earned amount.
-+However, after calculating the rewards, the already calculated rewards are not marked as claimed. 
-+As a result, the next time claimEarned is called,
-+it will recalculate those already claimed rewards, allowing users to claim rewards multiple times.
-+
-+*Patch:
-+Adds a require statement to ensure rewards for a stake
-+ can only be claimed once per staking period.
-+ _staking.stakeAt is updated after claiming to mark that
-+ rewards have been claimed. 
-+`require(block.timestamp > _staking.stakeAt, "Rewards already claimed");`
++/**
++ * @dev
++ * Vulnerability:
++ * Double claimEarned, Each time the claimEarned function is called,
++ * the code iterates through all the stakes and accumulates the calculated _earned amount.
++ * However, after calculating the rewards, the already calculated rewards are not marked as claimed.
++ * As a result, the next time claimEarned is called,
++ * it will recalculate those already claimed rewards, allowing users to claim rewards multiple times.
++ *
++ * Patch:
++ * require(_earned > totalRewardsPerWalletPerPlan[_stakingId][msg.sender], "Rewards already claimed");
++ * This ensures users cannot claim the same rewards twice
++ *  _earned:This is the total rewards calculated for the user in this claim attempt.
++ * totalRewardsPerWalletPerPlan[_stakingId][msg.sender]: This is the amount of rewards
++ * the user has already claimed for this staking plan.
 + */
-+
  pragma solidity ^0.8.0;
  
  // CAUTION
-@@ -854,7 +870,7 @@ abstract contract IERC20Staking is ReentrancyGuard, Ownable {
+@@ -814,7 +830,7 @@ abstract contract IERC20Staking is ReentrancyGuard, Ownable {
      function emergencyWithdraw(uint256 _stakingId, uint256 _amount) public virtual;
  }
  
@@ -34,41 +34,13 @@ index c876a5f..3abd665 100644
      using SafeMath for uint256;
      using SafeERC20 for IERC20;
  
-@@ -1006,6 +1022,8 @@ contract WIFStaking_original is IERC20Staking {
+@@ -974,8 +990,8 @@ contract WIFStaking_original is IERC20Staking {
  
-         for (uint256 i = 0; i < stakes[_stakingId][msg.sender].length; i++) {
-             Staking storage _staking = stakes[_stakingId][msg.sender][i];
-+            require(block.timestamp > _staking.stakeAt, "Rewards already claimed");
-+
-             _earned = _earned.add(
-                 _staking
-                     .amount
-@@ -1021,15 +1039,27 @@ contract WIFStaking_original is IERC20Staking {
-             totalEarnedRewardsPerWallet[msg.sender] += _earned;
-         
              _staking.stakeAt = block.timestamp;
--        }
- 
-+        }
+         }
+-
          require(_earned > 0, "There is no amount to claim");
 +        require(_earned > totalRewardsPerWalletPerPlan[_stakingId][msg.sender], "Rewards already claimed");
-+
  
          uint256 burnAmount = _earned.mul(_burnRate).div(100);
          IERC20(stakingToken).transfer(BURN_ADDRESS, burnAmount);
-         IERC20(stakingToken).transfer(msg.sender, _earned.sub(burnAmount));
-     }
- 
-+
-+
-+
-+
-+
-+
-+
-+
-+
-+
-     function emergencyWithdraw(uint256 _stakingId, uint256 _amount) public nonReentrant override {
-         uint256 _stakedAmount;
-         uint256 _canWithdraw;

@@ -18,4 +18,4 @@ cat src/WIFCOIN_ETH_exp/contracts/patch.hex | tr -d '\n' | sed 's/^0x//' | xxd -
 # 3. Run the test
 echo "Running forge test..."
 export BYTECODE_PATH="src/WIFCOIN_ETH_exp/contracts/original.bin"
-forge test --contracts src/WIFCOIN_ETH_exp/contracts/WIFCOIN_ETH_exp.sol -vvv 
+forge test --contracts src/WIFCOIN_ETH_exp/contracts/WIFCOIN_ETH_exp.sol -vv

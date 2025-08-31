@@ -1,9 +1,8 @@
 /**
- *Submitted for verification at Etherscan.io on 2024-01-19
-*/
+ * Submitted for verification at Etherscan.io on 2024-01-19
+ */
 
 // File: 0xscan-staking/SafeMath.sol
-
 
 // OpenZeppelin Contracts (last updated v4.6.0) (utils/math/SafeMath.sol)
 
@@ -171,11 +170,7 @@ library SafeMath {
      *
      * - Subtraction cannot overflow.
      */
-    function sub(
-        uint256 a,
-        uint256 b,
-        string memory errorMessage
-    ) internal pure returns (uint256) {
+    function sub(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
         unchecked {
             require(b <= a, errorMessage);
             return a - b;
@@ -194,11 +189,7 @@ library SafeMath {
      *
      * - The divisor cannot be zero.
      */
-    function div(
-        uint256 a,
-        uint256 b,
-        string memory errorMessage
-    ) internal pure returns (uint256) {
+    function div(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
         unchecked {
             require(b > 0, errorMessage);
             return a / b;
@@ -220,11 +211,7 @@ library SafeMath {
      *
      * - The divisor cannot be zero.
      */
-    function mod(
-        uint256 a,
-        uint256 b,
-        string memory errorMessage
-    ) internal pure returns (uint256) {
+    function mod(uint256 a, uint256 b, string memory errorMessage) internal pure returns (uint256) {
         unchecked {
             require(b > 0, errorMessage);
             return a % b;
@@ -232,7 +219,6 @@ library SafeMath {
     }
 }
 // File: 0xscan-staking/Address.sol
-
 
 // OpenZeppelin Contracts (last updated v4.5.0) (utils/Address.sol)
 
@@ -268,7 +254,9 @@ library Address {
      * constructor.
      * ====
      */
-    function isContract(address account) internal view returns (bool) {
+    function isContract(
+        address account
+    ) internal view returns (bool) {
         // This method relies on extcodesize/address.code.length, which returns 0
         // for contracts in construction, since the code is only stored at the end
         // of the constructor execution.
@@ -295,7 +283,7 @@ library Address {
     function sendValue(address payable recipient, uint256 amount) internal {
         require(address(this).balance >= amount, "Address: insufficient balance");
 
-        (bool success, ) = recipient.call{value: amount}("");
+        (bool success,) = recipient.call{value: amount}("");
         require(success, "Address: unable to send value, recipient may have reverted");
     }
 
@@ -346,11 +334,7 @@ library Address {
      *
      * _Available since v3.1._
      */
-    function functionCallWithValue(
-        address target,
-        bytes memory data,
-        uint256 value
-    ) internal returns (bytes memory) {
+    function functionCallWithValue(address target, bytes memory data, uint256 value) internal returns (bytes memory) {
         return functionCallWithValue(target, data, value, "Address: low-level call with value failed");
     }
 
@@ -457,7 +441,6 @@ library Address {
 }
 // File: 0xscan-staking/IERC20.sol
 
-
 // OpenZeppelin Contracts (last updated v4.6.0) (token/ERC20/IERC20.sol)
 
 pragma solidity ^0.8.0;
@@ -488,7 +471,9 @@ interface IERC20 {
     /**
      * @dev Returns the amount of tokens owned by `account`.
      */
-    function balanceOf(address account) external view returns (uint256);
+    function balanceOf(
+        address account
+    ) external view returns (uint256);
 
     /**
      * @dev Moves `amount` tokens from the caller's account to `to`.
@@ -533,20 +518,13 @@ interface IERC20 {
      *
      * Emits a {Transfer} event.
      */
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) external returns (bool);
+    function transferFrom(address from, address to, uint256 amount) external returns (bool);
 }
 // File: 0xscan-staking/SafeERC20.sol
-
 
 // OpenZeppelin Contracts v4.4.1 (token/ERC20/utils/SafeERC20.sol)
 
 pragma solidity ^0.8.0;
-
-
 
 /**
  * @title SafeERC20
@@ -560,20 +538,11 @@ pragma solidity ^0.8.0;
 library SafeERC20 {
     using Address for address;
 
-    function safeTransfer(
-        IERC20 token,
-        address to,
-        uint256 value
-    ) internal {
+    function safeTransfer(IERC20 token, address to, uint256 value) internal {
         _callOptionalReturn(token, abi.encodeWithSelector(token.transfer.selector, to, value));
     }
 
-    function safeTransferFrom(
-        IERC20 token,
-        address from,
-        address to,
-        uint256 value
-    ) internal {
+    function safeTransferFrom(IERC20 token, address from, address to, uint256 value) internal {
         _callOptionalReturn(token, abi.encodeWithSelector(token.transferFrom.selector, from, to, value));
     }
 
@@ -584,11 +553,7 @@ library SafeERC20 {
      * Whenever possible, use {safeIncreaseAllowance} and
      * {safeDecreaseAllowance} instead.
      */
-    function safeApprove(
-        IERC20 token,
-        address spender,
-        uint256 value
-    ) internal {
+    function safeApprove(IERC20 token, address spender, uint256 value) internal {
         // safeApprove should only be called when setting an initial allowance,
         // or when resetting it to zero. To increase and decrease it, use
         // 'safeIncreaseAllowance' and 'safeDecreaseAllowance'
@@ -599,20 +564,12 @@ library SafeERC20 {
         _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, value));
     }
 
-    function safeIncreaseAllowance(
-        IERC20 token,
-        address spender,
-        uint256 value
-    ) internal {
+    function safeIncreaseAllowance(IERC20 token, address spender, uint256 value) internal {
         uint256 newAllowance = token.allowance(address(this), spender) + value;
         _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, newAllowance));
     }
 
-    function safeDecreaseAllowance(
-        IERC20 token,
-        address spender,
-        uint256 value
-    ) internal {
+    function safeDecreaseAllowance(IERC20 token, address spender, uint256 value) internal {
         unchecked {
             uint256 oldAllowance = token.allowance(address(this), spender);
             require(oldAllowance >= value, "SafeERC20: decreased allowance below zero");
@@ -640,7 +597,6 @@ library SafeERC20 {
     }
 }
 // File: 0xscan-staking/ReentrancyGuard.sol
-
 
 // OpenZeppelin Contracts v4.4.1 (security/ReentrancyGuard.sol)
 
@@ -706,7 +662,6 @@ abstract contract ReentrancyGuard {
 }
 // File: 0xscan-staking/Context.sol
 
-
 // OpenZeppelin Contracts v4.4.1 (utils/Context.sol)
 
 pragma solidity ^0.8.0;
@@ -732,11 +687,9 @@ abstract contract Context {
 }
 // File: 0xscan-staking/Ownable.sol
 
-
 // OpenZeppelin Contracts v4.4.1 (access/Ownable.sol)
 
 pragma solidity ^0.8.0;
-
 
 /**
  * @dev Contract module which provides a basic access control mechanism, where
@@ -792,7 +745,9 @@ abstract contract Ownable is Context {
      * @dev Transfers ownership of the contract to a new account (`newOwner`).
      * Can only be called by the current owner.
      */
-    function transferOwnership(address newOwner) public virtual onlyOwner {
+    function transferOwnership(
+        address newOwner
+    ) public virtual onlyOwner {
         require(newOwner != address(0), "Ownable: new owner is the zero address");
         _transferOwnership(newOwner);
     }
@@ -801,7 +756,9 @@ abstract contract Ownable is Context {
      * @dev Transfers ownership of the contract to a new account (`newOwner`).
      * Internal function without access restriction.
      */
-    function _transferOwnership(address newOwner) internal virtual {
+    function _transferOwnership(
+        address newOwner
+    ) internal virtual {
         address oldOwner = _owner;
         _owner = newOwner;
         emit OwnershipTransferred(oldOwner, newOwner);
@@ -813,7 +770,6 @@ abstract contract Ownable is Context {
 pragma solidity ^0.8.0;
 
 abstract contract IERC20Staking is ReentrancyGuard, Ownable {
-
     struct Plan {
         uint256 overallStaked;
         uint256 stakesCount;
@@ -821,7 +777,7 @@ abstract contract IERC20Staking is ReentrancyGuard, Ownable {
         uint256 stakeDuration;
         bool conclude;
     }
-    
+
     struct Staking {
         uint256 amount;
         uint256 stakeAt;
@@ -841,16 +797,20 @@ abstract contract IERC20Staking is ReentrancyGuard, Ownable {
     address public stakingToken;
     mapping(uint256 => Plan) public plans;
 
-    constructor(address _stakingToken) {
+    constructor(
+        address _stakingToken
+    ) {
         stakingToken = _stakingToken;
     }
 
     function stake(uint256 _stakingId, uint256 _amount) public virtual;
-    function canWithdrawAmount(uint256 _stakingId, address account) public virtual view returns (uint256, uint256);
+    function canWithdrawAmount(uint256 _stakingId, address account) public view virtual returns (uint256, uint256);
     function unstake(uint256 _stakingId, uint256 _amount, uint256 _burnRate) public virtual;
-    function earnedToken(uint256 _stakingId, address account) public virtual view returns (uint256);
+    function earnedToken(uint256 _stakingId, address account) public view virtual returns (uint256);
     function claimEarned(uint256 _stakingId, uint256 _burnRate) public virtual;
-    function getStakedPlans(address _account) public virtual view returns (bool[] memory);
+    function getStakedPlans(
+        address _account
+    ) public view virtual returns (bool[] memory);
     function emergencyWithdraw(uint256 _stakingId, uint256 _amount) public virtual;
 }
 
@@ -862,8 +822,9 @@ contract WIFStaking_original is IERC20Staking {
     uint256 public penalty = 20;
     address constant BURN_ADDRESS = 0x000000000000000000000000000000000000dEaD;
 
-    constructor(address _stakingToken) IERC20Staking(_stakingToken) {
-
+    constructor(
+        address _stakingToken
+    ) IERC20Staking(_stakingToken) {
         plans[0].apr = 50;
         // plans[0].stakeDuration = 150;
         plans[0].stakeDuration = 15 days;
@@ -881,11 +842,11 @@ contract WIFStaking_original is IERC20Staking {
         plans[3].stakeDuration = 180 days;
     }
 
-    function stake(uint256 _stakingId, uint256 _amount) public nonReentrant override {
+    function stake(uint256 _stakingId, uint256 _amount) public override nonReentrant {
         require(_amount > 0, "Staking Amount cannot be zero");
         require(IERC20(stakingToken).balanceOf(msg.sender) >= _amount, "Balance is not enough");
         require(_stakingId < planLimit, "Staking is unavailable");
-        
+
         Plan storage plan = plans[_stakingId];
         require(!plan.conclude, "Staking in this pool is concluded");
 
@@ -893,27 +854,27 @@ contract WIFStaking_original is IERC20Staking {
         IERC20(stakingToken).transferFrom(msg.sender, address(this), _amount);
         uint256 afterBalance = IERC20(stakingToken).balanceOf(address(this));
         uint256 amount = afterBalance - beforeBalance;
-        
+
         uint256 stakelength = stakes[_stakingId][msg.sender].length;
-        
-        if(stakelength == 0) {
+
+        if (stakelength == 0) {
             plan.stakesCount += 1;
         }
 
         stakes[_stakingId][msg.sender].push();
-        
+
         Staking storage _staking = stakes[_stakingId][msg.sender][stakelength];
         _staking.amount = amount;
         _staking.stakeAt = block.timestamp;
         _staking.endstakeAt = block.timestamp + plan.stakeDuration;
-        
+
         plan.overallStaked = plan.overallStaked.add(amount);
     }
 
-    function canWithdrawAmount(uint256 _stakingId, address account) public override view returns (uint256, uint256) {
+    function canWithdrawAmount(uint256 _stakingId, address account) public view override returns (uint256, uint256) {
         uint256 _stakedAmount = 0;
         uint256 _canWithdraw = 0;
-        
+
         for (uint256 i = 0; i < stakes[_stakingId][account].length; i++) {
             Staking storage _staking = stakes[_stakingId][account][i];
             _stakedAmount = _stakedAmount.add(_staking.amount);
@@ -927,25 +888,21 @@ contract WIFStaking_original is IERC20Staking {
         return (_stakedAmount, _canWithdraw);
     }
 
-    function earnedToken(uint256 _stakingId, address account) public override view returns (uint256) {
+    function earnedToken(uint256 _stakingId, address account) public view override returns (uint256) {
         uint256 _earned = 0;
         Plan storage plan = plans[_stakingId];
-        
+
         for (uint256 i = 0; i < stakes[_stakingId][account].length; i++) {
             Staking storage _staking = stakes[_stakingId][account][i];
-            if(_staking.endstakeAt <= block.timestamp) {
-                _earned = _earned.add(
-                    _staking.amount
-                        .mul(plan.apr)
-                        .div(10000)
-                );
+            if (_staking.endstakeAt <= block.timestamp) {
+                _earned = _earned.add(_staking.amount.mul(plan.apr).div(10_000));
             }
         }
 
         return _earned;
     }
 
-    function unstake(uint256 _stakingId, uint256 _amount, uint256 _burnRate) public nonReentrant override {
+    function unstake(uint256 _stakingId, uint256 _amount, uint256 _burnRate) public override nonReentrant {
         require(_burnRate == 10 || _burnRate == 25 || _burnRate == 40, "Invalid burn rate");
         uint256 _stakedAmount;
         uint256 _canWithdraw;
@@ -957,16 +914,15 @@ contract WIFStaking_original is IERC20Staking {
         require(_canWithdraw >= _amount, "Withdraw amount exceeds allowed limit");
 
         uint256 remainingAmountToUnstake = _amount;
-        
+
         for (uint256 i = stakes[_stakingId][msg.sender].length; i > 0; i--) {
-            Staking storage _staking = stakes[_stakingId][msg.sender][i-1];
+            Staking storage _staking = stakes[_stakingId][msg.sender][i - 1];
 
             if (block.timestamp >= _staking.endstakeAt && remainingAmountToUnstake > 0) {
-                uint256 amountToUnstake = _staking.amount < remainingAmountToUnstake ? _staking.amount : remainingAmountToUnstake;
+                uint256 amountToUnstake =
+                    _staking.amount < remainingAmountToUnstake ? _staking.amount : remainingAmountToUnstake;
 
-                _earned += amountToUnstake
-                        .mul(plan.apr)
-                        .div(10000);
+                _earned += amountToUnstake.mul(plan.apr).div(10_000);
 
                 _staking.amount -= amountToUnstake;
                 remainingAmountToUnstake -= amountToUnstake;
@@ -978,17 +934,17 @@ contract WIFStaking_original is IERC20Staking {
         if (_amount > 0) {
             IERC20(stakingToken).transfer(msg.sender, _amount);
         }
-        
+
         if (_earned > 0) {
-            
             uint256 burnAmount = _earned.mul(_burnRate).div(100);
             IERC20(stakingToken).transfer(BURN_ADDRESS, burnAmount);
             IERC20(stakingToken).transfer(msg.sender, _earned.sub(burnAmount));
-        
+
             totalRewards = totalRewards.add(_earned.sub(burnAmount));
             totalRewardsPerPlan[_stakingId] = totalRewardsPerPlan[_stakingId].add(_earned.sub(burnAmount));
 
-            totalRewardsPerWalletPerPlan[_stakingId][msg.sender] = totalRewardsPerWalletPerPlan[_stakingId][msg.sender].add(_earned.sub(burnAmount));
+            totalRewardsPerWalletPerPlan[_stakingId][msg.sender] =
+                totalRewardsPerWalletPerPlan[_stakingId][msg.sender].add(_earned.sub(burnAmount));
 
             totalEarnedRewardsPerWallet[msg.sender] += _earned.sub(burnAmount);
         }
@@ -1006,20 +962,16 @@ contract WIFStaking_original is IERC20Staking {
 
         for (uint256 i = 0; i < stakes[_stakingId][msg.sender].length; i++) {
             Staking storage _staking = stakes[_stakingId][msg.sender][i];
-            _earned = _earned.add(
-                _staking
-                    .amount
-                    .mul(plan.apr)
-                    .div(10000)
-            );
+            _earned = _earned.add(_staking.amount.mul(plan.apr).div(10_000));
 
             totalRewards = totalRewards.add(_earned);
             totalRewardsPerPlan[_stakingId] = totalRewardsPerPlan[_stakingId].add(_earned);
 
-            totalRewardsPerWalletPerPlan[_stakingId][msg.sender] = totalRewardsPerWalletPerPlan[_stakingId][msg.sender].add(_earned);
+            totalRewardsPerWalletPerPlan[_stakingId][msg.sender] =
+                totalRewardsPerWalletPerPlan[_stakingId][msg.sender].add(_earned);
 
             totalEarnedRewardsPerWallet[msg.sender] += _earned;
-        
+
             _staking.stakeAt = block.timestamp;
         }
 
@@ -1030,7 +982,7 @@ contract WIFStaking_original is IERC20Staking {
         IERC20(stakingToken).transfer(msg.sender, _earned.sub(burnAmount));
     }
 
-    function emergencyWithdraw(uint256 _stakingId, uint256 _amount) public nonReentrant override {
+    function emergencyWithdraw(uint256 _stakingId, uint256 _amount) public override nonReentrant {
         uint256 _stakedAmount;
         uint256 _canWithdraw;
 
@@ -1042,10 +994,11 @@ contract WIFStaking_original is IERC20Staking {
         uint256 remainingAmountToUnstake = _amount;
 
         for (uint256 i = stakes[_stakingId][msg.sender].length; i > 0; i--) {
-            Staking storage _staking = stakes[_stakingId][msg.sender][i-1];
+            Staking storage _staking = stakes[_stakingId][msg.sender][i - 1];
 
             if (remainingAmountToUnstake > 0) {
-                uint256 amountToUnstake = _staking.amount < remainingAmountToUnstake ? _staking.amount : remainingAmountToUnstake;
+                uint256 amountToUnstake =
+                    _staking.amount < remainingAmountToUnstake ? _staking.amount : remainingAmountToUnstake;
 
                 _staking.amount -= amountToUnstake;
                 remainingAmountToUnstake -= amountToUnstake;
@@ -1073,12 +1026,16 @@ contract WIFStaking_original is IERC20Staking {
         payable(msg.sender).transfer(address(this).balance);
     }
 
-    function penaltyWithdraw(uint256 _amount) public onlyOwner {
-        require(_amount < IERC20(stakingToken).balanceOf(address(this)), 'not enough token');
+    function penaltyWithdraw(
+        uint256 _amount
+    ) public onlyOwner {
+        require(_amount < IERC20(stakingToken).balanceOf(address(this)), "not enough token");
         IERC20(stakingToken).safeTransfer(address(msg.sender), _amount);
     }
 
-    function getStakedPlans(address _account) public override view returns (bool[] memory) {
+    function getStakedPlans(
+        address _account
+    ) public view override returns (bool[] memory) {
         bool[] memory stakedPlans = new bool[](planLimit);
 
         for (uint256 i = 0; i < planLimit; i++) {
@@ -1092,7 +1049,9 @@ contract WIFStaking_original is IERC20Staking {
         return stakedPlans;
     }
 
-    function concludeStaking(uint256 _stakingId) public onlyOwner {
+    function concludeStaking(
+        uint256 _stakingId
+    ) public onlyOwner {
         plans[_stakingId].conclude = true;
     }
 }
