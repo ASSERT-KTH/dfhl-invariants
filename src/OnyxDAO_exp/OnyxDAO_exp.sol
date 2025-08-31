@@ -44,8 +44,8 @@ contract OnyxDAO_exp is Test {
     function setUp() public {
         vm.createSelectFork("mainnet", 20_834_658 - 1);
         string memory bytecodePath = vm.envString("BYTECODE_PATH");
-        bytes memory newRuntimeBytecode = vm.readFileBinary (bytecodePath);
-        vm.etch(address(NFTLiquidationProxy),newRuntimeBytecode);
+        bytes memory newRuntimeBytecode = vm.readFileBinary(bytecodePath);
+        vm.etch(address(NFTLiquidationProxy), newRuntimeBytecode);
     }
 
     function testPoC() public {

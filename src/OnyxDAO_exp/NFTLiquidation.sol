@@ -1,6 +1,6 @@
 /**
- *Submitted for verification at Etherscan.io on 2023-02-28
-*/
+ * Submitted for verification at Etherscan.io on 2023-02-28
+ */
 
 // File: contracts/Liquidation/NFTLiquidationInterface.sol
 
@@ -21,23 +21,23 @@ pragma solidity ^0.5.16;
 
 contract NFTLiquidationProxyStorage {
     /**
-    * @notice Administrator for this contract
-    */
+     * @notice Administrator for this contract
+     */
     address public admin;
 
     /**
-    * @notice Pending administrator for this contract
-    */
+     * @notice Pending administrator for this contract
+     */
     address public pendingAdmin;
 
     /**
-    * @notice Active brains of NFTLiquidationProxy
-    */
+     * @notice Active brains of NFTLiquidationProxy
+     */
     address public nftLiquidationImplementation;
 
     /**
-    * @notice Pending brains of NFTLiquidationProxy
-    */
+     * @notice Pending brains of NFTLiquidationProxy
+     */
     address public pendingNFTLiquidationImplementation;
 }
 
@@ -90,25 +90,24 @@ pragma solidity ^0.5.16;
  * OTokens should reference this contract as their nft liquidation.
  */
 contract NFTLiquidationProxy is NFTLiquidationProxyStorage {
-
     /**
-      * @notice Emitted when pendingNFTLiquidationImplementation is changed
-      */
+     * @notice Emitted when pendingNFTLiquidationImplementation is changed
+     */
     event NewPendingImplementation(address oldPendingImplementation, address newPendingImplementation);
 
     /**
-      * @notice Emitted when pendingNFTLiquidationImplementation is accepted, which means nft liquidation implementation is updated
-      */
+     * @notice Emitted when pendingNFTLiquidationImplementation is accepted, which means nft liquidation implementation is updated
+     */
     event NewImplementation(address oldImplementation, address newImplementation);
 
     /**
-      * @notice Emitted when pendingAdmin is changed
-      */
+     * @notice Emitted when pendingAdmin is changed
+     */
     event NewPendingAdmin(address oldPendingAdmin, address newPendingAdmin);
 
     /**
-      * @notice Emitted when pendingAdmin is accepted, which means admin is updated
-      */
+     * @notice Emitted when pendingAdmin is accepted, which means admin is updated
+     */
     event NewAdmin(address oldAdmin, address newAdmin);
 
     constructor() public {
@@ -116,8 +115,12 @@ contract NFTLiquidationProxy is NFTLiquidationProxyStorage {
         admin = msg.sender;
     }
 
-    /*** Admin Functions ***/
-    function _setPendingImplementation(address newPendingImplementation) public {
+    /**
+     * Admin Functions **
+     */
+    function _setPendingImplementation(
+        address newPendingImplementation
+    ) public {
         require(msg.sender == admin, "only admin");
 
         address oldPendingImplementation = pendingNFTLiquidationImplementation;
@@ -128,12 +131,15 @@ contract NFTLiquidationProxy is NFTLiquidationProxyStorage {
     }
 
     /**
-    * @notice Accepts new implementation of nft liquidation. msg.sender must be pendingImplementation
-    * @dev Admin function for new implementation to accept it's role as implementation
-    */
+     * @notice Accepts new implementation of nft liquidation. msg.sender must be pendingImplementation
+     * @dev Admin function for new implementation to accept it's role as implementation
+     */
     function _acceptImplementation() public {
         // Check caller is pendingImplementation and pendingImplementation ≠ address(0)
-        require(msg.sender == pendingNFTLiquidationImplementation && pendingNFTLiquidationImplementation != address(0), "only from pending implementation");
+        require(
+            msg.sender == pendingNFTLiquidationImplementation && pendingNFTLiquidationImplementation != address(0),
+            "only from pending implementation"
+        );
 
         // Save current values for inclusion in log
         address oldImplementation = nftLiquidationImplementation;
@@ -148,11 +154,13 @@ contract NFTLiquidationProxy is NFTLiquidationProxyStorage {
     }
 
     /**
-      * @notice Begins transfer of admin rights. The newPendingAdmin must call `_acceptAdmin` to finalize the transfer.
-      * @dev Admin function to begin change of admin. The newPendingAdmin must call `_acceptAdmin` to finalize the transfer.
-      * @param newPendingAdmin New pending admin.
-      */
-    function _setPendingAdmin(address newPendingAdmin) public {
+     * @notice Begins transfer of admin rights. The newPendingAdmin must call `_acceptAdmin` to finalize the transfer.
+     * @dev Admin function to begin change of admin. The newPendingAdmin must call `_acceptAdmin` to finalize the transfer.
+     * @param newPendingAdmin New pending admin.
+     */
+    function _setPendingAdmin(
+        address newPendingAdmin
+    ) public {
         // Check caller = admin
         require(msg.sender == admin, "only admin");
 
@@ -167,10 +175,10 @@ contract NFTLiquidationProxy is NFTLiquidationProxyStorage {
     }
 
     /**
-      * @notice Accepts transfer of admin rights. msg.sender must be pendingAdmin
-      * @dev Admin function for pending admin to accept role and update admin
-      */
-    function _acceptAdmin() public returns (uint) {
+     * @notice Accepts transfer of admin rights. msg.sender must be pendingAdmin
+     * @dev Admin function for pending admin to accept role and update admin
+     */
+    function _acceptAdmin() public returns (uint256) {
         // Check caller is pendingAdmin and pendingAdmin ≠ address(0)
         require(msg.sender == pendingAdmin && msg.sender != address(0), "only pending admin");
 
@@ -193,17 +201,17 @@ contract NFTLiquidationProxy is NFTLiquidationProxyStorage {
      * It returns to the external caller whatever the implementation returns
      * or forwards reverts.
      */
-    function () external payable {
+    function() external payable {
         // delegate all other functions to current implementation
-        (bool success, ) = nftLiquidationImplementation.delegatecall(msg.data);
+        (bool success,) = nftLiquidationImplementation.delegatecall(msg.data);
 
         assembly {
-              let free_mem_ptr := mload(0x40)
-              returndatacopy(free_mem_ptr, 0, returndatasize())
+            let free_mem_ptr := mload(0x40)
+            returndatacopy(free_mem_ptr, 0, returndatasize())
 
-              switch success
-              case 0 { revert(free_mem_ptr, returndatasize()) }
-              default { return(free_mem_ptr, returndatasize()) }
+            switch success
+            case 0 { revert(free_mem_ptr, returndatasize()) }
+            default { return(free_mem_ptr, returndatasize()) }
         }
     }
 }
@@ -415,9 +423,9 @@ interface IERC20 {
     function decimals() external view returns (uint8);
 
     /**
-      * @notice Get the total number of tokens in circulation
-      * @return The supply of tokens
-      */
+     * @notice Get the total number of tokens in circulation
+     * @return The supply of tokens
+     */
     function totalSupply() external view returns (uint256);
 
     /**
@@ -425,41 +433,43 @@ interface IERC20 {
      * @param owner The address from which the balance will be retrieved
      * @return balance The balance
      */
-    function balanceOf(address owner) external view returns (uint256 balance);
+    function balanceOf(
+        address owner
+    ) external view returns (uint256 balance);
 
     /**
-      * @notice Transfer `amount` tokens from `msg.sender` to `dst`
-      * @param dst The address of the destination account
-      * @param amount The number of tokens to transfer
-      * @return success Whether or not the transfer succeeded
-      */
+     * @notice Transfer `amount` tokens from `msg.sender` to `dst`
+     * @param dst The address of the destination account
+     * @param amount The number of tokens to transfer
+     * @return success Whether or not the transfer succeeded
+     */
     function transfer(address dst, uint256 amount) external returns (bool success);
 
     /**
-      * @notice Transfer `amount` tokens from `src` to `dst`
-      * @param src The address of the source account
-      * @param dst The address of the destination account
-      * @param amount The number of tokens to transfer
-      * @return success Whether or not the transfer succeeded
-      */
+     * @notice Transfer `amount` tokens from `src` to `dst`
+     * @param src The address of the source account
+     * @param dst The address of the destination account
+     * @param amount The number of tokens to transfer
+     * @return success Whether or not the transfer succeeded
+     */
     function transferFrom(address src, address dst, uint256 amount) external returns (bool success);
 
     /**
-      * @notice Approve `spender` to transfer up to `amount` from `src`
-      * @dev This will overwrite the approval amount for `spender`
-      *  and is subject to issues noted [here](https://eips.ethereum.org/EIPS/eip-20#approve)
-      * @param spender The address of the account which may transfer tokens
-      * @param amount The number of tokens that are approved (-1 means infinite)
-      * @return success Whether or not the approval succeeded
-      */
+     * @notice Approve `spender` to transfer up to `amount` from `src`
+     * @dev This will overwrite the approval amount for `spender`
+     *  and is subject to issues noted [here](https://eips.ethereum.org/EIPS/eip-20#approve)
+     * @param spender The address of the account which may transfer tokens
+     * @param amount The number of tokens that are approved (-1 means infinite)
+     * @return success Whether or not the approval succeeded
+     */
     function approve(address spender, uint256 amount) external returns (bool success);
 
     /**
-      * @notice Get the current allowance from `owner` for `spender`
-      * @param owner The address of the account which owns the tokens to be spent
-      * @param spender The address of the account which may transfer tokens
-      * @return remaining The number of tokens allowed to be spent (-1 means infinite)
-      */
+     * @notice Get the current allowance from `owner` for `spender`
+     * @param owner The address of the account which owns the tokens to be spent
+     * @param spender The address of the account which may transfer tokens
+     * @return remaining The number of tokens allowed to be spent (-1 means infinite)
+     */
     function allowance(address owner, address spender) external view returns (uint256 remaining);
 
     event Transfer(address indexed from, address indexed to, uint256 amount);
@@ -473,7 +483,9 @@ interface IERC20 {
 pragma solidity ^0.5.16;
 
 interface IERC721 {
-    function balanceOf(address owner) external view returns (uint256 balance);
+    function balanceOf(
+        address owner
+    ) external view returns (uint256 balance);
     function transferFrom(address from, address to, uint256 tokenId) external;
 }
 
@@ -487,16 +499,22 @@ interface IComptroller {
     /**
      * @notice Determine the current account liquidity wrt collateral requirements
      * @return (possible error code (semi-opaque),
-                account liquidity in excess of collateral requirements,
+     *             account liquidity in excess of collateral requirements,
      *          account shortfall below collateral requirements)
      */
-    function getAccountLiquidity(address) external view returns (uint, uint, uint);
+    function getAccountLiquidity(
+        address
+    ) external view returns (uint256, uint256, uint256);
 
     function oracle() external view returns (address);
-    function liquidateCalculateSeizeTokensEx(address oTokenBorrowed, address oTokenExCollateral, uint repayAmount) external view returns (uint, uint, uint);
-    
-    function liquidationIncentiveMantissa() external view returns(uint256);
-    function closeFactorMantissa() external view returns(uint256);
+    function liquidateCalculateSeizeTokensEx(
+        address oTokenBorrowed,
+        address oTokenExCollateral,
+        uint256 repayAmount
+    ) external view returns (uint256, uint256, uint256);
+
+    function liquidationIncentiveMantissa() external view returns (uint256);
+    function closeFactorMantissa() external view returns (uint256);
 }
 
 // File: contracts/Liquidation/IOToken.sol
@@ -510,35 +528,62 @@ interface IOErc20 {
 
     function underlying() external view returns (address);
 
-    /*** User Interface ***/
-
-    function transfer(address dst, uint amount) external returns (bool);
-    function transferFrom(address src, address dst, uint amount) external returns (bool);
-    function approve(address spender, uint amount) external returns (bool);
-    function allowance(address owner, address spender) external view returns (uint);
-    function balanceOf(address owner) external view returns (uint);
-    function balanceOfUnderlying(address owner) external returns (uint);
-    function getAccountSnapshot(address account) external view returns (uint, uint, uint, uint);
-    function borrowRatePerBlock() external view returns (uint);
-    function supplyRatePerBlock() external view returns (uint);
-    function totalBorrowsCurrent() external returns (uint);
-    function borrowBalanceCurrent(address account) external returns (uint);
+    /**
+     * User Interface **
+     */
+    function transfer(address dst, uint256 amount) external returns (bool);
+    function transferFrom(address src, address dst, uint256 amount) external returns (bool);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+    function balanceOf(
+        address owner
+    ) external view returns (uint256);
+    function balanceOfUnderlying(
+        address owner
+    ) external returns (uint256);
+    function getAccountSnapshot(
+        address account
+    ) external view returns (uint256, uint256, uint256, uint256);
+    function borrowRatePerBlock() external view returns (uint256);
+    function supplyRatePerBlock() external view returns (uint256);
+    function totalBorrowsCurrent() external returns (uint256);
+    function borrowBalanceCurrent(
+        address account
+    ) external returns (uint256);
 
     function isOToken() external view returns (bool);
-    function accrueInterest() external returns (uint);
+    function accrueInterest() external returns (uint256);
 
-
-    /*** User Interface ***/
-
-    function mint(uint tokenId) external returns (uint);
-    function redeem(uint redeemTokens) external returns (uint);
-    function mints(uint[] calldata tokenIds) external returns (uint[] memory);
-    function redeems(uint[] calldata redeemTokenIds) external returns (uint[] memory);
-    function redeemUnderlying(uint redeemAmount) external returns (uint);
-    function borrow(uint borrowAmount) external returns (uint);
-    function repayBorrow(uint repayAmount) external returns (uint);
-    function repayBorrowBehalf(address borrower, uint repayAmount) external returns (uint);
-    function liquidateBorrow(address borrower, uint repayAmount, address oTokenCollateral) external returns (uint);
+    /**
+     * User Interface **
+     */
+    function mint(
+        uint256 tokenId
+    ) external returns (uint256);
+    function redeem(
+        uint256 redeemTokens
+    ) external returns (uint256);
+    function mints(
+        uint256[] calldata tokenIds
+    ) external returns (uint256[] memory);
+    function redeems(
+        uint256[] calldata redeemTokenIds
+    ) external returns (uint256[] memory);
+    function redeemUnderlying(
+        uint256 redeemAmount
+    ) external returns (uint256);
+    function borrow(
+        uint256 borrowAmount
+    ) external returns (uint256);
+    function repayBorrow(
+        uint256 repayAmount
+    ) external returns (uint256);
+    function repayBorrowBehalf(address borrower, uint256 repayAmount) external returns (uint256);
+    function liquidateBorrow(
+        address borrower,
+        uint256 repayAmount,
+        address oTokenCollateral
+    ) external returns (uint256);
 }
 
 interface IOErc721 {
@@ -546,38 +591,67 @@ interface IOErc721 {
 
     function underlying() external view returns (address);
 
-    /*** User Interface ***/
-
-    function transfer(address dst, uint amount) external returns (bool);
-    function transferFrom(address src, address dst, uint amount) external returns (bool);
-    function approve(address spender, uint amount) external returns (bool);
-    function allowance(address owner, address spender) external view returns (uint);
-    function balanceOf(address owner) external view returns (uint);
-    function balanceOfUnderlying(address owner) external returns (uint);
-    function getAccountSnapshot(address account) external view returns (uint, uint, uint, uint);
-    function borrowRatePerBlock() external view returns (uint);
-    function supplyRatePerBlock() external view returns (uint);
-    function totalBorrowsCurrent() external returns (uint);
-    function borrowBalanceCurrent(address account) external returns (uint);
+    /**
+     * User Interface **
+     */
+    function transfer(address dst, uint256 amount) external returns (bool);
+    function transferFrom(address src, address dst, uint256 amount) external returns (bool);
+    function approve(address spender, uint256 amount) external returns (bool);
+    function allowance(address owner, address spender) external view returns (uint256);
+    function balanceOf(
+        address owner
+    ) external view returns (uint256);
+    function balanceOfUnderlying(
+        address owner
+    ) external returns (uint256);
+    function getAccountSnapshot(
+        address account
+    ) external view returns (uint256, uint256, uint256, uint256);
+    function borrowRatePerBlock() external view returns (uint256);
+    function supplyRatePerBlock() external view returns (uint256);
+    function totalBorrowsCurrent() external returns (uint256);
+    function borrowBalanceCurrent(
+        address account
+    ) external returns (uint256);
 
     function isOToken() external view returns (bool);
-    function accrueInterest() external returns (uint);
+    function accrueInterest() external returns (uint256);
 
+    /**
+     * User Interface **
+     */
+    function mint(
+        uint256 tokenId
+    ) external returns (uint256);
+    function redeem(
+        uint256 redeemTokens
+    ) external returns (uint256);
+    function mints(
+        uint256[] calldata tokenIds
+    ) external returns (uint256[] memory);
+    function redeems(
+        uint256[] calldata redeemTokenIds
+    ) external returns (uint256[] memory);
+    function redeemUnderlying(
+        uint256 redeemAmount
+    ) external returns (uint256);
+    function borrow(
+        uint256 borrowAmount
+    ) external returns (uint256);
+    function repayBorrow(
+        uint256 repayAmount
+    ) external returns (uint256);
+    function repayBorrowBehalf(address borrower, uint256 repayAmount) external returns (uint256);
+    function liquidateBorrow(
+        address borrower,
+        uint256 repayAmount,
+        address oTokenCollateral
+    ) external returns (uint256);
 
-    /*** User Interface ***/
-
-    function mint(uint tokenId) external returns (uint);
-    function redeem(uint redeemTokens) external returns (uint);
-    function mints(uint[] calldata tokenIds) external returns (uint[] memory);
-    function redeems(uint[] calldata redeemTokenIds) external returns (uint[] memory);
-    function redeemUnderlying(uint redeemAmount) external returns (uint);
-    function borrow(uint borrowAmount) external returns (uint);
-    function repayBorrow(uint repayAmount) external returns (uint);
-    function repayBorrowBehalf(address borrower, uint repayAmount) external returns (uint);
-    function liquidateBorrow(address borrower, uint repayAmount, address oTokenCollateral) external returns (uint);
-
-    /*** storage ***/
-    function userTokens(address user, uint tokenIndex) external view returns (uint);
+    /**
+     * storage **
+     */
+    function userTokens(address user, uint256 tokenIndex) external view returns (uint256);
 }
 
 interface IOEther {
@@ -587,7 +661,9 @@ interface IOEther {
 
     function liquidateBorrow(address borrower, address oTokenCollateral) external payable;
 
-    function repayBorrowBehalf(address borrower) external payable;
+    function repayBorrowBehalf(
+        address borrower
+    ) external payable;
 
     function isOToken() external view returns (bool);
 
@@ -601,7 +677,9 @@ interface IOEther {
 pragma solidity ^0.5.16;
 
 interface IOracle {
-    function getUnderlyingPrice(address oToken) external view returns (uint256);
+    function getUnderlyingPrice(
+        address oToken
+    ) external view returns (uint256);
 }
 
 // File: contracts/Liquidation/NFTLiquidation.sol
@@ -610,14 +688,6 @@ interface IOracle {
 
 pragma solidity ^0.5.16;
 //pragma experimental ABIEncoderV2;
-
-
-
-
-
-
-
-
 
 /**
  * @title Onyx's NFT Liquidation Proxy Contract
@@ -651,7 +721,9 @@ contract NFTLiquidation is NFTLiquidationV1Storage, NFTLiquidationInterface {
         _;
     }
 
-    /*** Reentrancy Guard ***/
+    /**
+     * Reentrancy Guard **
+     */
 
     /**
      * @dev Prevents a contract from calling itself, directly or indirectly.
@@ -663,15 +735,22 @@ contract NFTLiquidation is NFTLiquidationV1Storage, NFTLiquidationInterface {
         _notEntered = true; // get a gas-refund post-Istanbul
     }
 
-    /*** Liquidator functions ***/
+    /**
+     * Liquidator functions **
+     */
 
     /**
      * @notice Execute the proxy liquidation with single token repay
      */
-    function liquidateWithSingleRepay(address payable borrower, address oTokenCollateral, address oTokenRepay, uint256 repayAmount) external payable nonReentrant {
+    function liquidateWithSingleRepay(
+        address payable borrower,
+        address oTokenCollateral,
+        address oTokenRepay,
+        uint256 repayAmount
+    ) external payable nonReentrant {
         require(borrower != address(0), "invalid borrower address");
 
-        (, , uint256 borrowerShortfall) = IComptroller(comptroller).getAccountLiquidity(borrower);
+        (,, uint256 borrowerShortfall) = IComptroller(comptroller).getAccountLiquidity(borrower);
         require(borrowerShortfall > 0, "invalid borrower liquidity shortfall");
         liquidateWithSingleRepayFresh(borrower, oTokenCollateral, oTokenRepay, repayAmount);
         transferSeizedTokenFresh(oTokenCollateral, false);
@@ -680,12 +759,17 @@ contract NFTLiquidation is NFTLiquidationV1Storage, NFTLiquidationInterface {
     /**
      * @notice Execute the proxy liquidation with single token repay and selected seize token value
      */
-    function liquidateWithSingleRepayV2(address payable borrower, address oTokenCollateral, address oTokenRepay, uint256 repayAmount, uint256[] calldata _seizeIndexes, bool claimOToken)
-        external payable nonReentrant
-    {
+    function liquidateWithSingleRepayV2(
+        address payable borrower,
+        address oTokenCollateral,
+        address oTokenRepay,
+        uint256 repayAmount,
+        uint256[] calldata _seizeIndexes,
+        bool claimOToken
+    ) external payable nonReentrant {
         require(borrower != address(0), "invalid borrower address");
 
-        (, , uint256 borrowerShortfall) = IComptroller(comptroller).getAccountLiquidity(borrower);
+        (,, uint256 borrowerShortfall) = IComptroller(comptroller).getAccountLiquidity(borrower);
         require(borrowerShortfall > 0, "invalid borrower liquidity shortfall");
         require(seizeIndexes_.length == 0, "invalid initial seize indexes");
         seizeIndexes_ = _seizeIndexes;
@@ -693,11 +777,16 @@ contract NFTLiquidation is NFTLiquidationV1Storage, NFTLiquidationInterface {
         transferSeizedTokenFresh(oTokenCollateral, claimOToken);
     }
 
-    function seizeIndexes() external view returns(uint256[] memory) {
+    function seizeIndexes() external view returns (uint256[] memory) {
         return seizeIndexes_;
     }
 
-    function liquidateWithSingleRepayFresh(address payable borrower, address oTokenCollateral, address oTokenRepay, uint256 repayAmount) internal {
+    function liquidateWithSingleRepayFresh(
+        address payable borrower,
+        address oTokenCollateral,
+        address oTokenRepay,
+        uint256 repayAmount
+    ) internal {
         require(extraRepayAmount == 0, "invalid initial extra repay amount");
 
         uint256 borrowedAmount = IOErc20(oTokenRepay).borrowBalanceCurrent(borrower);
@@ -710,7 +799,10 @@ contract NFTLiquidation is NFTLiquidationV1Storage, NFTLiquidationInterface {
 
             IERC20(underlying).transferFrom(msg.sender, address(this), repayAmount);
             IERC20(underlying).approve(oTokenRepay, borrowedAmount);
-            require(IOErc20(oTokenRepay).liquidateBorrow(borrower, borrowedAmount, oTokenCollateral) == 0, "liquidateBorrow failed");
+            require(
+                IOErc20(oTokenRepay).liquidateBorrow(borrower, borrowedAmount, oTokenCollateral) == 0,
+                "liquidateBorrow failed"
+            );
 
             uint256 protocolFee = extraRepayAmount.mul(protocolFeeMantissa).div(1e18);
             uint256 remained = extraRepayAmount.sub(protocolFee);
@@ -747,22 +839,27 @@ contract NFTLiquidation is NFTLiquidationV1Storage, NFTLiquidationInterface {
         uint256 redeemTokenId;
         if (seizedTokenAmount > 0) {
             if (claimOToken) {
-                for(; i < seizedTokenAmount; i++) {
+                for (; i < seizedTokenAmount; i++) {
                     IOErc721(oTokenCollateral).transfer(msg.sender, 0);
                 }
             } else {
                 IOErc721(oTokenCollateral).approve(oTokenCollateral, seizedTokenAmount);
-                for(; i < seizedTokenAmount; i++) {
+                for (; i < seizedTokenAmount; i++) {
                     redeemTokenId = IOErc721(oTokenCollateral).userTokens(address(this), 0);
                     IOErc721(oTokenCollateral).redeem(0);
-                    IERC721(IOErc721(oTokenCollateral).underlying()).transferFrom(address(this), msg.sender, redeemTokenId);
+                    IERC721(IOErc721(oTokenCollateral).underlying()).transferFrom(
+                        address(this), msg.sender, redeemTokenId
+                    );
                 }
             }
         }
 
         // we ensure that all seized tokens transfered and all borrow balances are repaid fully
         require(IOErc721(oTokenCollateral).balanceOf(address(this)) == 0, "failed transfer all seized tokens");
-        require(IERC721(IOErc721(oTokenCollateral).underlying()).balanceOf(address(this)) == 0, "failed transfer all seized tokens");
+        require(
+            IERC721(IOErc721(oTokenCollateral).underlying()).balanceOf(address(this)) == 0,
+            "failed transfer all seized tokens"
+        );
 
         delete seizeIndexes_;
     }
@@ -852,33 +949,51 @@ contract NFTLiquidation is NFTLiquidationV1Storage, NFTLiquidationInterface {
         uint256 repayValue;
     }
 
-    function getSingleTokenExtraRepayAmount(address payable borrower, address oTokenCollateral, address oTokenRepay, uint256 repayAmount) public view returns(uint256) {
+    function getSingleTokenExtraRepayAmount(
+        address payable borrower,
+        address oTokenCollateral,
+        address oTokenRepay,
+        uint256 repayAmount
+    ) public view returns (uint256) {
         uint256 liquidationIncentiveMantissa = IComptroller(comptroller).liquidationIncentiveMantissa();
 
         GetExtraRepayLocalVars memory vars;
 
-        (, vars.oTokenCollateralBalance, , vars.oTokenCollateralExchangeRateMantissa) = IOErc721(oTokenCollateral).getAccountSnapshot(borrower);
-        vars.oTokenCollateralAmount = vars.oTokenCollateralBalance.mul(1e18).div(vars.oTokenCollateralExchangeRateMantissa);
+        (, vars.oTokenCollateralBalance,, vars.oTokenCollateralExchangeRateMantissa) =
+            IOErc721(oTokenCollateral).getAccountSnapshot(borrower);
+        vars.oTokenCollateralAmount =
+            vars.oTokenCollateralBalance.mul(1e18).div(vars.oTokenCollateralExchangeRateMantissa);
 
         vars.collateralValue = getOTokenUnderlyingValue(oTokenCollateral, vars.oTokenCollateralAmount);
-        vars.repayValue = (getOTokenUnderlyingValue(oTokenRepay, repayAmount)).mul(liquidationIncentiveMantissa).div(1e18);
+        vars.repayValue =
+            (getOTokenUnderlyingValue(oTokenRepay, repayAmount)).mul(liquidationIncentiveMantissa).div(1e18);
 
         return vars.collateralValue.sub(vars.repayValue).div(getUnderlyingPrice(oTokenRepay));
     }
 
-    function getBaseTokenExtraRepayAmount(address payable borrower, address oTokenCollateral, address oTokenRepay1, uint256 repayAmount1, address oTokenRepay2, uint256 repayAmount2)
-        public view returns(uint256)
-    {
+    function getBaseTokenExtraRepayAmount(
+        address payable borrower,
+        address oTokenCollateral,
+        address oTokenRepay1,
+        uint256 repayAmount1,
+        address oTokenRepay2,
+        uint256 repayAmount2
+    ) public view returns (uint256) {
         uint256 liquidationIncentiveMantissa = IComptroller(comptroller).liquidationIncentiveMantissa();
 
         GetExtraRepayLocalVars memory vars;
 
-        (, vars.oTokenCollateralBalance, , vars.oTokenCollateralExchangeRateMantissa) = IOErc721(oTokenCollateral).getAccountSnapshot(borrower);
-        vars.oTokenCollateralAmount = vars.oTokenCollateralBalance.mul(1e18).div(vars.oTokenCollateralExchangeRateMantissa);
+        (, vars.oTokenCollateralBalance,, vars.oTokenCollateralExchangeRateMantissa) =
+            IOErc721(oTokenCollateral).getAccountSnapshot(borrower);
+        vars.oTokenCollateralAmount =
+            vars.oTokenCollateralBalance.mul(1e18).div(vars.oTokenCollateralExchangeRateMantissa);
 
         vars.collateralValue = getOTokenUnderlyingValue(oTokenCollateral, vars.oTokenCollateralAmount);
-        vars.repayValue = (getOTokenUnderlyingValue(oTokenRepay1, repayAmount1).add(getOTokenUnderlyingValue(oTokenRepay2, repayAmount2)))
-                                    .mul(liquidationIncentiveMantissa).div(1e18);
+        vars.repayValue = (
+            getOTokenUnderlyingValue(oTokenRepay1, repayAmount1).add(
+                getOTokenUnderlyingValue(oTokenRepay2, repayAmount2)
+            )
+        ).mul(liquidationIncentiveMantissa).div(1e18);
 
         return vars.collateralValue.sub(vars.repayValue).div(getUnderlyingPrice(oTokenRepay1));
     }
@@ -890,7 +1005,9 @@ contract NFTLiquidation is NFTLiquidationV1Storage, NFTLiquidationInterface {
         return underlyingPrice * underlyingAmount;
     }
 
-    function getUnderlyingPrice(address oToken) public view returns (uint256) {
+    function getUnderlyingPrice(
+        address oToken
+    ) public view returns (uint256) {
         address oracle = IComptroller(comptroller).oracle();
         return IOracle(oracle).getUnderlyingPrice(oToken);
     }
@@ -901,22 +1018,28 @@ contract NFTLiquidation is NFTLiquidationV1Storage, NFTLiquidationInterface {
         return token1Amount.mul(token1Price).div(token2Price);
     }
 
-    function getBlockNumber() public view returns (uint) {
+    function getBlockNumber() public view returns (uint256) {
         return block.number;
     }
 
-    /*** Admin functions ***/
-    function initialize() onlyAdmin public {
+    /**
+     * Admin functions **
+     */
+    function initialize() public onlyAdmin {
         // The counter starts true to prevent changing it from zero to non-zero (i.e. smaller cost/refund)
         _notEntered = true;
     }
 
-    function _become(NFTLiquidationProxy proxy) public {
+    function _become(
+        NFTLiquidationProxy proxy
+    ) public {
         require(msg.sender == NFTLiquidationProxy(proxy).admin(), "only proxy admin can change brains");
         proxy._acceptImplementation();
     }
 
-    function _setComptroller(address _comptroller) external onlyAdmin nonReentrant {
+    function _setComptroller(
+        address _comptroller
+    ) external onlyAdmin nonReentrant {
         require(_comptroller != address(0), "comptroller can not be zero");
 
         address oldComptroller = comptroller;
@@ -925,7 +1048,9 @@ contract NFTLiquidation is NFTLiquidationV1Storage, NFTLiquidationInterface {
         emit NewComptroller(oldComptroller, comptroller);
     }
 
-    function setOEther(address _oEther) external onlyAdmin nonReentrant {
+    function setOEther(
+        address _oEther
+    ) external onlyAdmin nonReentrant {
         require(_oEther != address(0), "invalid oToken address");
         require(IOEther(_oEther).isOToken() == true, "not oToken");
 
@@ -934,7 +1059,9 @@ contract NFTLiquidation is NFTLiquidationV1Storage, NFTLiquidationInterface {
         emit NewOEther(oEther);
     }
 
-    function setProtocolFeeRecipient(address payable _protocolFeeRecipient) external onlyAdmin nonReentrant {
+    function setProtocolFeeRecipient(
+        address payable _protocolFeeRecipient
+    ) external onlyAdmin nonReentrant {
         require(_protocolFeeRecipient != address(0), "invalid recipient address");
 
         protocolFeeRecipient = _protocolFeeRecipient;
@@ -942,7 +1069,9 @@ contract NFTLiquidation is NFTLiquidationV1Storage, NFTLiquidationInterface {
         emit NewProtocolFeeRecipient(protocolFeeRecipient);
     }
 
-    function setProtocolFeeMantissa(uint256 _protocolFeeMantissa) external onlyAdmin nonReentrant {
+    function setProtocolFeeMantissa(
+        uint256 _protocolFeeMantissa
+    ) external onlyAdmin nonReentrant {
         require(protocolFeeMantissa <= 1e18, "invalid fee");
 
         protocolFeeMantissa = _protocolFeeMantissa;
@@ -981,6 +1110,5 @@ contract NFTLiquidation is NFTLiquidationV1Storage, NFTLiquidationInterface {
     /**
      * @notice payable function needed to receive ETH
      */
-    function () external payable {
-    }
+    function() external payable {}
 }
