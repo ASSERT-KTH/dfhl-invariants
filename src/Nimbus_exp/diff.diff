@@ -1,75 +1,39 @@
 diff --git a/src/Nimbus_exp/NimbusPair.sol b/src/Nimbus_exp/NimbusPair_patch.sol
-index c20aa4e..0fa88dd 100644
+index 6b64e33..9c42f4b 100644
 --- a/src/Nimbus_exp/NimbusPair.sol
 +++ b/src/Nimbus_exp/NimbusPair_patch.sol
-@@ -2,6 +2,19 @@
-  *Submitted for verification at Etherscan.io on 2021-02-01
- */
- 
-+/**@dev
-+ --- Patch Summary ---
-+* The original check in swap() function incorrectly used 1000^2 as the scaling factor for reserves,
-+* while the adjusted balances were scaled by 10000, leading to inconsistent math.
-+* This mismatch allowed trades that didn't properly respect the fee and invariant.
-+patch: 
-+changing 1000^2 to 10000^2 so both sides use the same scaling base.
-+require(
-+    balance0Adjusted.mul(balance1Adjusted) >= uint(_reserve0).mul(_reserve1).mul(10000**2),
-+    "Nimbus: K"
-+);
-+ */
-+
+@@ -1,5 +1,15 @@
+ /**
+  * Submitted for verification at Etherscan.io on 2021-02-01
++ * Patch Summary 
++ * The original check in swap() function incorrectly used 1000^2 as the scaling factor for reserves,
++ * while the adjusted balances were scaled by 10000, leading to inconsistent math.
++ * This mismatch allowed trades that didn't properly respect the fee and invariant.
++ * patch:
++ * changing 1000^2 to 10000^2 so both sides use the same scaling base.
++ * require(
++ *     balance0Adjusted.mul(balance1Adjusted) >= uint(_reserve0).mul(_reserve1).mul(10000**2),
++ *     "Nimbus: K"
++ * );
+  */
  pragma solidity ^0.8.17;
  
- interface INimbusFactory {
-@@ -230,7 +243,7 @@ interface INimbusReferralProgram {
-     function recordFee(address token, address recipient, uint amount) external;
+@@ -268,7 +278,7 @@ interface INimbusReferralProgram {
+     function recordFee(address token, address recipient, uint256 amount) external;
  }
  
 -contract NimbusPair is INimbusPair, NimbusERC20 {
 +contract NimbusPair_patch is INimbusPair, NimbusERC20 {
-     using SafeMath  for uint;
+     using SafeMath for uint256;
      using UQ112x112 for uint224;
  
-@@ -370,8 +383,6 @@ contract NimbusPair is INimbusPair, NimbusERC20 {
-         require(amount0Out > 0 || amount1Out > 0, 'Nimbus: INSUFFICIENT_OUTPUT_AMOUNT');
-         (uint112 _reserve0, uint112 _reserve1,) = getReserves(); // gas savings
-         require(amount0Out < _reserve0 && amount1Out < _reserve1, 'Nimbus: INSUFFICIENT_LIQUIDITY');
--        require(10000 == 1000 * 10, "Nimbus: INCONSISTENT_SCALING_FACTOR");
--
- 
-         uint balance0;
-         uint balance1;
-@@ -408,11 +419,22 @@ contract NimbusPair is INimbusPair, NimbusERC20 {
-         }
-         
-         { // scope for reserve{0,1}Adjusted, avoids stack too deep errors
--        uint balance0Adjusted = balance0.mul(10000).sub(amount0In.mul(15));
--        uint balance1Adjusted = balance1.mul(10000).sub(amount1In.mul(15));
--        require(balance0Adjusted.mul(balance1Adjusted) >= uint(_reserve0).mul(_reserve1).mul(1000**2), 'Nimbus: K');
-+        // uint balance0Adjusted = balance0.mul(10000).sub(amount0In.mul(15));
-+        // uint balance1Adjusted = balance1.mul(10000).sub(amount1In.mul(15));
-+        // require(balance0Adjusted.mul(balance1Adjusted) >= uint(_reserve0).mul(_reserve1).mul(1000**2), 'Nimbus: K');
-+        // }
-+        uint FEE_NUMERATOR = 9985; // 0.15% fee taken from the input
-+        uint FEE_DENOMINATOR = 10000;
-+        uint balance0Adjusted = balance0.mul(FEE_DENOMINATOR).sub(amount0In.mul(FEE_DENOMINATOR - FEE_NUMERATOR));
-+        uint balance1Adjusted = balance1.mul(FEE_DENOMINATOR).sub(amount1In.mul(FEE_DENOMINATOR - FEE_NUMERATOR));
-+
-+        require(
-+            balance0Adjusted.mul(balance1Adjusted) >= uint(_reserve0).mul(_reserve1).mul(FEE_DENOMINATOR**2),
-+            "Nimbus: K"
-+        );
+@@ -460,7 +470,8 @@ contract NimbusPair is INimbusPair, NimbusERC20 {
+             uint256 balance0Adjusted = balance0.mul(10_000).sub(amount0In.mul(15));
+             uint256 balance1Adjusted = balance1.mul(10_000).sub(amount1In.mul(15));
+             require(
+-                balance0Adjusted.mul(balance1Adjusted) >= uint256(_reserve0).mul(_reserve1).mul(1000 ** 2), "Nimbus: K"
++                balance0Adjusted.mul(balance1Adjusted) >= uint256(_reserve0).mul(_reserve1).mul(10_000 ** 2),
++                "Nimbus: K"
+             );
          }
  
-+
-         _update(balance0, balance1, _reserve0, _reserve1);
-         emit Swap(msg.sender, amount0In, amount1In, amount0Out, amount1Out, to);
-     }
-@@ -429,4 +451,4 @@ contract NimbusPair is INimbusPair, NimbusERC20 {
-     function sync() external override lock {
-         _update(IERC20(token0).balanceOf(address(this)), IERC20(token1).balanceOf(address(this)), reserve0, reserve1);
-     }
--}
-\ No newline at end of file
-+}
