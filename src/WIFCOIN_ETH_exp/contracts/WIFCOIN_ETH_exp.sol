@@ -27,9 +27,9 @@ contract WIFCOIN_ETHExploit is BaseTestWithBalanceLog {
 
     function setUp() public {
         vm.createSelectFork("mainnet", 20_103_189);
-        string memory bytecodePath=vm.envString("BYTECODE_PATH");
+        string memory bytecodePath = vm.envString("BYTECODE_PATH");
         bytes memory newRuntimeBytecode = vm.readFileBinary(bytecodePath);
-        vm.etch(address(WifStake),newRuntimeBytecode);
+        vm.etch(address(WifStake), newRuntimeBytecode);
 
         Wif.approve(address(router), type(uint256).max);
         Wif.approve(address(WifStake), type(uint256).max);

@@ -1,46 +1,22 @@
 diff --git a/src/Bedrock_DeFi_exp/Vault.sol b/src/Bedrock_DeFi_exp/Vault_patch.sol
-index 7fa2618..d058b0f 100644
+index becc2c0..a673d7f 100644
 --- a/src/Bedrock_DeFi_exp/Vault.sol
 +++ b/src/Bedrock_DeFi_exp/Vault_patch.sol
-@@ -2382,8 +2382,15 @@ abstract contract PausableUpgradeable is Initializable, ContextUpgradeable {
- }
+@@ -2365,7 +2365,7 @@ abstract contract PausableUpgradeable is Initializable, ContextUpgradeable {
  
  // File: contracts/contracts/Vault.sol
-+/** Patch: 
-+Added a require() in the mint function 
-+(`require(msg.value < 1e15, "SYS007: ETH-to-uniBTC minting disabled due to unsafe exchange rate"`);
-+to disable minting with native ETH when the sent amount exceeds a very small threshold (1e15 wei).
-+This prevents abuse from unsafe exchange rates during ETH-to-uniBTC conversion, 
-+mitigating the risk of price exploitation attacks. 
  
 -contract Vault is Initializable, AccessControlUpgradeable, PausableUpgradeable, ReentrancyGuardUpgradeable {
-+ */
 +contract Vault_patch is Initializable, AccessControlUpgradeable, PausableUpgradeable, ReentrancyGuardUpgradeable {
      bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
      bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
-     using SafeERC20 for IERC20;
-@@ -2416,6 +2423,7 @@ contract Vault is Initializable, AccessControlUpgradeable, PausableUpgradeable,
+ 
+@@ -2399,6 +2399,8 @@ contract Vault is Initializable, AccessControlUpgradeable, PausableUpgradeable,
       */
      function mint() external payable {
          require(!paused[NATIVE_BTC], "SYS002");
-+        require(msg.value < 1e15, "SYS007: ETH-to-uniBTC minting disabled due to unsafe exchange rate");
++        (, uint256 uniBTCAmount) = _amounts(msg.value);
++        require(uniBTCAmount * 1e10 < msg.value, "SYS008: Exchange rate unsafe - prevents 1:1 conversion");
          _mint(msg.sender, msg.value);
      }
- 
-@@ -2502,6 +2510,7 @@ contract Vault is Initializable, AccessControlUpgradeable, PausableUpgradeable,
-      * @dev mint uniBTC with native BTC tokens
-      */
-     function _mint(address _sender, uint256 _amount) internal {
-+
-         (, uint256 uniBTCAmount) = _amounts(_amount);
-         require(uniBTCAmount > 0, "USR010");
- 
-@@ -2517,6 +2526,8 @@ contract Vault is Initializable, AccessControlUpgradeable, PausableUpgradeable,
-      * @dev mint uniBTC with wrapped BTC tokens
-      */
-     function _mint(address _sender, address _token, uint256 _amount) internal {
-+        require(_token != address(0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2), "SYS006: WETH is not supported");
-+
-         (, uint256 uniBTCAmount) = _amounts(_token, _amount);
-         require(uniBTCAmount > 0, "USR010");
  

@@ -25,8 +25,8 @@ contract ContractTest is Test {
         vm.createSelectFork("mainnet", 18_305_132 - 1);
         string memory bytecodePath = vm.envString("BYTECODE_PATH");
         bytes memory newRuntimeBytecode = vm.readFileBinary(bytecodePath);
-        vm.etch(address(UNIPair),newRuntimeBytecode);
-        
+        vm.etch(address(UNIPair), newRuntimeBytecode);
+
         vm.label(address(WETH), "WETH");
         vm.label(address(Balancer), "Balancer");
         vm.label(address(UniRouter), "Uniswap V2: Router");

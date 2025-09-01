@@ -1,6 +1,6 @@
 /**
- *Submitted for verification at Etherscan.io on 2024-09-25
-*/
+ * Submitted for verification at Etherscan.io on 2024-09-25
+ */
 
 // File: contracts/access/IAccessControlUpgradeable.sol
 
@@ -48,7 +48,9 @@ interface IAccessControlUpgradeable {
      *
      * To change a role's admin, use {AccessControl-_setRoleAdmin}.
      */
-    function getRoleAdmin(bytes32 role) external view returns (bytes32);
+    function getRoleAdmin(
+        bytes32 role
+    ) external view returns (bytes32);
 
     /**
      * @dev Grants `role` to `account`.
@@ -96,7 +98,9 @@ interface ISupplyFeeder {
     /**
      * @dev Calculate the current total supply of assets for 'token'.
      */
-    function totalSupply(address token) external view returns(uint256);
+    function totalSupply(
+        address token
+    ) external view returns (uint256);
 }
 // File: contracts/token/ERC20/IERC20.sol
 
@@ -128,7 +132,9 @@ interface IERC20 {
     /**
      * @dev Returns the amount of tokens owned by `account`.
      */
-    function balanceOf(address account) external view returns (uint256);
+    function balanceOf(
+        address account
+    ) external view returns (uint256);
 
     /**
      * @dev Moves `amount` tokens from the caller's account to `to`.
@@ -173,11 +179,7 @@ interface IERC20 {
      *
      * Emits a {Transfer} event.
      */
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) external returns (bool);
+    function transferFrom(address from, address to, uint256 amount) external returns (bool);
 }
 
 // File: contracts/token/ERC20/extensions/draft-IERC20Permit.sol
@@ -231,7 +233,9 @@ interface IERC20Permit {
      * Every successful call to {permit} increases ``owner``'s nonce by one. This
      * prevents a signature from being used multiple times.
      */
-    function nonces(address owner) external view returns (uint256);
+    function nonces(
+        address owner
+    ) external view returns (uint256);
 
     /**
      * @dev Returns the domain separator used in the encoding of the signature for {permit}, as defined by {EIP712}.
@@ -274,7 +278,9 @@ library Address {
      * constructor.
      * ====
      */
-    function isContract(address account) internal view returns (bool) {
+    function isContract(
+        address account
+    ) internal view returns (bool) {
         // This method relies on extcodesize/address.code.length, which returns 0
         // for contracts in construction, since the code is only stored at the end
         // of the constructor execution.
@@ -301,7 +307,7 @@ library Address {
     function sendValue(address payable recipient, uint256 amount) internal {
         require(address(this).balance >= amount, "Address: insufficient balance");
 
-        (bool success, ) = recipient.call{value: amount}("");
+        (bool success,) = recipient.call{value: amount}("");
         require(success, "Address: unable to send value, recipient may have reverted");
     }
 
@@ -352,11 +358,7 @@ library Address {
      *
      * _Available since v3.1._
      */
-    function functionCallWithValue(
-        address target,
-        bytes memory data,
-        uint256 value
-    ) internal returns (bytes memory) {
+    function functionCallWithValue(address target, bytes memory data, uint256 value) internal returns (bytes memory) {
         return functionCallWithValue(target, data, value, "Address: low-level call with value failed");
     }
 
@@ -518,7 +520,9 @@ library AddressUpgradeable {
      * constructor.
      * ====
      */
-    function isContract(address account) internal view returns (bool) {
+    function isContract(
+        address account
+    ) internal view returns (bool) {
         // This method relies on extcodesize/address.code.length, which returns 0
         // for contracts in construction, since the code is only stored at the end
         // of the constructor execution.
@@ -545,7 +549,7 @@ library AddressUpgradeable {
     function sendValue(address payable recipient, uint256 amount) internal {
         require(address(this).balance >= amount, "Address: insufficient balance");
 
-        (bool success, ) = recipient.call{value: amount}("");
+        (bool success,) = recipient.call{value: amount}("");
         require(success, "Address: unable to send value, recipient may have reverted");
     }
 
@@ -596,11 +600,7 @@ library AddressUpgradeable {
      *
      * _Available since v3.1._
      */
-    function functionCallWithValue(
-        address target,
-        bytes memory data,
-        uint256 value
-    ) internal returns (bytes memory) {
+    function functionCallWithValue(address target, bytes memory data, uint256 value) internal returns (bytes memory) {
         return functionCallWithValue(target, data, value, "Address: low-level call with value failed");
     }
 
@@ -749,7 +749,9 @@ interface IERC165Upgradeable {
      *
      * This function call must use less than 30 000 gas.
      */
-    function supportsInterface(bytes4 interfaceId) external view returns (bool);
+    function supportsInterface(
+        bytes4 interfaceId
+    ) external view returns (bool);
 }
 
 // File: contracts/utils/math/MathUpgradeable.sol
@@ -764,6 +766,7 @@ library MathUpgradeable {
         Down, // Toward negative infinity
         Up, // Toward infinity
         Zero // Toward zero
+
     }
 
     /**
@@ -805,15 +808,11 @@ library MathUpgradeable {
      * @dev Original credit to Remco Bloemen under MIT license (https://xn--2-umb.com/21/muldiv)
      * with further edits by Uniswap Labs also under MIT license.
      */
-    function mulDiv(
-        uint256 x,
-        uint256 y,
-        uint256 denominator
-    ) internal pure returns (uint256 result) {
+    function mulDiv(uint256 x, uint256 y, uint256 denominator) internal pure returns (uint256 result) {
         unchecked {
-        // 512-bit multiply [prod1 prod0] = x * y. Compute the product mod 2^256 and mod 2^256 - 1, then use
-        // use the Chinese Remainder Theorem to reconstruct the 512 bit result. The result is stored in two 256
-        // variables such that product = prod1 * 2^256 + prod0.
+            // 512-bit multiply [prod1 prod0] = x * y. Compute the product mod 2^256 and mod 2^256 - 1, then use
+            // use the Chinese Remainder Theorem to reconstruct the 512 bit result. The result is stored in two 256
+            // variables such that product = prod1 * 2^256 + prod0.
             uint256 prod0; // Least significant 256 bits of the product
             uint256 prod1; // Most significant 256 bits of the product
             assembly {
@@ -822,55 +821,55 @@ library MathUpgradeable {
                 prod1 := sub(sub(mm, prod0), lt(mm, prod0))
             }
 
-        // Handle non-overflow cases, 256 by 256 division.
+            // Handle non-overflow cases, 256 by 256 division.
             if (prod1 == 0) {
                 return prod0 / denominator;
             }
 
-        // Make sure the result is less than 2^256. Also prevents denominator == 0.
+            // Make sure the result is less than 2^256. Also prevents denominator == 0.
             require(denominator > prod1);
 
-        ///////////////////////////////////////////////
-        // 512 by 256 division.
-        ///////////////////////////////////////////////
+            ///////////////////////////////////////////////
+            // 512 by 256 division.
+            ///////////////////////////////////////////////
 
-        // Make division exact by subtracting the remainder from [prod1 prod0].
+            // Make division exact by subtracting the remainder from [prod1 prod0].
             uint256 remainder;
             assembly {
-            // Compute remainder using mulmod.
+                // Compute remainder using mulmod.
                 remainder := mulmod(x, y, denominator)
 
-            // Subtract 256 bit number from 512 bit number.
+                // Subtract 256 bit number from 512 bit number.
                 prod1 := sub(prod1, gt(remainder, prod0))
                 prod0 := sub(prod0, remainder)
             }
 
-        // Factor powers of two out of denominator and compute largest power of two divisor of denominator. Always >= 1.
-        // See https://cs.stackexchange.com/q/138556/92363.
+            // Factor powers of two out of denominator and compute largest power of two divisor of denominator. Always >= 1.
+            // See https://cs.stackexchange.com/q/138556/92363.
 
-        // Does not overflow because the denominator cannot be zero at this stage in the function.
+            // Does not overflow because the denominator cannot be zero at this stage in the function.
             uint256 twos = denominator & (~denominator + 1);
             assembly {
-            // Divide denominator by twos.
+                // Divide denominator by twos.
                 denominator := div(denominator, twos)
 
-            // Divide [prod1 prod0] by twos.
+                // Divide [prod1 prod0] by twos.
                 prod0 := div(prod0, twos)
 
-            // Flip twos such that it is 2^256 / twos. If twos is zero, then it becomes one.
+                // Flip twos such that it is 2^256 / twos. If twos is zero, then it becomes one.
                 twos := add(div(sub(0, twos), twos), 1)
             }
 
-        // Shift in bits from prod1 into prod0.
+            // Shift in bits from prod1 into prod0.
             prod0 |= prod1 * twos;
 
-        // Invert denominator mod 2^256. Now that denominator is an odd number, it has an inverse modulo 2^256 such
-        // that denominator * inv = 1 mod 2^256. Compute the inverse by starting with a seed that is correct for
-        // four bits. That is, denominator * inv = 1 mod 2^4.
+            // Invert denominator mod 2^256. Now that denominator is an odd number, it has an inverse modulo 2^256 such
+            // that denominator * inv = 1 mod 2^256. Compute the inverse by starting with a seed that is correct for
+            // four bits. That is, denominator * inv = 1 mod 2^4.
             uint256 inverse = (3 * denominator) ^ 2;
 
-        // Use the Newton-Raphson iteration to improve the precision. Thanks to Hensel's lifting lemma, this also works
-        // in modular arithmetic, doubling the correct bits in each step.
+            // Use the Newton-Raphson iteration to improve the precision. Thanks to Hensel's lifting lemma, this also works
+            // in modular arithmetic, doubling the correct bits in each step.
             inverse *= 2 - denominator * inverse; // inverse mod 2^8
             inverse *= 2 - denominator * inverse; // inverse mod 2^16
             inverse *= 2 - denominator * inverse; // inverse mod 2^32
@@ -878,10 +877,10 @@ library MathUpgradeable {
             inverse *= 2 - denominator * inverse; // inverse mod 2^128
             inverse *= 2 - denominator * inverse; // inverse mod 2^256
 
-        // Because the division is now exact we can divide by multiplying with the modular inverse of denominator.
-        // This will give us the correct result modulo 2^256. Since the preconditions guarantee that the outcome is
-        // less than 2^256, this is the final result. We don't need to compute the high bits of the result and prod1
-        // is no longer required.
+            // Because the division is now exact we can divide by multiplying with the modular inverse of denominator.
+            // This will give us the correct result modulo 2^256. Since the preconditions guarantee that the outcome is
+            // less than 2^256, this is the final result. We don't need to compute the high bits of the result and prod1
+            // is no longer required.
             result = prod0 * inverse;
             return result;
         }
@@ -890,12 +889,7 @@ library MathUpgradeable {
     /**
      * @notice Calculates x * y / denominator with full precision, following the selected rounding direction.
      */
-    function mulDiv(
-        uint256 x,
-        uint256 y,
-        uint256 denominator,
-        Rounding rounding
-    ) internal pure returns (uint256) {
+    function mulDiv(uint256 x, uint256 y, uint256 denominator, Rounding rounding) internal pure returns (uint256) {
         uint256 result = mulDiv(x, y, denominator);
         if (rounding == Rounding.Up && mulmod(x, y, denominator) > 0) {
             result += 1;
@@ -908,7 +902,9 @@ library MathUpgradeable {
      *
      * Inspired by Henry S. Warren, Jr.'s "Hacker's Delight" (Chapter 11).
      */
-    function sqrt(uint256 a) internal pure returns (uint256) {
+    function sqrt(
+        uint256 a
+    ) internal pure returns (uint256) {
         if (a == 0) {
             return 0;
         }
@@ -955,7 +951,9 @@ library MathUpgradeable {
      * @dev Return the log in base 2, rounded down, of a positive value.
      * Returns 0 if given 0.
      */
-    function log2(uint256 value) internal pure returns (uint256) {
+    function log2(
+        uint256 value
+    ) internal pure returns (uint256) {
         uint256 result = 0;
         unchecked {
             if (value >> 128 > 0) {
@@ -1008,34 +1006,36 @@ library MathUpgradeable {
      * @dev Return the log in base 10, rounded down, of a positive value.
      * Returns 0 if given 0.
      */
-    function log10(uint256 value) internal pure returns (uint256) {
+    function log10(
+        uint256 value
+    ) internal pure returns (uint256) {
         uint256 result = 0;
         unchecked {
-            if (value >= 10**64) {
-                value /= 10**64;
+            if (value >= 10 ** 64) {
+                value /= 10 ** 64;
                 result += 64;
             }
-            if (value >= 10**32) {
-                value /= 10**32;
+            if (value >= 10 ** 32) {
+                value /= 10 ** 32;
                 result += 32;
             }
-            if (value >= 10**16) {
-                value /= 10**16;
+            if (value >= 10 ** 16) {
+                value /= 10 ** 16;
                 result += 16;
             }
-            if (value >= 10**8) {
-                value /= 10**8;
+            if (value >= 10 ** 8) {
+                value /= 10 ** 8;
                 result += 8;
             }
-            if (value >= 10**4) {
-                value /= 10**4;
+            if (value >= 10 ** 4) {
+                value /= 10 ** 4;
                 result += 4;
             }
-            if (value >= 10**2) {
-                value /= 10**2;
+            if (value >= 10 ** 2) {
+                value /= 10 ** 2;
                 result += 2;
             }
-            if (value >= 10**1) {
+            if (value >= 10 ** 1) {
                 result += 1;
             }
         }
@@ -1049,7 +1049,7 @@ library MathUpgradeable {
     function log10(uint256 value, Rounding rounding) internal pure returns (uint256) {
         unchecked {
             uint256 result = log10(value);
-            return result + (rounding == Rounding.Up && 10**result < value ? 1 : 0);
+            return result + (rounding == Rounding.Up && 10 ** result < value ? 1 : 0);
         }
     }
 
@@ -1059,7 +1059,9 @@ library MathUpgradeable {
      *
      * Adding one to the result gives the number of pairs of hex symbols needed to represent `value` as a hex string.
      */
-    function log256(uint256 value) internal pure returns (uint256) {
+    function log256(
+        uint256 value
+    ) internal pure returns (uint256) {
         uint256 result = 0;
         unchecked {
             if (value >> 128 > 0) {
@@ -1101,7 +1103,9 @@ library MathUpgradeable {
 
 interface IMintableContract is IERC20 {
     function mint(address account, uint256 amount) external;
-    function burn(uint256 amount) external;
+    function burn(
+        uint256 amount
+    ) external;
     function burnFrom(address account, uint256 amount) external;
 }
 // File: contracts/proxy/utils/Initializable.sol
@@ -1218,7 +1222,9 @@ abstract contract Initializable {
      *
      * Emits an {Initialized} event.
      */
-    modifier reinitializer(uint8 version) {
+    modifier reinitializer(
+        uint8 version
+    ) {
         require(!_initializing && _initialized < version, "Initializable: contract is already initialized");
         _initialized = version;
         _initializing = true;
@@ -1309,20 +1315,11 @@ interface IERC20Metadata is IERC20 {
 library SafeERC20 {
     using Address for address;
 
-    function safeTransfer(
-        IERC20 token,
-        address to,
-        uint256 value
-    ) internal {
+    function safeTransfer(IERC20 token, address to, uint256 value) internal {
         _callOptionalReturn(token, abi.encodeWithSelector(token.transfer.selector, to, value));
     }
 
-    function safeTransferFrom(
-        IERC20 token,
-        address from,
-        address to,
-        uint256 value
-    ) internal {
+    function safeTransferFrom(IERC20 token, address from, address to, uint256 value) internal {
         _callOptionalReturn(token, abi.encodeWithSelector(token.transferFrom.selector, from, to, value));
     }
 
@@ -1333,11 +1330,7 @@ library SafeERC20 {
      * Whenever possible, use {safeIncreaseAllowance} and
      * {safeDecreaseAllowance} instead.
      */
-    function safeApprove(
-        IERC20 token,
-        address spender,
-        uint256 value
-    ) internal {
+    function safeApprove(IERC20 token, address spender, uint256 value) internal {
         // safeApprove should only be called when setting an initial allowance,
         // or when resetting it to zero. To increase and decrease it, use
         // 'safeIncreaseAllowance' and 'safeDecreaseAllowance'
@@ -1348,20 +1341,12 @@ library SafeERC20 {
         _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, value));
     }
 
-    function safeIncreaseAllowance(
-        IERC20 token,
-        address spender,
-        uint256 value
-    ) internal {
+    function safeIncreaseAllowance(IERC20 token, address spender, uint256 value) internal {
         uint256 newAllowance = token.allowance(address(this), spender) + value;
         _callOptionalReturn(token, abi.encodeWithSelector(token.approve.selector, spender, newAllowance));
     }
 
-    function safeDecreaseAllowance(
-        IERC20 token,
-        address spender,
-        uint256 value
-    ) internal {
+    function safeDecreaseAllowance(IERC20 token, address spender, uint256 value) internal {
         unchecked {
             uint256 oldAllowance = token.allowance(address(this), spender);
             require(oldAllowance >= value, "SafeERC20: decreased allowance below zero");
@@ -1419,12 +1404,14 @@ library StringsUpgradeable {
     /**
      * @dev Converts a `uint256` to its ASCII `string` decimal representation.
      */
-    function toString(uint256 value) internal pure returns (string memory) {
+    function toString(
+        uint256 value
+    ) internal pure returns (string memory) {
         unchecked {
             uint256 length = MathUpgradeable.log10(value) + 1;
             string memory buffer = new string(length);
             uint256 ptr;
-        /// @solidity memory-safe-assembly
+            /// @solidity memory-safe-assembly
             assembly {
                 ptr := add(buffer, add(32, length))
             }
@@ -1444,7 +1431,9 @@ library StringsUpgradeable {
     /**
      * @dev Converts a `uint256` to its ASCII `string` hexadecimal representation.
      */
-    function toHexString(uint256 value) internal pure returns (string memory) {
+    function toHexString(
+        uint256 value
+    ) internal pure returns (string memory) {
         unchecked {
             return toHexString(value, MathUpgradeable.log256(value) + 1);
         }
@@ -1468,7 +1457,9 @@ library StringsUpgradeable {
     /**
      * @dev Converts an `address` with fixed length of 20 bytes to its not checksummed ASCII `string` hexadecimal representation.
      */
-    function toHexString(address addr) internal pure returns (string memory) {
+    function toHexString(
+        address addr
+    ) internal pure returns (string memory) {
         return toHexString(uint256(uint160(addr)), _ADDRESS_LENGTH);
     }
 }
@@ -1648,7 +1639,9 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
     /**
      * @dev See {IERC20-balanceOf}.
      */
-    function balanceOf(address account) public view virtual override returns (uint256) {
+    function balanceOf(
+        address account
+    ) public view virtual override returns (uint256) {
         return _balances[account];
     }
 
@@ -1705,11 +1698,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * - the caller must have allowance for ``from``'s tokens of at least
      * `amount`.
      */
-    function transferFrom(
-        address from,
-        address to,
-        uint256 amount
-    ) public virtual override returns (bool) {
+    function transferFrom(address from, address to, uint256 amount) public virtual override returns (bool) {
         address spender = _msgSender();
         _spendAllowance(from, spender, amount);
         _transfer(from, to, amount);
@@ -1773,11 +1762,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * - `to` cannot be the zero address.
      * - `from` must have a balance of at least `amount`.
      */
-    function _transfer(
-        address from,
-        address to,
-        uint256 amount
-    ) internal virtual {
+    function _transfer(address from, address to, uint256 amount) internal virtual {
         require(from != address(0), "ERC20: transfer from the zero address");
         require(to != address(0), "ERC20: transfer to the zero address");
 
@@ -1787,8 +1772,8 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         require(fromBalance >= amount, "ERC20: transfer amount exceeds balance");
         unchecked {
             _balances[from] = fromBalance - amount;
-        // Overflow not possible: the sum of all balances is capped by totalSupply, and the sum is preserved by
-        // decrementing then incrementing.
+            // Overflow not possible: the sum of all balances is capped by totalSupply, and the sum is preserved by
+            // decrementing then incrementing.
             _balances[to] += amount;
         }
 
@@ -1797,7 +1782,8 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         _afterTokenTransfer(from, to, amount);
     }
 
-    /** @dev Creates `amount` tokens and assigns them to `account`, increasing
+    /**
+     * @dev Creates `amount` tokens and assigns them to `account`, increasing
      * the total supply.
      *
      * Emits a {Transfer} event with `from` set to the zero address.
@@ -1813,7 +1799,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
 
         _totalSupply += amount;
         unchecked {
-        // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
+            // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
             _balances[account] += amount;
         }
         emit Transfer(address(0), account, amount);
@@ -1841,7 +1827,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
         require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
         unchecked {
             _balances[account] = accountBalance - amount;
-        // Overflow not possible: amount <= accountBalance <= totalSupply.
+            // Overflow not possible: amount <= accountBalance <= totalSupply.
             _totalSupply -= amount;
         }
 
@@ -1863,11 +1849,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      * - `owner` cannot be the zero address.
      * - `spender` cannot be the zero address.
      */
-    function _approve(
-        address owner,
-        address spender,
-        uint256 amount
-    ) internal virtual {
+    function _approve(address owner, address spender, uint256 amount) internal virtual {
         require(owner != address(0), "ERC20: approve from the zero address");
         require(spender != address(0), "ERC20: approve to the zero address");
 
@@ -1883,11 +1865,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      *
      * Might emit an {Approval} event.
      */
-    function _spendAllowance(
-        address owner,
-        address spender,
-        uint256 amount
-    ) internal virtual {
+    function _spendAllowance(address owner, address spender, uint256 amount) internal virtual {
         uint256 currentAllowance = allowance(owner, spender);
         if (currentAllowance != type(uint256).max) {
             require(currentAllowance >= amount, "ERC20: insufficient allowance");
@@ -1911,11 +1889,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      *
      * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
      */
-    function _beforeTokenTransfer(
-        address from,
-        address to,
-        uint256 amount
-    ) internal virtual {}
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual {}
 
     /**
      * @dev Hook that is called after any transfer of tokens. This includes
@@ -1931,11 +1905,7 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
      *
      * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
      */
-    function _afterTokenTransfer(
-        address from,
-        address to,
-        uint256 amount
-    ) internal virtual {}
+    function _afterTokenTransfer(address from, address to, uint256 amount) internal virtual {}
 }
 
 // File: contracts/utils/ContextUpgradeable.sol
@@ -1953,11 +1923,10 @@ contract ERC20 is Context, IERC20, IERC20Metadata {
  * This contract is only required for intermediate, library-like contracts.
  */
 abstract contract ContextUpgradeable is Initializable {
-    function __Context_init() internal onlyInitializing {
-    }
+    function __Context_init() internal onlyInitializing {}
 
-    function __Context_init_unchained() internal onlyInitializing {
-    }
+    function __Context_init_unchained() internal onlyInitializing {}
+
     function _msgSender() internal view virtual returns (address) {
         return msg.sender;
     }
@@ -1993,15 +1962,16 @@ abstract contract ContextUpgradeable is Initializable {
  * Alternatively, {ERC165Storage} provides an easier to use but more expensive implementation.
  */
 abstract contract ERC165Upgradeable is Initializable, IERC165Upgradeable {
-    function __ERC165_init() internal onlyInitializing {
-    }
+    function __ERC165_init() internal onlyInitializing {}
 
-    function __ERC165_init_unchained() internal onlyInitializing {
-    }
+    function __ERC165_init_unchained() internal onlyInitializing {}
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override returns (bool) {
         return interfaceId == type(IERC165Upgradeable).interfaceId;
     }
 
@@ -2055,12 +2025,16 @@ abstract contract ERC165Upgradeable is Initializable, IERC165Upgradeable {
  * grant and revoke this role. Extra precautions should be taken to secure
  * accounts that have been granted it.
  */
-abstract contract AccessControlUpgradeable is Initializable, ContextUpgradeable, IAccessControlUpgradeable, ERC165Upgradeable {
-    function __AccessControl_init() internal onlyInitializing {
-    }
+abstract contract AccessControlUpgradeable is
+    Initializable,
+    ContextUpgradeable,
+    IAccessControlUpgradeable,
+    ERC165Upgradeable
+{
+    function __AccessControl_init() internal onlyInitializing {}
 
-    function __AccessControl_init_unchained() internal onlyInitializing {
-    }
+    function __AccessControl_init_unchained() internal onlyInitializing {}
+
     struct RoleData {
         mapping(address => bool) members;
         bytes32 adminRole;
@@ -2080,7 +2054,9 @@ abstract contract AccessControlUpgradeable is Initializable, ContextUpgradeable,
      *
      * _Available since v4.1._
      */
-    modifier onlyRole(bytes32 role) {
+    modifier onlyRole(
+        bytes32 role
+    ) {
         _checkRole(role);
         _;
     }
@@ -2088,7 +2064,9 @@ abstract contract AccessControlUpgradeable is Initializable, ContextUpgradeable,
     /**
      * @dev See {IERC165-supportsInterface}.
      */
-    function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
+    function supportsInterface(
+        bytes4 interfaceId
+    ) public view virtual override returns (bool) {
         return interfaceId == type(IAccessControlUpgradeable).interfaceId || super.supportsInterface(interfaceId);
     }
 
@@ -2107,7 +2085,9 @@ abstract contract AccessControlUpgradeable is Initializable, ContextUpgradeable,
      *
      * _Available since v4.6._
      */
-    function _checkRole(bytes32 role) internal view virtual {
+    function _checkRole(
+        bytes32 role
+    ) internal view virtual {
         _checkRole(role, _msgSender());
     }
 
@@ -2122,13 +2102,13 @@ abstract contract AccessControlUpgradeable is Initializable, ContextUpgradeable,
         if (!hasRole(role, account)) {
             revert(
                 string(
-                abi.encodePacked(
-                    "AccessControl: account ",
-                    StringsUpgradeable.toHexString(account),
-                    " is missing role ",
-                    StringsUpgradeable.toHexString(uint256(role), 32)
+                    abi.encodePacked(
+                        "AccessControl: account ",
+                        StringsUpgradeable.toHexString(account),
+                        " is missing role ",
+                        StringsUpgradeable.toHexString(uint256(role), 32)
+                    )
                 )
-            )
             );
         }
     }
@@ -2139,7 +2119,9 @@ abstract contract AccessControlUpgradeable is Initializable, ContextUpgradeable,
      *
      * To change a role's admin, use {_setRoleAdmin}.
      */
-    function getRoleAdmin(bytes32 role) public view virtual override returns (bytes32) {
+    function getRoleAdmin(
+        bytes32 role
+    ) public view virtual override returns (bytes32) {
         return _roles[role].adminRole;
     }
 
@@ -2386,6 +2368,7 @@ abstract contract PausableUpgradeable is Initializable, ContextUpgradeable {
 contract Vault is Initializable, AccessControlUpgradeable, PausableUpgradeable, ReentrancyGuardUpgradeable {
     bytes32 public constant PAUSER_ROLE = keccak256("PAUSER_ROLE");
     bytes32 public constant OPERATOR_ROLE = keccak256("OPERATOR_ROLE");
+
     using SafeERC20 for IERC20;
     using Address for address;
 
@@ -2428,7 +2411,11 @@ contract Vault is Initializable, AccessControlUpgradeable, PausableUpgradeable, 
     }
 
     // @dev execute a contract call that also transfers '_value' wei to '_target'
-    function execute(address _target, bytes memory _data, uint256 _value) external nonReentrant onlyRole(OPERATOR_ROLE) returns(bytes memory) {
+    function execute(
+        address _target,
+        bytes memory _data,
+        uint256 _value
+    ) external nonReentrant onlyRole(OPERATOR_ROLE) returns (bytes memory) {
         return _target.functionCallWithValue(_data, _value);
     }
 
@@ -2439,7 +2426,7 @@ contract Vault is Initializable, AccessControlUpgradeable, PausableUpgradeable, 
      *
      * ======================================================================================
      */
-    function initialize(address _defaultAdmin, address _uniBTC) initializer public {
+    function initialize(address _defaultAdmin, address _uniBTC) public initializer {
         __AccessControl_init();
         __Pausable_init();
         __ReentrancyGuard_init();
@@ -2455,7 +2442,9 @@ contract Vault is Initializable, AccessControlUpgradeable, PausableUpgradeable, 
     /**
      * @dev a pauser pause the minting of a token
      */
-    function pauseToken(address _token) public onlyRole(PAUSER_ROLE) {
+    function pauseToken(
+        address _token
+    ) public onlyRole(PAUSER_ROLE) {
         paused[_token] = true;
         emit TokenPaused(_token);
     }
@@ -2463,7 +2452,9 @@ contract Vault is Initializable, AccessControlUpgradeable, PausableUpgradeable, 
     /**
      * @dev a pauser unpause the minting of a token
      */
-    function unpauseToken(address _token) public onlyRole(PAUSER_ROLE) {
+    function unpauseToken(
+        address _token
+    ) public onlyRole(PAUSER_ROLE) {
         paused[_token] = false;
         emit TokenUnpaused(_token);
     }
@@ -2486,7 +2477,9 @@ contract Vault is Initializable, AccessControlUpgradeable, PausableUpgradeable, 
     /**
      * @dev set supplyFeeder address to track the locked supply assets of the vault
      */
-    function setSupplyFeeder(address _supplyFeeder) external onlyRole(DEFAULT_ADMIN_ROLE) {
+    function setSupplyFeeder(
+        address _supplyFeeder
+    ) external onlyRole(DEFAULT_ADMIN_ROLE) {
         supplyFeeder = _supplyFeeder;
     }
 
@@ -2532,8 +2525,10 @@ contract Vault is Initializable, AccessControlUpgradeable, PausableUpgradeable, 
     /**
      * @dev determine the valid native BTC amount and the corresponding uniBTC amount.
      */
-    function _amounts(uint256 _amount) internal returns (uint256, uint256) {
-        uint256 uniBTCAmt = _amount /EXCHANGE_RATE_BASE;
+    function _amounts(
+        uint256 _amount
+    ) internal returns (uint256, uint256) {
+        uint256 uniBTCAmt = _amount / EXCHANGE_RATE_BASE;
         return (uniBTCAmt * EXCHANGE_RATE_BASE, uniBTCAmt);
     }
 
@@ -2544,7 +2539,7 @@ contract Vault is Initializable, AccessControlUpgradeable, PausableUpgradeable, 
         uint8 decs = ERC20(_token).decimals();
         if (decs == 8) return (_amount, _amount);
         if (decs == 18) {
-            uint256 uniBTCAmt = _amount /EXCHANGE_RATE_BASE;
+            uint256 uniBTCAmt = _amount / EXCHANGE_RATE_BASE;
             return (uniBTCAmt * EXCHANGE_RATE_BASE, uniBTCAmt);
         }
         return (0, 0);

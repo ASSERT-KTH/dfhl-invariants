@@ -33,7 +33,7 @@ contract Bedrock_DeFi_exp is Test {
     function setUp() public {
         vm.createSelectFork("mainnet", 20_836_584 - 1);
         bytes memory newRuntimeBytecode = vm.readFileBinary("src/Bedrock_DeFi_exp/patch.bin");
-        vm.etch (address(VulVault), newRuntimeBytecode);
+        vm.etch(address(VulVault), newRuntimeBytecode);
     }
 
     function testPoCMinimal() public {

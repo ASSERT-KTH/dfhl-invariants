@@ -16,4 +16,4 @@ cat src/uniclyNFT_exp/patch.hex | tr -d '\n' | sed 's/^0x//' | xxd -r -p > src/u
 
 # 3. Run the test
 echo "Running forge test..."
-forge test --contracts src/uniclyNFT_exp/uniclyNFT_exp.sol -vv
+forge test --contracts src/uniclyNFT_exp/uniclyNFT_exp.sol -vvv

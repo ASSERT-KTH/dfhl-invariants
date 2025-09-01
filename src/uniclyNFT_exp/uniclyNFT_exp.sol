@@ -44,7 +44,7 @@ contract ContractTest is Test {
         vm.label(address(PointShop), "PointShop");
         vm.label(address(Realm), "Realm");
 
-        bytes memory newRuntimeBytecode = vm.readFileBinary("src/uniclyNFT_exp/original.bin");
+        bytes memory newRuntimeBytecode = vm.readFileBinary("src/uniclyNFT_exp/patch.bin");
         vm.etch(address(PointFarm), newRuntimeBytecode);
     }
 

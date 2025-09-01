@@ -1,50 +1,36 @@
 diff --git a/src/Opyn_exp/oToken.sol b/src/Opyn_exp/oToken_patch.sol
-index ac8adea..2f5b281 100644
+index f89421d..e4fc1fe 100644
 --- a/src/Opyn_exp/oToken.sol
 +++ b/src/Opyn_exp/oToken_patch.sol
-@@ -4,6 +4,16 @@
+@@ -4,6 +4,14 @@
  
  // File: @openzeppelin/contracts/GSN/Context.sol
  
 +/**
-+ * @dev 
++ * @dev
 + * Patch: Added require check in the _excersice function to prevent an attacker
 + * calling multiple ETH-backed vaults in one transaction using the same msg.value.
-+ require("msg.sender == tx.origin")
-+ *It ensures that the function was called directly by a wallet, not through a contract.
++ *  require("msg.sender == tx.origin")
++ * It ensures that the function was called directly by a wallet, not through a contract.
 + * Now only one vault can be exercised per transaction if ETH is used.
 + */
-+
-+
  pragma solidity ^0.5.0;
  
  /*
-@@ -659,11 +669,6 @@ contract OptionsUtils {
- 
- pragma solidity 0.5.10;
- 
--
--
--
--
--
- contract OptionsExchange {
-     uint256 constant LARGE_BLOCK_SIZE = 1651753129000;
-     uint256 constant LARGE_APPROVAL_NUMBER = 10**30;
-@@ -1876,6 +1881,7 @@ contract OptionsContract is Ownable, ERC20 {
+@@ -1781,6 +1789,7 @@ contract OptionsContract is Ownable, ERC20 {
          // 4. Transfer in underlying, burn oTokens + pay out collateral
          // 4.1 Transfer in underlying
          if (isETH(underlying)) {
-+            require(msg.sender == tx.origin,"ETH exercise must be called individually per vault");
++            require(msg.sender == tx.origin, "ETH exercise must be called individually per vault");
              require(msg.value == amtUnderlyingToPay, "Incorrect msg.value");
          } else {
              require(
-@@ -2105,7 +2111,7 @@ pragma solidity 0.5.10;
+@@ -1964,7 +1973,7 @@ pragma solidity 0.5.10;
+  * @title Opyn's Options Contract
   * @author Opyn
   */
- 
 -contract oToken is OptionsContract {
 +contract oToken_patch is OptionsContract {
      /**
-     * @param _collateral The collateral asset
-     * @param _collExp The precision of the collateral (-18 if ETH)
+      * @param _collateral The collateral asset
+      * @param _collExp The precision of the collateral (-18 if ETH)
