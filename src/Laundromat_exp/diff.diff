@@ -1,0 +1,36 @@
+12a13,31
+> /*********************************************
+> @dev
+> Problem: MISSING VALIDATION
+> The contract did not check if a deposit was already used before.
+> So the attacker called deposit() multiple timesused the exact same public key values each time 
+> The contract accepted them as new deposits every time
+> Because of this the system believed the attacker had made multiple valid deposits,
+> even though it was really just the same one reused.
+> 
+> During withdrawal the contract allowed the attacker to withdraw funds
+> based on the inflated number of deposits.
+> ____________________________________________________
+> 
+> Patch: The deposit function was updated to check if a deposit 
+> with the same public key values had already been made before.
+> This was done by hashing the public key values together to create a unique identifier
+> for each deposit,and then storing this identifier in a mapping to track which deposits had been used.
+> **************************************************/
+> 
+13a33
+> 
+84a105,106
+> 
+>     mapping(bytes32 => bool) public usedDeposits; // Storage Layout should be preserved, so this mapping is added at the end 
+86,87c108,114
+<         //if(msg.value != payment) throw;
+<         if(gotParticipants >= participants) throw;
+---
+>         if (gotParticipants >= participants) throw;
+>         // Combines _pubkey1 and _pubkey2, hashes them into a single uid (depositHash).
+>         bytes32 depositHash = keccak256(abi.encodePacked(_pubkey1, _pubkey2));
+>         // if it was used => revert, this prevents the same pubkey pair from being deposited multiple times.
+>         require(!usedDeposits[depositHash], "Duplicate deposit");
+> 
+>         usedDeposits[depositHash] = true;
