@@ -22,7 +22,7 @@ if response.status_code == 200:
         try:
             if source_code.startswith("{{") and source_code.endswith("}}"):
                 source_code = source_code[1:-1]
-
+                
             source_json = json.loads(source_code)
 
             # Case 1: Standard JSON Input
