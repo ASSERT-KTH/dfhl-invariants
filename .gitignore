@@ -1,6 +1,9 @@
 # Compiler files
 cache/
 out/
+lib/
+node_modules/
+
 
 # Ignores development broadcast logs
 !/broadcast
@@ -12,3 +15,6 @@ docs/
 
 # Dotenv file
 .env
+
+# Test run reports
+results/
