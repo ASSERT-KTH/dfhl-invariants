@@ -43,9 +43,9 @@ contract ContractTest is BaseTestWithBalanceLog {
         vm.label(0x88e6A0c2dDD26FEEb64F039a2c41296FcB3f5640, "USDC_WETH_PAIR");
 
         // replace bytecode of vulenrable contract
-        bytes memory newRuntimeBytecode = vm.readFileBinary(
-            "src/Uerii_exp/patch.bin"
-        );
+        
+        string memory bytecodePath = vm.envString("BYTECODE_PATH");
+        bytes memory newRuntimeBytecode = vm.readFileBinary(bytecodePath);
         vm.etch(address(UERII_TOKEN), newRuntimeBytecode);
     }
 
