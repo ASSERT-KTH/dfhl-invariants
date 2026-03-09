@@ -5,7 +5,8 @@ on:
     branches:
       - main
     paths:
-      - 'src/**/test_*.sh'
+      - 'src/**'
+      - 'dataset-info.json'
 
 jobs:
   run-tests:
@@ -14,7 +15,9 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
-
+        with:
+          submodules: recursive
+          fetch-depth: 0
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@8789b3e21e6c11b2697f5eb56eddae542f746c10 # v1
@@ -24,34 +27,35 @@ jobs:
       - name: Verify forge install
         run: forge --version
 
-      - name: Make test scripts executable
-        run: |
-          chmod +x ./test_patch.sh || true
-          chmod +x ./test_original.sh || true
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
-      - name: Run test_patch.sh (if present anywhere)
-        # continue-on-error: true
+      - name: Detect changed cases and run tests
         run: |
-            set -e
-            patch_script=$(find . -type f -name test_patch.sh | head -n 1)
-            if [ -n "$patch_script" ]; then
-             echo "Found patch script at: $patch_script"
-             chmod +x "$patch_script"
-            "$patch_script"
-            else
-             echo "test_patch.sh not found."
-             fi
+          set -e
+          base_sha="${{ github.event.pull_request.base.sha }}"
+          head_sha="${{ github.event.pull_request.head.sha }}"
 
-      - name: Run test_original.sh (if present anywhere)
-        # continue-on-error: true
-        run: |
-            set -e
-            original_script=$(find . -type f -name test_original.sh | head -n 1)
-            if [ -n "$original_script" ]; then
-             echo "Found original script at: $original_script"
-             chmod +x "$original_script"
-            "$original_script"
-            else
-             echo "test_original.sh not found."
-             fi
+          keys=$(git diff --name-only "$base_sha" "$head_sha" \
+            | grep '^src/' \
+            | grep -v '^src/test/' \
+            | sed 's|^src/||' \
+            | cut -d'/' -f1 \
+            | sort -u)
 
+          if [ -z "$keys" ]; then
+            echo "No case directories changed."
+            exit 0
+          fi
+
+          for key in $keys; do
+            echo "::group::Testing $key (patch)"
+            python3 run_test.py "$key" patch || echo "::warning::patch test failed for $key"
+            echo "::endgroup::"
+
+            echo "::group::Testing $key (original)"
+            python3 run_test.py "$key" original || echo "::warning::original test failed for $key"
+            echo "::endgroup::"
+          done

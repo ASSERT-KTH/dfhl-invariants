@@ -2,7 +2,7 @@ name: PRAutoTest
 on:
   pull_request:
     paths:
-      - 'src/test/*_exp.sol'
+      - 'src/**/*_exp.sol'
 
 env:
   FOUNDRY_PROFILE: ci
@@ -17,30 +17,44 @@ jobs:
       - uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           submodules: recursive
-          fetch-depth: 0 # Required to fetch all branches
+          fetch-depth: 0
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@8789b3e21e6c11b2697f5eb56eddae542f746c10 # v1
         with:
           version: nightly
 
-      - name: Format
-        run: forge fmt
-        id: fmt
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
 
-      - name: Build
-        run: forge build
-        id: build
-
-      - name: Run Forge tests
-        run: |
-          shopt -s nullglob
-          base_sha=${{ github.event.pull_request.base.sha }}
-          head_sha=${{ github.event.pull_request.head.sha }}
-          changed_files=$(git diff --name-only $base_sha $head_sha)
-          for file in $changed_files; do
-            if [[ $file == src/test/*_exp.sol ]]; then
-              forge test --contracts "$file" -vvv
-            fi
-          done
+      - name: Run tests for changed exploits
         id: test
+        run: |
+          set -e
+          base_sha="${{ github.event.pull_request.base.sha }}"
+          head_sha="${{ github.event.pull_request.head.sha }}"
+
+          keys=$(git diff --name-only "$base_sha" "$head_sha" \
+            | grep '_exp\.sol$' \
+            | grep '^src/' \
+            | grep -v '^src/test/' \
+            | sed 's|^src/||' \
+            | cut -d'/' -f1 \
+            | sort -u)
+
+          if [ -z "$keys" ]; then
+            echo "No case exploit files changed."
+            exit 0
+          fi
+
+          for key in $keys; do
+            echo "::group::Testing $key (original)"
+            python3 run_test.py "$key" original
+            echo "::endgroup::"
+
+            echo "::group::Testing $key (patch)"
+            python3 run_test.py "$key" patch
+            echo "::endgroup::"
+          done
