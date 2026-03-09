@@ -36,8 +36,8 @@ contract SmartMesh is BaseTestWithBalanceLog {
 
     function setUp() public {
         vm.createSelectFork("mainnet", blocknumToForkFrom);
-
-        bytes memory newRuntimeBytecode = vm.readFileBinary("src/SmartMesh_exp/patch.bin");
+        string memory bytecodePath = vm.envString("BYTECODE_PATH");
+        bytes memory newRuntimeBytecode = vm.readFileBinary(bytecodePath);
         vm.etch(address(Victim),newRuntimeBytecode);
         //Change this to the target token to get token balance of,Keep it address 0 if its ETH that is gotten at the end of the exploit
         fundingToken = address(0x55F93985431Fc9304077687a35A1BA103dC1e081);

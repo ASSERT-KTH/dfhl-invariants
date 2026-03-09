@@ -1527,7 +1527,7 @@ contract Burner_patch is Withdrawable {
     function _convert(address srcToken) internal {
         uint256 srcAmount;
         uint256 converted;
-        uint256 BPS = 10_000;
+        uint256 BPS = 10000;
         uint256 minBps = 9500;
 
         if (srcToken == ETHER || srcToken == address(0)) {
