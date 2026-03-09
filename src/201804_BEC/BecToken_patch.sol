@@ -317,7 +317,7 @@ contract BecToken_patch is PausableToken {
      * @dev Function to check the amount of tokens that an owner allowed to a spender.
      */
     function BecToken() {
-        totalSupply = 7_000_000_000 * (10 ** (uint256(decimals)));
+        totalSupply = 7000000000 * (10 ** (uint256(decimals)));
         balances[msg.sender] = totalSupply; // Give the creator all initial tokens
     }
 
