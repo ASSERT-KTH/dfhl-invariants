@@ -1,10 +1,11 @@
 {
   "201804_BEC": {
     "attacker_contract_link": "https://etherscan.io/address/0xb4D30Cac5124b46C2Df0CF3e3e1Be05f42119033",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "BecToken",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.4.16"
     },
     "contract_address": "0xc5d105e63711398af9bbff092d4b6769c82f793d",
     "defihacklabs_poc": "src/test/2018-04/BEC_exp.sol",
@@ -21,11 +22,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0xc5d105e63711398af9bbff092d4b6769c82f793d"
   },
   "201804_SmartMesh": {
-    "attacker_contract_link": null,
+    "attacker_address": "0xd6a09bdb29e1eafa92a30373c44b09e2e2e0651e",
+    "attacker_contract_link": "https://etherscan.io/address/0xd6a09bdb29e1eafa92a30373c44b09e2e2e0651e",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "SMT",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.4.15"
     },
     "contract_address": "0xd6a09bdb29e1eafa92a30373c44b09e2e2e0651e",
     "defihacklabs_poc": "src/test/2018-04/SmartMesh_exp.sol",
@@ -43,10 +46,11 @@
   },
   "202008_Opyn": {
     "attacker_contract_link": "https://etherscan.io/address/0xe7870231992Ab4b1A01814FA0A599115FE94203f",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "oToken",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.5.0"
     },
     "contract_address": "0x951D51bAeFb72319d9FBE941E1615938d89ABfe2",
     "defihacklabs_poc": "src/test/2020-08/Opyn_exp.sol",
@@ -64,10 +68,11 @@
   },
   "202102_Yearn_ydai": {
     "attacker_contract_link": null,
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "yVault",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.5.16"
     },
     "contract_address": "0xACd43E627e64355f1861cEC6d3a6688B31a6F952",
     "defihacklabs_poc": "src/test/2021-02/Yearn_ydai_exp.sol",
@@ -85,10 +90,11 @@
   },
   "202109_Nimbus": {
     "attacker_contract_link": null,
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "NimbusPair",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.17"
     },
     "contract_address": "0xc0A6B8c534FaD86dF8FA1AbB17084A70F86EDDc1",
     "defihacklabs_poc": "src/test/2021-09/Nimbus_exp.sol",
@@ -105,10 +111,11 @@
   },
   "202201_Anyswap": {
     "attacker_contract_link": null,
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "AnyswapV4Router",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.0"
     },
     "contract_address": "0x6b7a87899490EcE95443e979cA9485CBE7E71522",
     "defihacklabs_poc": "src/test/2022-01/Anyswap_exp.sol",
@@ -125,11 +132,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0x6b7a87899490EcE95443e979cA9485CBE7E71522"
   },
   "202202_TecraSpace": {
-    "attacker_contract_link": null,
+    "attacker_address": "0xb19b7f59c08ea447f82b587c058ecbf5fde9c299",
+    "attacker_contract_link": "https://etherscan.io/address/0xb19b7f59c08ea447f82b587c058ecbf5fde9c299",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "TcrToken",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.2"
     },
     "contract_address": "0xb19b7f59c08ea447f82b587c058ecbf5fde9c299",
     "defihacklabs_poc": "src/test/2022-02/TecraSpace_exp.sol",
@@ -147,10 +156,11 @@
   },
   "202206_InverseFinance": {
     "attacker_contract_link": null,
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "YVCrv3CryptoFeed",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.4"
     },
     "contract_address": "0xE8b3bC58774857732C6C1147BFc9B9e5Fb6F427C",
     "defihacklabs_poc": "src/test/2022-06/InverseFinance_exp.sol",
@@ -168,10 +178,11 @@
   },
   "202209_BadGuysbyRPF": {
     "attacker_contract_link": "https://etherscan.io/address/0xBD8A137E79C90063cd5C0DB3Dbabd5CA2eC7e83e",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "Bad_Guys_by_RPF",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.7"
     },
     "contract_address": "0xB84CBAF116eb90fD445Dd5AeAdfab3e807D2CBaC",
     "defihacklabs_poc": "src/test/2022-09/BadGuysbyRPF_exp.sol",
@@ -189,10 +200,11 @@
   },
   "202210_N00d": {
     "attacker_contract_link": null,
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "SushiBar",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.6.0"
     },
     "contract_address": "0x3561081260186E69369E6C32F280836554292E08",
     "defihacklabs_poc": "src/test/2022-10/N00d_exp.sol",
@@ -210,10 +222,11 @@
   },
   "202210_Uerii": {
     "attacker_contract_link": null,
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "Token",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.0"
     },
     "contract_address": "0xFD4DcCD754EAaA8C9196998c5Bb06A56dF6a1D95",
     "defihacklabs_poc": "src/test/2022-10/Uerii_exp.sol",
@@ -231,10 +244,11 @@
   },
   "202212_JAY": {
     "attacker_contract_link": null,
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "JAY",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.0"
     },
     "contract_address": "0xed42cb11b9d03c807ed1ba9c2ed1d3ba5bf37340",
     "defihacklabs_poc": "src/test/2022-12/JAY_exp.sol",
@@ -252,10 +266,11 @@
   },
   "202301_QTN": {
     "attacker_contract_link": null,
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "QUATERNION",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.6.0"
     },
     "contract_address": "0xC9fa8F4CFd11559b50c5C7F6672B9eEa2757e1bd",
     "defihacklabs_poc": "src/test/2023-01/QTN_exp.sol",
@@ -272,11 +287,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0xC9fa8F4CFd11559b50c5C7F6672B9eEa2757e1bd"
   },
   "202301_SHOCO": {
-    "attacker_contract_link": null,
+    "attacker_address": "0x14d8ada7a0ba91f59dc0cb97c8f44f1d177c2195",
+    "attacker_contract_link": "https://etherscan.io/address/0x14d8ada7a0ba91f59dc0cb97c8f44f1d177c2195",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "Shoco",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.6.12"
     },
     "contract_address": "0x14d8ada7a0ba91f59dc0cb97c8f44f1d177c2195",
     "defihacklabs_poc": "src/test/2023-01/SHOCO_exp.sol",
@@ -293,11 +310,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0x14d8ada7a0ba91f59dc0cb97c8f44f1d177c2195"
   },
   "202305_ERC20TokenBank": {
-    "attacker_contract_link": null,
+    "attacker_address": "0xc0ffeebabe5d496b2dde509f9fa189c25cf29671",
+    "attacker_contract_link": "https://etherscan.io/address/0xc0ffeebabe5d496b2dde509f9fa189c25cf29671",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "ExchangeBetweenPools",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.4.21"
     },
     "contract_address": "0xc0ffeebabe5d496b2dde509f9fa189c25cf29671",
     "date": "20230531",
@@ -318,11 +337,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0xc0ffeebabe5d496b2dde509f9fa189c25cf29671"
   },
   "202305_HODLCapital": {
-    "attacker_contract_link": null,
+    "attacker_address": "0x4e998316ec31d2f3078f8f57b952bfae54728be1",
+    "attacker_contract_link": "https://etherscan.io/address/0x4e998316ec31d2f3078f8f57b952bfae54728be1",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "HODLCapital",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.6.12"
     },
     "contract_address": "0x4e998316ec31d2f3078f8f57b952bfae54728be1",
     "date": "20230509",
@@ -343,11 +364,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0x4e998316ec31d2f3078f8f57b952bfae54728be1"
   },
   "202305_MultiChainCapital": {
-    "attacker_contract_link": null,
+    "attacker_address": "0x8a4571c3a618e00d04287ca6385b6b020ce7a305",
+    "attacker_contract_link": "https://etherscan.io/address/0x8a4571c3a618e00d04287ca6385b6b020ce7a305",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "MultiChainCapital",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.6.12"
     },
     "contract_address": "0x8a4571c3a618e00d04287ca6385b6b020ce7a305",
     "date": "20230509",
@@ -368,11 +391,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0x8a4571c3a618e00d04287ca6385b6b020ce7a305"
   },
   "202306_VINU": {
-    "attacker_contract_link": null,
+    "attacker_address": "0x9748c8540a5f752ba747f1203ac13dae789033de",
+    "attacker_contract_link": "https://etherscan.io/address/0x9748c8540a5f752ba747f1203ac13dae789033de",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "VINU",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.17"
     },
     "contract_address": "0x9748c8540a5f752ba747f1203ac13dae789033de",
     "date": "20230606",
@@ -393,11 +418,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0x9748c8540a5f752ba747f1203ac13dae789033de"
   },
   "202308_Uwerx": {
-    "attacker_contract_link": null,
+    "attacker_address": "0x6057a831d43c395198a10cf2d7d6d6a063b1fce4",
+    "attacker_contract_link": "https://etherscan.io/address/0x6057a831d43c395198a10cf2d7d6d6a063b1fce4",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "Uwerx",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.0"
     },
     "contract_address": "0x6057a831d43c395198a10cf2d7d6d6a063b1fce4",
     "date": "20230802",
@@ -418,11 +445,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0x6057a831d43c395198a10cf2d7d6d6a063b1fce4"
   },
   "202309_uniclyNFT": {
-    "attacker_contract_link": null,
+    "attacker_address": "0x92cfcb70b2591ceb1e3c6d90e21e8154e7d29832",
+    "attacker_contract_link": "https://etherscan.io/address/0x92cfcb70b2591ceb1e3c6d90e21e8154e7d29832",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "PointFarm",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.6.0"
     },
     "contract_address": "0x92cfcb70b2591ceb1e3c6d90e21e8154e7d29832",
     "date": "20230916",
@@ -443,11 +472,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0x92cfcb70b2591ceb1e3c6d90e21e8154e7d29832"
   },
   "202310_pSeudoEth": {
-    "attacker_contract_link": null,
+    "attacker_address": "0xea75aec151f968b8de3789ca201a2a3a7faeefba",
+    "attacker_contract_link": "https://etherscan.io/address/0xea75aec151f968b8de3789ca201a2a3a7faeefba",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "UniswapV2Pair",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.5.0"
     },
     "contract_address": "0xea75aec151f968b8de3789ca201a2a3a7faeefba",
     "date": "20231008",
@@ -468,13 +499,15 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0xea75aec151f968b8de3789ca201a2a3a7faeefba"
   },
   "202311_grok": {
-    "attacker_contract_link": null,
+    "attacker_address": "0x864e656c57a5a119f332c47326a35422294db5c9",
+    "attacker_contract_link": "https://etherscan.io/address/0x864e656c57a5a119f332c47326a35422294db5c9",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "GROK",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.20"
     },
-    "contract_address": "0x864e656c57a5a119f332c47326a35422294db5c9",
+    "contract_address": "0x8390a1DA07E376ef7aDd4Be859BA74Fb83aA02D5",
     "date": "20231110",
     "defihacklabs_poc": "src/test/2023-11/grok_exp.sol",
     "defihacklabs_poc_link": "https://github.com/SunWeb3Sec/DeFiHackLabs/blob/main/src/test/2023-11/grok_exp.sol",
@@ -490,14 +523,16 @@
     "root_cause": "Slippage",
     "title": "grok",
     "type": null,
-    "vulnerable_contract_link": "https://etherscan.io/address/0x864e656c57a5a119f332c47326a35422294db5c9"
+    "vulnerable_contract_link": "https://etherscan.io/address/0x8390a1DA07E376ef7aDd4Be859BA74Fb83aA02D5"
   },
   "202402_GAIN": {
-    "attacker_contract_link": null,
+    "attacker_address": "0x0000000f95c09138dfea7d9bcf3478fc2e13dcab",
+    "attacker_contract_link": "https://etherscan.io/address/0x0000000f95c09138dfea7d9bcf3478fc2e13dcab",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "GAIN",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.7"
     },
     "contract_address": "0x0000000f95c09138dfea7d9bcf3478fc2e13dcab",
     "date": "20240221",
@@ -518,11 +553,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0x0000000f95c09138dfea7d9bcf3478fc2e13dcab"
   },
   "202404_HoppyFrogERC": {
-    "attacker_contract_link": null,
+    "attacker_address": "0x676c3262e8f0fba0031a93ea74ff801b99ac177b",
+    "attacker_contract_link": "https://etherscan.io/address/0x676c3262e8f0fba0031a93ea74ff801b99ac177b",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "Hoppy",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.23"
     },
     "contract_address": "0x676c3262e8f0fba0031a93ea74ff801b99ac177b",
     "defihacklabs_poc": "src/test/2024-04/HoppyFrogERC_exp.sol",
@@ -540,10 +577,11 @@
   },
   "202405_Burner": {
     "attacker_contract_link": null,
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "Burner",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.5.0"
     },
     "contract_address": "0x4d4d05e1205e3A412ae1469C99e0d954113aa76F",
     "date": "20240522",
@@ -564,11 +602,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0x4d4d05e1205e3A412ae1469C99e0d954113aa76F"
   },
   "202406_APEMAGA": {
-    "attacker_contract_link": null,
+    "attacker_address": "0xb297735e9fb3e695ccce3963bfe042f318901ea0",
+    "attacker_contract_link": "https://etherscan.io/address/0xb297735e9fb3e695ccce3963bfe042f318901ea0",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "Tonken",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.26"
     },
     "contract_address": "0xb297735e9fb3e695ccce3963bfe042f318901ea0",
     "date": "20240627 ",
@@ -589,11 +629,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0xb297735e9fb3e695ccce3963bfe042f318901ea0"
   },
   "202406_JokInTheBox": {
-    "attacker_contract_link": null,
+    "attacker_address": "0xfcd4acbc55df53fbc4c9d275e3495b490635f113",
+    "attacker_contract_link": "https://etherscan.io/address/0xfcd4acbc55df53fbc4c9d275e3495b490635f113",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "JokInTheBoxStaking",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.17"
     },
     "contract_address": "0xfcd4acbc55df53fbc4c9d275e3495b490635f113",
     "date": "20240611",
@@ -614,11 +656,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0xfcd4acbc55df53fbc4c9d275e3495b490635f113"
   },
   "202406_WIFCOIN_ETH": {
-    "attacker_contract_link": null,
+    "attacker_address": "0x394ba273315240510b61ca22ba152e3478a45892",
+    "attacker_contract_link": "https://etherscan.io/address/0x394ba273315240510b61ca22ba152e3478a45892",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "WIFStaking",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.16"
     },
     "contract_address": "0x394ba273315240510b61ca22ba152e3478a45892",
     "date": "20240616",
@@ -639,11 +683,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0x394ba273315240510b61ca22ba152e3478a45892"
   },
   "202408_OMPxContract": {
-    "attacker_contract_link": null,
+    "attacker_address": "0x40d115198d71cab59668b51dd112a07d273d5831",
+    "attacker_contract_link": "https://etherscan.io/address/0x40d115198d71cab59668b51dd112a07d273d5831",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "OMPxContract",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.4.13"
     },
     "contract_address": "0x40d115198d71cab59668b51dd112a07d273d5831",
     "date": "20240816",
@@ -664,11 +710,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0x40d115198d71cab59668b51dd112a07d273d5831"
   },
   "202409_Bedrock_DeFi": {
-    "attacker_contract_link": null,
+    "attacker_address": "0x2bFB373017349820dda2Da8230E6b66739BE9F96",
+    "attacker_contract_link": "https://etherscan.io/address/0x2bFB373017349820dda2Da8230E6b66739BE9F96",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "Vault",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.8.17"
     },
     "contract_address": "0x2bFB373017349820dda2Da8230E6b66739BE9F96",
     "date": "20240926",
@@ -689,11 +737,13 @@
     "vulnerable_contract_link": "https://etherscan.io/address/0x2bFB373017349820dda2Da8230E6b66739BE9F96"
   },
   "202409_OnyxDAO": {
-    "attacker_contract_link": null,
+    "attacker_address": "0x680910cf5fc9969a25fd57e7896a14ff1e55f36b",
+    "attacker_contract_link": "https://etherscan.io/address/0x680910cf5fc9969a25fd57e7896a14ff1e55f36b",
+    "blockchain": "Ethereum",
     "compilation_metadata": {
       "contract_name": "NFTLiquidation",
       "evm_version": "cancun",
-      "compiler_version": null
+      "compiler_version": "0.5.16"
     },
     "contract_address": "0x680910cf5fc9969a25fd57e7896a14ff1e55f36b",
     "date": "20240926",
